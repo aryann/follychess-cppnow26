@@ -6,8 +6,11 @@ export const Presentation = () => {
   return (
     <Deck>
       <Slide>
-        <h1>Hello World!</h1>
-        <p>My first Reveal deck in React.</p>
+        <h1>From 20 Nanoseconds to One</h1>
+        <h2>
+          Optimizing Bishop, Rook, and Queen Move Generation in a Chess Engine
+        </h2>
+        <p>Aryan Naraghi</p>
       </Slide>
 
       <Stack>
