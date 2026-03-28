@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@revealjs/react':
+        specifier: ^0.2.0
+        version: 0.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(reveal.js@6.0.0)
       react:
         specifier: ^19.2.4
         version: 19.2.4
       react-dom:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
+      reveal.js:
+        specifier: ^6.0.0
+        version: 6.0.0
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -220,6 +226,13 @@ packages:
 
   '@oxc-project/types@0.122.0':
     resolution: {integrity: sha512-oLAl5kBpV4w69UtFZ9xqcmTi+GENWOcPF7FCrczTiBbmC0ibXxCwyvZGbO39rCVEuLGAZM84DH0pUIyyv/YJzA==}
+
+  '@revealjs/react@0.2.0':
+    resolution: {integrity: sha512-kIxl5rCttlVJFeSnWJostA80IbhuM5+GO2yjs6yHOpesyIuzpCZjsNjX1s+5bbb1BGwEIAbuE04KPLWxZR1XAw==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+      reveal.js: '>=5'
 
   '@rolldown/binding-android-arm64@1.0.0-rc.12':
     resolution: {integrity: sha512-pv1y2Fv0JybcykuiiD3qBOBdz6RteYojRFY1d+b95WVuzx211CRh+ytI/+9iVyWQ6koTh5dawe4S/yRfOFjgaA==}
@@ -880,6 +893,9 @@ packages:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
 
+  reveal.js@6.0.0:
+    resolution: {integrity: sha512-RayDr1FL3Jglnf6p9xHGJ0U18va96PiuLs/JHnd1cdDOXvC+3lsXKe6ujl7PX0pvnhNW2Tpqnr6PEKpJVO2exw==}
+
   rolldown@1.0.0-rc.12:
     resolution: {integrity: sha512-yP4USLIMYrwpPHEFB5JGH1uxhcslv6/hL0OyvTuY+3qlOSJvZ7ntYnoWpehBxufkgN0cvXxppuTu5hHa/zPh+A==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1228,6 +1244,12 @@ snapshots:
     optional: true
 
   '@oxc-project/types@0.122.0': {}
+
+  '@revealjs/react@0.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(reveal.js@6.0.0)':
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      reveal.js: 6.0.0
 
   '@rolldown/binding-android-arm64@1.0.0-rc.12':
     optional: true
@@ -1815,6 +1837,8 @@ snapshots:
   react@19.2.4: {}
 
   resolve-from@4.0.0: {}
+
+  reveal.js@6.0.0: {}
 
   rolldown@1.0.0-rc.12(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     dependencies:
