@@ -33,32 +33,79 @@ export const Presentation = () => {
         <h2>Agenda</h2>
         <ul>
           <Fragment>
-            <li>Part 1: Who am I and why did I write a chess engine?</li>
+            <li>Part 1: Motivation</li>
           </Fragment>
           <Fragment>
-            <li>
-              Part 2: What are the fundamental chess engine data structures?
-            </li>
+            <li>Part 2: Fundamental Chess Engine Data Structures</li>
           </Fragment>
           <Fragment>
-            <li>Part 3: Why does move generation speed matter?</li>
+            <li>Part 3: Intro to Move Generation </li>
           </Fragment>
           <Fragment>
-            <li>Part 4: How does move generation work? </li>
-          </Fragment>
-          <Fragment>
-            <li>
-              Part 5: How do we speed up bishop, rook, and queen move
-              generation?
-            </li>
+            <li>Part 5: Speeding Up Bishop, Rook, and Queen Move Generation</li>
           </Fragment>
         </ul>
       </Slide>
 
       <Slide>
+        <h2>Part 2</h2>
+        <h3>Fundamental Chess Engine Data Structures</h3>
+      </Slide>
+
+      <Slide>
+        <h2>Terminology</h2>
+        <dl>
+          <Fragment>
+            <dt>Board</dt>
+            <dd>The 8 x 8 grid</dd>
+          </Fragment>
+
+          <Fragment>
+            <dt>File</dt>
+            <dd>Columns on the board, labeled A-H</dd>
+          </Fragment>
+
+          <Fragment>
+            <dt>Rank</dt>
+            <dd>Rows on the board, labeled 1-8</dd>
+          </Fragment>
+
+          <Fragment>
+            <dt>Square</dt>
+            <dd>
+              An index (0-63) representing an intersection of Rank and File
+            </dd>
+          </Fragment>
+
+          <Fragment>
+            <dt>Bitboard</dt>
+            <dd>A 64 bit integer representing piece presence</dd>
+          </Fragment>
+        </dl>
+      </Slide>
+
+      <Slide>
+        <h2>Square</h2>
+
+        <Code lang="cpp" lineNumbers>{`enum Square : std::uint8_t {
+ // clang-format off
+ A8, B8, C8, D8, E8, F8, G8, H8,
+ A7, B7, C7, D7, E7, F7, G7, H7,
+ A6, B6, C6, D6, E6, F6, G6, H6,
+ A5, B5, C5, D5, E5, F5, G5, H5,
+ A4, B4, C4, D4, E4, F4, G4, H4,
+ A3, B3, C3, D3, E3, F3, G3, H3,
+ A2, B2, C2, D2, E2, F2, G2, H2,
+ A1, B1, C1, D1, E1, F1, G1, H1,
+ // clang-format on
+};`}</Code>
+      </Slide>
+
+      <Stack>
         <h2>Bitboard</h2>
-        <Code language="c++" lineNumbers="1-11|12-32">
-          {`// Represents an 8x8 chess board.
+        <Slide>
+          <Code language="cpp" lineNumbers="1-11|12-32">
+            {`// Represents an 8x8 chess board.
 //
 //   8:   0   1   2   3   4   5   6   7
 //   7:   8   9  10  11  12  13  14  15
@@ -91,14 +138,76 @@ class Bitboard {
   std::uint64_t data_;
 };
 `}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <Code
+            lang="cpp"
+            lineNumbers="1-12|14-15|17-18|20-21|"
+          >{`Bitboard board(D5);
+
+EXPECT_THAT(board,
+            EqualsBitboard("8: . . . . . . . ."
+                           "7: . . . . . . . ."
+                           "6: . . . . . . . ."
+                           "5: . . . X . . . ."
+                           "4: . . . . . . . ."
+                           "3: . . . . . . . ."
+                           "2: . . . . . . . ."
+                           "1: . . . . . . . ."
+                           "   a b c d e f g h"));
+
+EXPECT_THAT(board.Get(A1), IsFalse());
+EXPECT_THAT(board.Get(D5), IsTrue());
+
+board.Set(B1);
+EXPECT_THAT(board.Get(B1), IsTrue());
+
+board.Clear(B1);
+EXPECT_THAT(board.Get(B1), IsFalse());
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <Bitboard showBits>{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . X . X .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+        </Slide>
+      </Stack>
+
+      <Slide>
+        <h2>Piece & Side</h2>
+
+        <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
+          {`enum Piece : std::uint8_t {
+  kPawn,
+  kKnight,
+  kBishop,
+  kRook,
+  kQueen,
+  kKing,
+  kEmptyPiece,
+};
+
+constexpr std::size_t kNumPieces = 6;
+
+enum Side : std::uint8_t {
+  kWhite,
+  kBlack,
+  kEmptySide,
+};
+
+constexpr std::size_t kNumSides = 2;`}
         </Code>
       </Slide>
-
-      <Stack>
-        <h2>sdfs</h2>
-        <Slide>Vertical 1</Slide>
-        <Slide>Vertical 2</Slide>
-      </Stack>
 
       <Slide>
         <h2>Position</h2>
@@ -125,28 +234,8 @@ class Bitboard {
       <Slide>
         <h2>Position</h2>
 
-        <Code language="c++" lineNumbers="1-9|11|13-17|19|21-34">
-          {`enum Piece : std::uint8_t {
-  kPawn,
-  kKnight,
-  kBishop,
-  kRook,
-  kQueen,
-  kKing,
-  kEmptyPiece,
-};
-
-constexpr std::size_t kNumPieces = 6;
-
-enum Side : std::uint8_t {
-  kWhite,
-  kBlack,
-  kEmptySide,
-};
-
-constexpr std::size_t kNumSides = 2;
-
-class Position {
+        <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
+          {`class Position {
  // ...
  private:
   std::array<Bitboard, kNumPieces> pieces_;
@@ -166,7 +255,7 @@ class Position {
 
       <Slide>
         <h2>Shifting Bitboards</h2>
-        <Code language="c++" lineNumbers="|4|6|8|10|12|14|16|18|">
+        <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
           {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
 
@@ -192,17 +281,14 @@ constexpr Bitboard Bitboard::Shift() const {
         </Code>
       </Slide>
 
-      <Slide>
+      <Stack>
         <h2>Generating Rook Moves</h2>
-        <table>
-          <tr>
-            <th>Start</th>
-            <th>Blockers</th>
-            <th>Pseudo-Attacks</th>
-          </tr>
-          <tr>
-            <td>
-              <Bitboard>{`8: . . . . . . . .
+
+        <Slide>
+          <p>D5 rook with no blockers</p>
+
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Bitboard title="rook">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -212,9 +298,8 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . . . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-            <td>
-              <Bitboard>{`8: . . . . . . . .
+
+            <Bitboard title="blockers">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -224,9 +309,8 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . . . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-            <td>
-              <Bitboard>{`8: . . . X . . . .
+
+            <Bitboard title="pseudo-attacks">{`8: . . . X . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: X X X . X X X X
@@ -236,12 +320,14 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . X . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-          </tr>
+          </div>
+        </Slide>
 
-          <tr>
-            <td>
-              <Bitboard>{`8: . . . . . . . .
+        <Slide>
+          <p>D5 rook with blockers</p>
+
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Bitboard title="start">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -251,9 +337,8 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . . . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-            <td>
-              <Bitboard>{`8: . . . . . . . .
+
+            <Bitboard title="blockers">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -263,9 +348,8 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . . . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-            <td>
-              <Bitboard showBits>{`8: . . . . . . . .
+
+            <Bitboard title="pseudo-attacks">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
@@ -275,10 +359,9 @@ constexpr Bitboard Bitboard::Shift() const {
 1: . . . . . . . .
    a b c d e f g h
 `}</Bitboard>
-            </td>
-          </tr>
-        </table>
-      </Slide>
+          </div>
+        </Slide>
+      </Stack>
 
       <Stack>
         <h2>Knight Moves Example</h2>
