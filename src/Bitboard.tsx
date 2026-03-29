@@ -1,10 +1,13 @@
+import React from "react";
+
 type BitboardProps = {
   children: string;
+  showBits?: boolean;
 };
 
-export const Bitboard = ({ children }: BitboardProps) => {
+export const Bitboard = (props: BitboardProps) => {
   const board = [];
-  for (const char of children) {
+  for (const char of props.children) {
     if (char == ".") {
       board.push(false);
     } else if (char == "X") {
@@ -19,28 +22,25 @@ export const Bitboard = ({ children }: BitboardProps) => {
   return (
     <code>
       <pre>
-        {board.map((value, index) => {
-          const parts = [];
+        {board.map((value, index) => (
+          <React.Fragment key={`cell-${index}`}>
+            {index % 8 === 0 && `${8 - index / 8}:`}{" "}
+            <span>{value ? "X" : "."}</span>
+            {index % 8 === 7 && "\n"}
+          </React.Fragment>
+        ))}
 
-          if (index % 8 === 0) {
-            parts.push(8 - index / 8 + ":");
-          }
-
-          parts.push(" ");
-
-          if (value) {
-            parts.push("X");
-          } else {
-            parts.push(".");
-          }
-
-          if (index % 8 === 7) {
-            parts.push("\n");
-          }
-
-          return parts.join("");
-        })}
         {"   a b c d e f g h"}
+
+        {props.showBits && "\n\n"}
+
+        {props.showBits &&
+          board.toReversed().map((value, index) => (
+            <React.Fragment key={`cell-${index}`}>
+              <span>{value ? 1 : 0}</span>
+              {index % 8 === 7 && "\n"}
+            </React.Fragment>
+          ))}
       </pre>
     </code>
   );

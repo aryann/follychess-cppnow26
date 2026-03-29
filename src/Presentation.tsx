@@ -237,7 +237,7 @@ constexpr Bitboard Bitboard::Shift() const {
 `}</Bitboard>
             </td>
             <td>
-              <Bitboard>{`8: . . . . . . . .
+              <Bitboard showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
