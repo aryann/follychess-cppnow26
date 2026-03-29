@@ -32,21 +32,32 @@ export const Presentation = () => {
       <Slide>
         <h2>Agenda</h2>
         <ul>
-          <li>Part 1: Who am I and why did I write a chess engine?</li>
-          <li>
-            Part 2: What are the fundamental chess engine data structures?
-          </li>
-          <li>Part 3: Why does move generation speed matter?</li>
-          <li>Part 4: How does move generation work? </li>
-          <li>
-            Part 5: How do we speed up bishop, rook, and queen move generation?
-          </li>
+          <Fragment>
+            <li>Part 1: Who am I and why did I write a chess engine?</li>
+          </Fragment>
+          <Fragment>
+            <li>
+              Part 2: What are the fundamental chess engine data structures?
+            </li>
+          </Fragment>
+          <Fragment>
+            <li>Part 3: Why does move generation speed matter?</li>
+          </Fragment>
+          <Fragment>
+            <li>Part 4: How does move generation work? </li>
+          </Fragment>
+          <Fragment>
+            <li>
+              Part 5: How do we speed up bishop, rook, and queen move
+              generation?
+            </li>
+          </Fragment>
         </ul>
       </Slide>
 
       <Slide>
         <h2>Bitboard</h2>
-        <Code language="cpp" lineNumbers="1-11|12-32">
+        <Code language="c++" lineNumbers="1-11|12-32">
           {`// Represents an 8x8 chess board.
 //
 //   8:   0   1   2   3   4   5   6   7
@@ -84,6 +95,7 @@ class Bitboard {
       </Slide>
 
       <Stack>
+        <h2>sdfs</h2>
         <Slide>Vertical 1</Slide>
         <Slide>Vertical 2</Slide>
       </Stack>
@@ -113,7 +125,7 @@ class Bitboard {
       <Slide>
         <h2>Position</h2>
 
-        <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
+        <Code language="c++" lineNumbers="1-9|11|13-17|19|21-34">
           {`enum Piece : std::uint8_t {
   kPawn,
   kKnight,
@@ -154,7 +166,7 @@ class Position {
 
       <Slide>
         <h2>Shifting Bitboards</h2>
-        <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
+        <Code language="c++" lineNumbers="|4|6|8|10|12|14|16|18|">
           {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
 
@@ -268,10 +280,81 @@ constexpr Bitboard Bitboard::Shift() const {
         </table>
       </Slide>
 
+      <Stack>
+        <h2>Knight Moves Example</h2>
+
+        <p>Starting position, B1 knight</p>
+
+        <Slide>
+          <Code lang="c++" lineNumbers>
+            {`Position position = MakePosition("8: r n b q k b n r"
+                                 "7: p p p p p p p p"
+                                 "6: . . . . . . . ."
+                                 "5: . . . . . . . ."
+                                 "4: . . . . . . . ."
+                                 "3: . . . . . . . ."
+                                 "2: P P P P P P P P"
+                                 "1: R N B Q K B N R"
+                                 "   a b c d e f g h"
+                                 //
+                                 "   w KQkq - 0 1");`}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <Code lang="c++" lineNumbers>
+            {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
+Bitboard valid_destinations = ~position.GetPieces(kWhite);
+Bitboard moves = pseudo_attacks & valid_destinations;`}
+          </Code>
+
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Fragment>
+              <Bitboard title="pseudo_attacks">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: X . X . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="valid_destinations">{`8: X X X X X X X X
+7: X X X X X X X X
+6: X X X X X X X X
+5: X X X X X X X X
+4: X X X X X X X X
+3: X X X X X X X X
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="moves">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: X . X . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+          </div>
+        </Slide>
+      </Stack>
+
       <Slide>
         <h2>Knight Moves</h2>
         <p>♘ &middot; ♞</p>
-        <Code lang="cpp" lineNumbers="1-4|6-24">
+        <Code lang="c++" lineNumbers="1-4|6-24">
           {`[[nodiscard]] constexpr Bitboard GetKnightAttacks(Square square) {
   static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
   return kKnightAttacks[square];

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 type BitboardProps = {
   children: string;
   showBits?: boolean;
+  title?: string;
 };
 
 const parse = (input: string) => {
@@ -52,33 +53,43 @@ export const Bitboard = (props: BitboardProps) => {
   };
 
   return (
-    <code>
-      <pre>
-        {board.map((value, index) => (
-          <React.Fragment key={`square-${index}`}>
-            {index % 8 === 0 && `${8 - index / 8}:`}{" "}
-            {renderCell(index, value ? "X" : ".")}
-            {index % 8 === 7 && "\n"}
-          </React.Fragment>
-        ))}
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      {props.title && (
+        <code>
+          <pre>{props.title}</pre>
+        </code>
+      )}
 
-        {"   a b c d e f g h"}
+      <code>
+        <pre>
+          {board.map((value, index) => (
+            <React.Fragment key={`square-${index}`}>
+              {index % 8 === 0 && `${8 - index / 8}:`}{" "}
+              {renderCell(index, value ? "X" : "·")}
+              {index % 8 === 7 && "\n"}
+            </React.Fragment>
+          ))}
 
-        {props.showBits && "\n\n "}
+          {"   a b c d e f g h"}
 
-        {props.showBits &&
-          board.toReversed().map((value, reversedIndex) => {
-            const originalIndex = 64 - reversedIndex - 1;
+          {props.showBits && "\n\n "}
 
-            return (
-              <React.Fragment key={`bit-${originalIndex}`}>
-                {reversedIndex % 8 === 0 && "  "}
-                {renderCell(originalIndex, value ? 1 : 0)}
-                {originalIndex % 8 === 0 && "\n"}{" "}
-              </React.Fragment>
-            );
-          })}
-      </pre>
-    </code>
+          {props.showBits &&
+            board.toReversed().map((value, reversedIndex) => {
+              const originalIndex = 64 - reversedIndex - 1;
+
+              return (
+                <React.Fragment key={`bit-${originalIndex}`}>
+                  {reversedIndex % 8 === 0 && "  "}
+                  {renderCell(originalIndex, value ? 1 : 0)}
+                  {originalIndex % 8 === 0 && "\n"}{" "}
+                </React.Fragment>
+              );
+            })}
+        </pre>
+      </code>
+    </div>
   );
 };
