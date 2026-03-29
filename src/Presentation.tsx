@@ -251,6 +251,87 @@ constexpr Bitboard Bitboard::Shift() const {
           </tr>
         </table>
       </Slide>
+
+      <Slide>
+        <h2>Knight Moves</h2>
+        <Code lang="cpp" lineNumbers="1-4|6-24">
+          {`[[nodiscard]] constexpr Bitboard GetKnightAttacks(Square square) {
+  static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
+  return kKnightAttacks[square];
+}
+         
+consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
+ std::array<Bitboard, kNumSquares> attacks;
+
+ for (int square = kFirstSquare; square < kNumSquares; ++square) {
+   Bitboard start(static_cast<Square>(square));
+
+   attacks[square] = kEmptyBoard                                  //
+                     | start.Shift<kNorth>().Shift<kNorthEast>()  //
+                     | start.Shift<kEast>().Shift<kNorthEast>()   //
+                     | start.Shift<kEast>().Shift<kSouthEast>()   //
+                     | start.Shift<kSouth>().Shift<kSouthEast>()  //
+                     | start.Shift<kSouth>().Shift<kSouthWest>()  //
+                     | start.Shift<kWest>().Shift<kSouthWest>()   //
+                     | start.Shift<kWest>().Shift<kNorthWest>()   //
+                     | start.Shift<kNorth>().Shift<kNorthWest>();
+ }
+
+ return attacks;
+}
+`}
+        </Code>
+      </Slide>
+
+      <Slide>
+        <h2>Performance</h2>
+        <p>
+          Generating sliding moves on-the-fly takes ~22-40 nanoseconds per
+          piece.
+        </p>
+        <Code lang="plaintext" lineNumbers="10-12">{`Run on (10 X 24 MHz CPU s)
+CPU Caches:
+ L1 Data 64 KiB
+ L1 Instruction 128 KiB
+ L2 Unified 4096 KiB (x10)
+Load Average: 9.88, 6.90, 5.88
+---------------------------------------------------------------------------------------
+Benchmark                                                 Time         CPU   Iterations
+---------------------------------------------------------------------------------------
+BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     33745348
+BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
+BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
+`}</Code>
+      </Slide>
+
+      <Slide>
+        <h2>Final Performance</h2>
+        <Code lang="plaintext" lineNumbers="22-24">{`Run on (10 X 24 MHz CPU s)
+CPU Caches:
+ L1 Data 64 KiB
+ L1 Instruction 128 KiB
+ L2 Unified 4096 KiB (x10)
+Load Average: 9.88, 6.90, 5.88
+---------------------------------------------------------------------------------------
+Benchmark                                                 Time         CPU   Iterations
+---------------------------------------------------------------------------------------
+BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     33745348
+BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
+BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
+BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>     3.65 ns     3.65 ns    192545730
+BM_LookupAttacksFrom<absl::flat_hash_map, kRook>       7.70 ns     7.70 ns     88321389
+BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>      33.4 ns     33.4 ns     20735826
+BM_LookupAttacksFrom<std::map, kBishop>                26.7 ns     26.6 ns     25801220
+BM_LookupAttacksFrom<std::map, kRook>                  59.0 ns     58.9 ns     11554015
+BM_LookupAttacksFrom<std::map, kQueen>                  385 ns      385 ns      1702210
+BM_LookupAttacksFrom<std::unordered_map, kBishop>      7.97 ns     7.97 ns     88671573
+BM_LookupAttacksFrom<std::unordered_map, kRook>        10.5 ns     10.4 ns     66874082
+BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     11378537
+BM_LookupAttacksFromMagicTables<kBishop>               1.19 ns     1.19 ns    600152610
+BM_LookupAttacksFromMagicTables<kRook>                 1.25 ns     1.24 ns    572498794
+BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    362654841
+`}</Code>
+      </Slide>
     </Deck>
   );
 };
