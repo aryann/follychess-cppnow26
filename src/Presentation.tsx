@@ -22,13 +22,13 @@ export const Presentation = () => {
     <Deck
       plugins={[RevealHighlight]}
       config={{
-        width: 1200,
+        width: 1400,
         height: 800,
         hash: true,
       }}
     >
       <Slide>
-        <h2>From 20 Nanoseconds to 1</h2>
+        <h2>From 20 Nanoseconds to One</h2>
         <p>
           Optimizing Bishop, Rook, and Queen
           <br />
