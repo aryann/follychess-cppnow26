@@ -54,42 +54,56 @@ export const Bitboard = (props: BitboardProps) => {
 
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        columnGap: "1em",
+      }}
     >
-      {props.title && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {props.title && (
+          <code>
+            <pre>{props.title}</pre>
+          </code>
+        )}
+
         <code>
-          <pre>{props.title}</pre>
+          <pre>
+            {board.map((value, index) => (
+              <React.Fragment key={`square-${index}`}>
+                {index % 8 === 0 && `${8 - index / 8}:`}{" "}
+                {renderCell(index, value ? "X" : "·")}
+                {index % 8 === 7 && "\n"}
+              </React.Fragment>
+            ))}
+
+            {"   a b c d e f g h"}
+          </pre>
         </code>
-      )}
+      </div>
 
-      <code>
-        <pre>
-          {board.map((value, index) => (
-            <React.Fragment key={`square-${index}`}>
-              {index % 8 === 0 && `${8 - index / 8}:`}{" "}
-              {renderCell(index, value ? "X" : "·")}
-              {index % 8 === 7 && "\n"}
-            </React.Fragment>
-          ))}
-
-          {"   a b c d e f g h"}
-
-          {props.showBits && "\n\n "}
-
-          {props.showBits &&
-            board.toReversed().map((value, reversedIndex) => {
+      {props.showBits && (
+        <code>
+          <pre>
+            {board.toReversed().map((value, reversedIndex) => {
               const originalIndex = 64 - reversedIndex - 1;
 
               return (
                 <React.Fragment key={`bit-${originalIndex}`}>
-                  {reversedIndex % 8 === 0 && "  "}
-                  {renderCell(originalIndex, value ? 1 : 0)}
-                  {originalIndex % 8 === 0 && "\n"}{" "}
+                  {renderCell(originalIndex, value ? 1 : 0)}{" "}
+                  {originalIndex % 8 === 0 && "\n"}
                 </React.Fragment>
               );
             })}
-        </pre>
-      </code>
+          </pre>
+        </code>
+      )}
     </div>
   );
 };
