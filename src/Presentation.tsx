@@ -23,9 +23,25 @@ export const Presentation = () => {
           <br />
           Move Generation in a Chess Engine
         </p>
+        <p>♗♖♕ &middot; ♝♜♛</p>
         <p>
           <a href="https://aryan.app">Aryan Naraghi</a>
         </p>
+      </Slide>
+
+      <Slide>
+        <h2>Agenda</h2>
+        <ul>
+          <li>Part 1: Who am I and why did I write a chess engine?</li>
+          <li>
+            Part 2: What are the fundamental chess engine data structures?
+          </li>
+          <li>Part 3: Why does move generation speed matter?</li>
+          <li>Part 4: How does move generation work? </li>
+          <li>
+            Part 5: How do we speed up bishop, rook, and queen move generation?
+          </li>
+        </ul>
       </Slide>
 
       <Slide>
@@ -254,6 +270,7 @@ constexpr Bitboard Bitboard::Shift() const {
 
       <Slide>
         <h2>Knight Moves</h2>
+        <p>♘ &middot; ♞</p>
         <Code lang="cpp" lineNumbers="1-4|6-24">
           {`[[nodiscard]] constexpr Bitboard GetKnightAttacks(Square square) {
   static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
