@@ -3,19 +3,8 @@ import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
+import { Bitboard } from "./Bitboard";
 import "./Presentation.css";
-
-type BoardProps = {
-  children: string;
-};
-
-const Board = ({ children }: BoardProps) => {
-  return (
-    <code>
-      <pre>{children}</pre>
-    </code>
-  );
-};
 
 export const Presentation = () => {
   return (
@@ -41,7 +30,7 @@ export const Presentation = () => {
 
       <Slide>
         <h2>Bitboard</h2>
-        <Code language="cpp" lineNumbers="1-11|12-24">
+        <Code language="cpp" lineNumbers="1-11|12-32">
           {`// Represents an 8x8 chess board.
 //
 //   8:   0   1   2   3   4   5   6   7
@@ -57,9 +46,17 @@ class Bitboard {
  public:
   constexpr explicit Bitboard(Square square) : data_(1ULL << square) {}
 
-  [[nodiscard]] constexpr bool Get(Square square) const { return data_ & 1ULL << square; }
-  constexpr void Set(Square square) { data_ |= 1ULL << square; }
-  constexpr void Clear(Square square) { data_ &= ~(1ULL << square); }
+  [[nodiscard]] constexpr bool Get(Square square) const {
+    return data_ & 1ULL << square;
+  }
+
+  constexpr void Set(Square square) {
+    data_ |= 1ULL << square;
+  }
+
+  constexpr void Clear(Square square) {
+    data_ &= ~(1ULL << square);
+  }
 
   // ...
 
@@ -177,7 +174,7 @@ constexpr Bitboard Bitboard::Shift() const {
           </tr>
           <tr>
             <td>
-              <Board>{`8: . . . . . . . .
+              <Bitboard>{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -186,10 +183,10 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
             <td>
-              <Board>{`8: . . . . . . . .
+              <Bitboard>{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -198,10 +195,10 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
             <td>
-              <Board>{`8: . . . X . . . .
+              <Bitboard>{`8: . . . X . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: X X X . X X X X
@@ -210,13 +207,13 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . X . . . .
 1: . . . X . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
           </tr>
 
           <tr>
             <td>
-              <Board>{`8: . . . . . . . .
+              <Bitboard>{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -225,10 +222,10 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
             <td>
-              <Board>{`8: . . . . . . . .
+              <Bitboard>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -237,10 +234,10 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
             <td>
-              <Board>{`8: . . . . . . . .
+              <Bitboard>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
@@ -249,7 +246,7 @@ constexpr Bitboard Bitboard::Shift() const {
 2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Board>
+`}</Bitboard>
             </td>
           </tr>
         </table>
