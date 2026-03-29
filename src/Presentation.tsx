@@ -1,19 +1,42 @@
-import { Code, Deck, Fragment, Slide } from "@revealjs/react";
+import { Code, Deck, Fragment, Slide, Stack } from "@revealjs/react";
 import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
-import "reveal.js/theme/black.css";
+import "reveal.js/theme/night.css";
 import "./Presentation.css";
+
+type BoardProps = {
+  children: string;
+};
+
+const Board = ({ children }: BoardProps) => {
+  return (
+    <code>
+      <pre>{children}</pre>
+    </code>
+  );
+};
 
 export const Presentation = () => {
   return (
-    <Deck plugins={[RevealHighlight]} config={{ hash: true }}>
+    <Deck
+      plugins={[RevealHighlight]}
+      config={{
+        width: 1200,
+        height: 800,
+        hash: true,
+      }}
+    >
       <Slide>
-        <h2>From 20 Nanoseconds to One</h2>
+        <h2>From 20 Nanoseconds to 1</h2>
         <p>
-          Optimizing Bishop, Rook, and Queen Move Generation in a Chess Engine
+          Optimizing Bishop, Rook, and Queen
+          <br />
+          Move Generation in a Chess Engine
         </p>
-        <p>Aryan Naraghi</p>
+        <p>
+          <a href="https://aryan.app">Aryan Naraghi</a>
+        </p>
       </Slide>
 
       <Slide>
@@ -47,28 +70,31 @@ class Bitboard {
         </Code>
       </Slide>
 
+      <Stack>
+        <Slide>Vertical 1</Slide>
+        <Slide>Vertical 2</Slide>
+      </Stack>
+
       <Slide>
         <h2>Position</h2>
-        <p style={{ textAlign: "left" }}>
-          The state of the game at a specific moment:
-          <ul>
-            <Fragment>
-              <li>Arrangement of pieces on the board</li>
-            </Fragment>
-            <Fragment>
-              <li>Castling rights</li>
-            </Fragment>
-            <Fragment>
-              <li>Move counters</li>
-            </Fragment>
-            <Fragment>
-              <li>En-Passant target square</li>
-            </Fragment>
-            <Fragment>
-              <li>Side to move</li>
-            </Fragment>
-          </ul>
-        </p>
+        <p>The state of the game at a specific moment:</p>
+        <ul>
+          <Fragment>
+            <li>Arrangement of pieces on the board</li>
+          </Fragment>
+          <Fragment>
+            <li>Castling rights</li>
+          </Fragment>
+          <Fragment>
+            <li>Move counters</li>
+          </Fragment>
+          <Fragment>
+            <li>En-Passant target square</li>
+          </Fragment>
+          <Fragment>
+            <li>Side to move</li>
+          </Fragment>
+        </ul>
       </Slide>
 
       <Slide>
@@ -115,21 +141,118 @@ class Position {
 
       <Slide>
         <h2>Shifting Bitboards</h2>
-        <Code language="cpp" lineNumbers="|3|4|5|6|7|8|9|10|">
+        <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
           {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
+
   if constexpr (Direction == kNorth)     { return *this >> 8; }
+
   if constexpr (Direction == kNorthEast) { return *this >> 7 & ~file::kA; }
+
   if constexpr (Direction == kEast)      { return *this << 1 & ~file::kA; }
+
   if constexpr (Direction == kSouthEast) { return *this << 9 & ~file::kA; }
+
   if constexpr (Direction == kSouth)     { return *this << 8; }
+
   if constexpr (Direction == kSouthWest) { return *this << 7 & ~file::kH; }
+
   if constexpr (Direction == kWest)      { return *this >> 1 & ~file::kH; }
+
   if constexpr (Direction == kNorthWest) { return *this >> 9 & ~file::kH; }
+
   return kEmptyBoard;
 }
 `}
         </Code>
+      </Slide>
+
+      <Slide>
+        <h2>Generating Rook Moves</h2>
+        <table>
+          <tr>
+            <th>Start</th>
+            <th>Blockers</th>
+            <th>Pseudo-Attacks</th>
+          </tr>
+          <tr>
+            <td>
+              <Board>{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . X . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+            <td>
+              <Board>{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+            <td>
+              <Board>{`8: . . . X . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: X X X . X X X X
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . X . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <Board>{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . X . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+            <td>
+              <Board>{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . X . X .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+            <td>
+              <Board>{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: . X X . X . . .
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+            </td>
+          </tr>
+        </table>
       </Slide>
     </Deck>
   );
