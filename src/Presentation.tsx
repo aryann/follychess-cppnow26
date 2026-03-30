@@ -42,9 +42,14 @@ export const Presentation = () => {
             <li>Part 3: Intro to Move Generation </li>
           </Fragment>
           <Fragment>
-            <li>Part 5: Speeding Up Bishop, Rook, and Queen Move Generation</li>
+            <li>Part 4: Speeding Up Bishop, Rook, and Queen Move Generation</li>
           </Fragment>
         </ul>
+      </Slide>
+
+      <Slide>
+        <h2>Part 1</h2>
+        <h3>Motivation</h3>
       </Slide>
 
       <Slide>
@@ -87,7 +92,7 @@ export const Presentation = () => {
       <Slide>
         <h2>Square</h2>
 
-        <Code lang="cpp" lineNumbers>{`enum Square : std::uint8_t {
+        <Code language="cpp" lineNumbers>{`enum Square : std::uint8_t {
  // clang-format off
  A8, B8, C8, D8, E8, F8, G8, H8,
  A7, B7, C7, D7, E7, F7, G7, H7,
@@ -143,7 +148,7 @@ class Bitboard {
 
         <Slide>
           <Code
-            lang="cpp"
+            language="cpp"
             lineNumbers="1-12|14-15|17-18|20-21|"
           >{`Bitboard board(D5);
 
@@ -209,33 +214,33 @@ constexpr std::size_t kNumSides = 2;`}
         </Code>
       </Slide>
 
-      <Slide>
-        <h2>Position</h2>
-        <p>The state of the game at a specific moment:</p>
-        <ul>
-          <Fragment>
-            <li>Arrangement of pieces on the board</li>
-          </Fragment>
-          <Fragment>
-            <li>Castling rights</li>
-          </Fragment>
-          <Fragment>
-            <li>Move counters</li>
-          </Fragment>
-          <Fragment>
-            <li>En-Passant target square</li>
-          </Fragment>
-          <Fragment>
-            <li>Side to move</li>
-          </Fragment>
-        </ul>
-      </Slide>
-
-      <Slide>
+      <Stack>
         <h2>Position</h2>
 
-        <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
-          {`class Position {
+        <Slide>
+          <p>The state of the game at a specific moment:</p>
+          <ul>
+            <Fragment>
+              <li>Arrangement of pieces on the board</li>
+            </Fragment>
+            <Fragment>
+              <li>Castling rights</li>
+            </Fragment>
+            <Fragment>
+              <li>Move counters</li>
+            </Fragment>
+            <Fragment>
+              <li>En-Passant target square</li>
+            </Fragment>
+            <Fragment>
+              <li>Side to move</li>
+            </Fragment>
+          </ul>
+        </Slide>
+
+        <Slide>
+          <Code language="cpp" lineNumbers="4-5|">
+            {`class Position {
  // ...
  private:
   std::array<Bitboard, kNumPieces> pieces_;
@@ -250,13 +255,220 @@ constexpr std::size_t kNumSides = 2;`}
   int full_moves_;
 };
           `}
-        </Code>
-      </Slide>
+          </Code>
+        </Slide>
+
+        <Slide>
+          <p>Getting pieces</p>
+          <Code
+            language="cpp"
+            lineNumbers="1-12|14-26|28-40|42-54|56-68|70-82|84-96|98-110|112-124|126-138"
+          >{`Position position = MakePosition(
+    "8: r n b q k b n r"
+    "7: p p p p p p p p"
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: P P P P P P P P"
+    "1: R N B Q K B N R"
+    "   a b c d e f g h"
+    //
+    "   w KQkq - 0 1");
+                   
+// Get all pawns:                                 
+EXPECT_THAT(
+  position.GetPieces(kPawn),
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: X X X X X X X X"
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));
+
+// Get all bishops:
+EXPECT_THAT(
+  position.GetPieces(kBishop),
+  EqualsBitboard(
+    "8: . . X . . X . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: . . X . . X . ."
+    "   a b c d e f g h"));
+
+// Get all knights:
+EXPECT_THAT(
+  position.GetPieces(kKnight),
+  EqualsBitboard(
+    "8: . X . . . . X ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: . X . . . . X ."
+    "   a b c d e f g h"));
+
+// Get all rooks:
+EXPECT_THAT(
+  position.GetPieces(kRook),
+  EqualsBitboard(
+    "8: X . . . . . . X"
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: X . . . . . . X"
+    "   a b c d e f g h"));
+
+// Get all queens:
+EXPECT_THAT(
+  position.GetPieces(kQueen),
+  EqualsBitboard(
+    "8: . . . X . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: . . . X . . . ."
+    "   a b c d e f g h"));
+
+// Get all kings:
+EXPECT_THAT(
+  position.GetPieces(kKing),
+  EqualsBitboard(
+    "8: . . . . X . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: . . . . X . . ."
+    "   a b c d e f g h"));
+
+// Get all white pieces:
+EXPECT_THAT(
+  position.GetPieces(kWhite),
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: X X X X X X X X"
+    "   a b c d e f g h"));
+
+// Get all black pieces:
+EXPECT_THAT(
+  position.GetPieces(kBlack),
+  EqualsBitboard(
+    "8: X X X X X X X X"
+    "7: X X X X X X X X"
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . . . . . ."
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));
+
+// Get all white pawns:
+EXPECT_THAT(
+  position.GetPieces(kWhite, kPawn),
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));`}</Code>
+        </Slide>
+
+        <Slide>
+          <p>GetPieces() implementation</p>
+
+          <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
+            {`Bitboard Position::GetPieces(Side side) const {
+  return sides_[side];
+}
+
+Bitboard Position::GetPieces(Piece type) const {
+  return pieces_[type];
+}
+
+Bitboard Position::GetPieces() const {
+  return sides_[kWhite] | sides_[kBlack];
+}
+
+Bitboard Position::GetPieces(Side side, Piece type) const {
+  return sides_[side] & pieces_[type];
+}`}
+          </Code>
+        </Slide>
+      </Stack>
 
       <Slide>
+        <h2>Part 3</h2>
+        <h3>Intro to Move Generation</h3>
+      </Slide>
+
+      <Stack>
         <h2>Shifting Bitboards</h2>
-        <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
-          {`template <Direction Direction>
+
+        <Slide>
+          <p>Example</p>
+
+          <div style={{ display: "flex" }}>
+            <Code language="cpp" lineNumbers>{`
+Bitboard input =
+  MakeBitboard(
+    "8: . . . . . . . ."
+    "7: . . . X . . . ."
+    "6: . . . . . . . ."
+    "5: . X . . X . . X"
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: . . . X . . . ."
+    "1: . . . . . . . ."
+    "   a b c d e f g h");`}</Code>
+            <Code language="cpp" lineNumbers>{`
+EXPECT_THAT(
+  input.Shift<kNorthWest>(),
+  EqualsBitboard(
+    "8: . . . . X . . ."
+    "7: . . . . . . . ."
+    "6: . . X . . X . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . X . . ."
+    "2: . . . . . . . ."
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));`}</Code>{" "}
+          </div>
+        </Slide>
+
+        <Slide>
+          <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
+            {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
 
   if constexpr (Direction == kNorth)     { return *this >> 8; }
@@ -276,6 +488,110 @@ constexpr Bitboard Bitboard::Shift() const {
   if constexpr (Direction == kNorthWest) { return *this >> 9 & ~file::kH; }
 
   return kEmptyBoard;
+}
+`}
+          </Code>
+        </Slide>
+      </Stack>
+
+      <Stack>
+        <h2>Knight Moves Example</h2>
+
+        <p>Starting position, B1 knight</p>
+
+        <Slide>
+          <Code language="c++" lineNumbers>
+            {`Position position = MakePosition("8: r n b q k b n r"
+                                 "7: p p p p p p p p"
+                                 "6: . . . . . . . ."
+                                 "5: . . . . . . . ."
+                                 "4: . . . . . . . ."
+                                 "3: . . . . . . . ."
+                                 "2: P P P P P P P P"
+                                 "1: R N B Q K B N R"
+                                 "   a b c d e f g h"
+                                 //
+                                 "   w KQkq - 0 1");`}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <Code language="c++" lineNumbers>
+            {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
+Bitboard valid_destinations = ~position.GetPieces(kWhite);
+Bitboard moves = pseudo_attacks & valid_destinations;`}
+          </Code>
+
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Fragment>
+              <Bitboard title="pseudo_attacks">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: X . X . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="valid_destinations">{`8: X X X X X X X X
+7: X X X X X X X X
+6: X X X X X X X X
+5: X X X X X X X X
+4: X X X X X X X X
+3: X X X X X X X X
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="moves">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: X . X . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+          </div>
+        </Slide>
+      </Stack>
+
+      <Slide>
+        <h2>Knight Moves</h2>
+        <p>♘ &middot; ♞</p>
+        <Code language="c++" lineNumbers="1-4|6-24">
+          {`constexpr Bitboard GetKnightAttacks(Square square) {
+  static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
+  return kKnightAttacks[square];
+}
+         
+consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
+ std::array<Bitboard, kNumSquares> attacks;
+
+ for (int square = kFirstSquare; square < kNumSquares; ++square) {
+   Bitboard start(static_cast<Square>(square));
+
+   attacks[square] = kEmptyBoard                                  //
+                     | start.Shift<kNorth>().Shift<kNorthEast>()  //
+                     | start.Shift<kEast>().Shift<kNorthEast>()   //
+                     | start.Shift<kEast>().Shift<kSouthEast>()   //
+                     | start.Shift<kSouth>().Shift<kSouthEast>()  //
+                     | start.Shift<kSouth>().Shift<kSouthWest>()  //
+                     | start.Shift<kWest>().Shift<kSouthWest>()   //
+                     | start.Shift<kWest>().Shift<kNorthWest>()   //
+                     | start.Shift<kNorth>().Shift<kNorthWest>();
+ }
+
+ return attacks;
 }
 `}
         </Code>
@@ -363,107 +679,9 @@ constexpr Bitboard Bitboard::Shift() const {
         </Slide>
       </Stack>
 
-      <Stack>
-        <h2>Knight Moves Example</h2>
-
-        <p>Starting position, B1 knight</p>
-
-        <Slide>
-          <Code lang="c++" lineNumbers>
-            {`Position position = MakePosition("8: r n b q k b n r"
-                                 "7: p p p p p p p p"
-                                 "6: . . . . . . . ."
-                                 "5: . . . . . . . ."
-                                 "4: . . . . . . . ."
-                                 "3: . . . . . . . ."
-                                 "2: P P P P P P P P"
-                                 "1: R N B Q K B N R"
-                                 "   a b c d e f g h"
-                                 //
-                                 "   w KQkq - 0 1");`}
-          </Code>
-        </Slide>
-
-        <Slide>
-          <Code lang="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
-Bitboard valid_destinations = ~position.GetPieces(kWhite);
-Bitboard moves = pseudo_attacks & valid_destinations;`}
-          </Code>
-
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Fragment>
-              <Bitboard title="pseudo_attacks">{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: X . X . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Bitboard>
-            </Fragment>
-
-            <Fragment>
-              <Bitboard title="valid_destinations">{`8: X X X X X X X X
-7: X X X X X X X X
-6: X X X X X X X X
-5: X X X X X X X X
-4: X X X X X X X X
-3: X X X X X X X X
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Bitboard>
-            </Fragment>
-
-            <Fragment>
-              <Bitboard title="moves">{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: X . X . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Bitboard>
-            </Fragment>
-          </div>
-        </Slide>
-      </Stack>
-
       <Slide>
-        <h2>Knight Moves</h2>
-        <p>♘ &middot; ♞</p>
-        <Code lang="c++" lineNumbers="1-4|6-24">
-          {`[[nodiscard]] constexpr Bitboard GetKnightAttacks(Square square) {
-  static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
-  return kKnightAttacks[square];
-}
-         
-consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
- std::array<Bitboard, kNumSquares> attacks;
-
- for (int square = kFirstSquare; square < kNumSquares; ++square) {
-   Bitboard start(static_cast<Square>(square));
-
-   attacks[square] = kEmptyBoard                                  //
-                     | start.Shift<kNorth>().Shift<kNorthEast>()  //
-                     | start.Shift<kEast>().Shift<kNorthEast>()   //
-                     | start.Shift<kEast>().Shift<kSouthEast>()   //
-                     | start.Shift<kSouth>().Shift<kSouthEast>()  //
-                     | start.Shift<kSouth>().Shift<kSouthWest>()  //
-                     | start.Shift<kWest>().Shift<kSouthWest>()   //
-                     | start.Shift<kWest>().Shift<kNorthWest>()   //
-                     | start.Shift<kNorth>().Shift<kNorthWest>();
- }
-
- return attacks;
-}
-`}
-        </Code>
+        <h2>Part 4</h2>
+        <h3>Speeding Up Bishop, Rook, and Queen Move Generation</h3>
       </Slide>
 
       <Slide>

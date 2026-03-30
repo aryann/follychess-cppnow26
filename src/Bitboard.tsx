@@ -101,6 +101,7 @@ export const Bitboard = (props: BitboardProps) => {
                 </React.Fragment>
               );
             })}
+            {"      "}data_
           </pre>
         </code>
       )}
