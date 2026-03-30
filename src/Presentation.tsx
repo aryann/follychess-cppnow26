@@ -31,7 +31,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Agenda</h2>
+        <h3>Agenda</h3>
         <ul>
           <Fragment>
             <li>Part 1: Motivation</li>
@@ -59,7 +59,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Terminology</h2>
+        <h3>Terminology</h3>
         <dl>
           <Fragment>
             <dt>Board</dt>
@@ -91,7 +91,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Square</h2>
+        <h3>Square</h3>
 
         <Code language="cpp" lineNumbers>{`enum Square : std::uint8_t {
  // clang-format off
@@ -109,7 +109,7 @@ export const Presentation = () => {
 
       <Stack>
         <Slide>
-          <h2>Bitboard</h2>
+          <h3>Bitboard</h3>
           <Code language="cpp" lineNumbers="1-11|12-32">
             {`// Represents an 8x8 chess board.
 //
@@ -148,7 +148,7 @@ class Bitboard {
         </Slide>
 
         <Slide>
-          <h2>Bitboard</h2>
+          <h3>Bitboard</h3>
           <Code
             language="cpp"
             lineNumbers="1-12|14-15|17-18|20-21|"
@@ -177,7 +177,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
         </Slide>
 
         <Slide>
-          <h2>Bitboard</h2>
+          <h3>Bitboard</h3>
           <Bitboard showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
@@ -192,7 +192,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
       </Stack>
 
       <Slide>
-        <h2>Piece & Side</h2>
+        <h3>Piece & Side</h3>
 
         <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
           {`enum Piece : std::uint8_t {
@@ -219,7 +219,7 @@ constexpr std::size_t kNumSides = 2;`}
 
       <Stack>
         <Slide>
-          <h2>Position</h2>
+          <h3>Position</h3>
           <p>The state of the game at a specific moment:</p>
           <ul>
             <Fragment>
@@ -241,7 +241,7 @@ constexpr std::size_t kNumSides = 2;`}
         </Slide>
 
         <Slide>
-          <h2>Position</h2>
+          <h3>Position</h3>
           <Code language="cpp" lineNumbers="4-5|">
             {`class Position {
  // ...
@@ -262,7 +262,7 @@ constexpr std::size_t kNumSides = 2;`}
         </Slide>
 
         <Slide>
-          <h2>Position</h2>
+          <h3>Position</h3>
           <p>Getting pieces</p>
           <Code
             language="cpp"
@@ -408,7 +408,7 @@ EXPECT_THAT(
         </Slide>
 
         <Slide>
-          <h2>Position</h2>
+          <h3>Position</h3>
           <p>GetPieces() implementation</p>
 
           <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
@@ -438,7 +438,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
 
       <Stack>
         <Slide>
-          <h2>Shifting Bitboards</h2>
+          <h3>Shifting Bitboards</h3>
           <p>Example</p>
 
           <div style={{ display: "flex" }}>
@@ -471,7 +471,7 @@ EXPECT_THAT(
         </Slide>
 
         <Slide>
-          <h2>Shifting Bitboards</h2>
+          <h3>Shifting Bitboards</h3>
           <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
             {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
@@ -501,7 +501,7 @@ constexpr Bitboard Bitboard::Shift() const {
 
       <Stack>
         <Slide>
-          <h2>Knight Moves Example</h2>
+          <h3>Knight Moves Example</h3>
           <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
             {`Position position = MakePosition("8: r n b q k b n r"
@@ -519,7 +519,7 @@ constexpr Bitboard Bitboard::Shift() const {
         </Slide>
 
         <Slide>
-          <h2>Knight Moves Example</h2>
+          <h3>Knight Moves Example</h3>
           <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
             {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
@@ -571,7 +571,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
       </Stack>
 
       <Slide>
-        <h2>Knight Moves</h2>
+        <h3>Knight Moves</h3>
         <p>♘ &middot; ♞</p>
         <Code language="c++" lineNumbers="1-4|6-24">
           {`constexpr Bitboard GetKnightAttacks(Square square) {
@@ -604,7 +604,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
       <Stack>
         <Slide>
-          <h2>Generating Rook Moves</h2>
+          <h3>Generating Rook Moves</h3>
           <p>D5 rook with no blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -644,7 +644,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Slide>
 
         <Slide>
-          <h2>Generating Rook Moves</h2>
+          <h3>Generating Rook Moves</h3>
           <p>D5 rook with blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -690,7 +690,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
       </Slide>
 
       <Slide>
-        <h2>Performance</h2>
+        <h3>Performance</h3>
         <p>On-the-fly move generation takes ~22-40 nanoseconds</p>
         <Code
           language="plaintext"
@@ -711,7 +711,7 @@ BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     1
       </Slide>
 
       <Slide>
-        <h2>Final Performance</h2>
+        <h3>Final Performance</h3>
         <Code
           language="plaintext"
           lineNumbers="22-24"

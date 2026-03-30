@@ -57,6 +57,8 @@ export const Bitboard = (props: BitboardProps) => {
       style={{
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
         columnGap: "1em",
       }}
     >
@@ -96,12 +98,11 @@ export const Bitboard = (props: BitboardProps) => {
 
               return (
                 <React.Fragment key={`bit-${originalIndex}`}>
-                  {renderCell(originalIndex, value ? 1 : 0)}{" "}
-                  {originalIndex % 8 === 0 && "\n"}
+                  {renderCell(originalIndex, value ? 1 : 0)}
+                  {originalIndex % 8 === 0 && " "}
                 </React.Fragment>
               );
             })}
-            {"      "}data_
           </pre>
         </code>
       )}
