@@ -11,6 +11,7 @@ export const Presentation = () => {
     <Deck
       plugins={[RevealHighlight]}
       config={{
+        navigationMode: "linear",
         width: 1400,
         height: 800,
         hash: true,
@@ -107,8 +108,8 @@ export const Presentation = () => {
       </Slide>
 
       <Stack>
-        <h2>Bitboard</h2>
         <Slide>
+          <h2>Bitboard</h2>
           <Code language="cpp" lineNumbers="1-11|12-32">
             {`// Represents an 8x8 chess board.
 //
@@ -147,6 +148,7 @@ class Bitboard {
         </Slide>
 
         <Slide>
+          <h2>Bitboard</h2>
           <Code
             language="cpp"
             lineNumbers="1-12|14-15|17-18|20-21|"
@@ -175,6 +177,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
         </Slide>
 
         <Slide>
+          <h2>Bitboard</h2>
           <Bitboard showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
@@ -215,9 +218,8 @@ constexpr std::size_t kNumSides = 2;`}
       </Slide>
 
       <Stack>
-        <h2>Position</h2>
-
         <Slide>
+          <h2>Position</h2>
           <p>The state of the game at a specific moment:</p>
           <ul>
             <Fragment>
@@ -239,6 +241,7 @@ constexpr std::size_t kNumSides = 2;`}
         </Slide>
 
         <Slide>
+          <h2>Position</h2>
           <Code language="cpp" lineNumbers="4-5|">
             {`class Position {
  // ...
@@ -259,6 +262,7 @@ constexpr std::size_t kNumSides = 2;`}
         </Slide>
 
         <Slide>
+          <h2>Position</h2>
           <p>Getting pieces</p>
           <Code
             language="cpp"
@@ -404,6 +408,7 @@ EXPECT_THAT(
         </Slide>
 
         <Slide>
+          <h2>Position</h2>
           <p>GetPieces() implementation</p>
 
           <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
@@ -432,9 +437,8 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
       </Slide>
 
       <Stack>
-        <h2>Shifting Bitboards</h2>
-
         <Slide>
+          <h2>Shifting Bitboards</h2>
           <p>Example</p>
 
           <div style={{ display: "flex" }}>
@@ -467,6 +471,7 @@ EXPECT_THAT(
         </Slide>
 
         <Slide>
+          <h2>Shifting Bitboards</h2>
           <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
             {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
@@ -495,11 +500,9 @@ constexpr Bitboard Bitboard::Shift() const {
       </Stack>
 
       <Stack>
-        <h2>Knight Moves Example</h2>
-
-        <p>Starting position, B1 knight</p>
-
         <Slide>
+          <h2>Knight Moves Example</h2>
+          <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
             {`Position position = MakePosition("8: r n b q k b n r"
                                  "7: p p p p p p p p"
@@ -516,6 +519,8 @@ constexpr Bitboard Bitboard::Shift() const {
         </Slide>
 
         <Slide>
+          <h2>Knight Moves Example</h2>
+          <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
             {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
 Bitboard valid_destinations = ~position.GetPieces(kWhite);
@@ -598,9 +603,8 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
       </Slide>
 
       <Stack>
-        <h2>Generating Rook Moves</h2>
-
         <Slide>
+          <h2>Generating Rook Moves</h2>
           <p>D5 rook with no blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -640,6 +644,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Slide>
 
         <Slide>
+          <h2>Generating Rook Moves</h2>
           <p>D5 rook with blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -686,11 +691,11 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
       <Slide>
         <h2>Performance</h2>
-        <p>
-          Generating sliding moves on-the-fly takes ~22-40 nanoseconds per
-          piece.
-        </p>
-        <Code lang="plaintext" lineNumbers="10-12">{`Run on (10 X 24 MHz CPU s)
+        <p>On-the-fly move generation takes ~22-40 nanoseconds</p>
+        <Code
+          language="plaintext"
+          lineNumbers="10-12"
+        >{`Run on (10 X 24 MHz CPU s)
 CPU Caches:
  L1 Data 64 KiB
  L1 Instruction 128 KiB
@@ -707,7 +712,10 @@ BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     1
 
       <Slide>
         <h2>Final Performance</h2>
-        <Code lang="plaintext" lineNumbers="22-24">{`Run on (10 X 24 MHz CPU s)
+        <Code
+          language="plaintext"
+          lineNumbers="22-24"
+        >{`Run on (10 X 24 MHz CPU s)
 CPU Caches:
  L1 Data 64 KiB
  L1 Instruction 128 KiB
