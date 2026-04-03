@@ -439,11 +439,9 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
       <Stack>
         <Slide>
           <h3>Shifting Bitboards</h3>
-          <p>Example</p>
 
-          <div style={{ display: "flex" }}>
-            <Code language="cpp" lineNumbers>{`
-Bitboard input =
+          <Code language="cpp" lineNumbers="2-11|11|13-22">{` 
+EXPECT_THAT(
   MakeBitboard(
     "8: . . . . . . . ."
     "7: . . . X . . . ."
@@ -453,10 +451,8 @@ Bitboard input =
     "3: . . . . . . . ."
     "2: . . . X . . . ."
     "1: . . . . . . . ."
-    "   a b c d e f g h");`}</Code>
-            <Code language="cpp" lineNumbers>{`
-EXPECT_THAT(
-  input.Shift<kNorthWest>(),
+    "   a b c d e f g h").Shift<kNorthWest>(),
+
   EqualsBitboard(
     "8: . . . . X . . ."
     "7: . . . . . . . ."
@@ -466,8 +462,8 @@ EXPECT_THAT(
     "3: . . . . X . . ."
     "2: . . . . . . . ."
     "1: . . . . . . . ."
-    "   a b c d e f g h"));`}</Code>{" "}
-          </div>
+    "   a b c d e f g h"));    
+    `}</Code>
         </Slide>
 
         <Slide>
@@ -501,25 +497,26 @@ constexpr Bitboard Bitboard::Shift() const {
 
       <Stack>
         <Slide>
-          <h3>Knight Moves Example</h3>
+          <h3>Knight Moves</h3>
           <p>Starting position, B1 knight</p>
-          <Code language="c++" lineNumbers>
-            {`Position position = MakePosition("8: r n b q k b n r"
-                                 "7: p p p p p p p p"
-                                 "6: . . . . . . . ."
-                                 "5: . . . . . . . ."
-                                 "4: . . . . . . . ."
-                                 "3: . . . . . . . ."
-                                 "2: P P P P P P P P"
-                                 "1: R N B Q K B N R"
-                                 "   a b c d e f g h"
-                                 //
-                                 "   w KQkq - 0 1");`}
+          <Code language="c++" lineNumbers="|9">
+            {`Position position = MakePosition(
+  "8: r n b q k b n r"
+  "7: p p p p p p p p"
+  "6: . . . . . . . ."
+  "5: . . . . . . . ."
+  "4: . . . . . . . ."
+  "3: . . . . . . . ."
+  "2: P P P P P P P P"
+  "1: R N B Q K B N R"
+  "   a b c d e f g h"
+  //
+  "   w KQkq - 0 1");`}
           </Code>
         </Slide>
 
         <Slide>
-          <h3>Knight Moves Example</h3>
+          <h3>Knight Moves</h3>
           <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
             {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
@@ -570,10 +567,84 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
         </Slide>
       </Stack>
 
+      <Stack>
+        <Slide>
+          <h3>Knight Moves</h3>
+          <p>Midgame position, F6 knight</p>
+          <Code language="c++" lineNumbers="|4">
+            {`Position position = MakePosition(
+  "8: r . . . k . . r"
+  "7: P p p p . p p p"
+  "6: . b . . . n b N"
+  "5: n P . . . . . ."
+  "4: B B P . P . . ."
+  "3: q . . . . N . ."
+  "2: P p . P . . P P"
+  "1: R . . Q . R K ."
+  "   a b c d e f g h"
+  //
+  "   w kq - 0 1");`}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <h3>Knight Moves</h3>
+          <p>Midgame position, F1 knight</p>
+          <Code language="c++" lineNumbers>
+            {`Bitboard pseudo_attacks = GetKnightAttacks(F1);
+Bitboard valid_destinations = ~position.GetPieces(kBlack);
+Bitboard moves = pseudo_attacks & valid_destinations;`}
+          </Code>
+
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Fragment>
+              <Bitboard title="pseudo_attacks">{`8: . . . . X . X .
+7: . . . X . . . X
+6: . . . . . . . .
+5: . . . X . . . X
+4: . . . . X . X .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="valid_destinations">{`8: . X X X . X X .
+7: X . . . X . . .
+6: X . X X X . . X
+5: . X X X X X X X
+4: X X X X X X X X
+3: . X X X X X X X
+2: X . X X X X X X
+1: X X X X X X X X
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+
+            <Fragment>
+              <Bitboard title="moves">{`8: . . . . . . X .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . X . . . X
+4: . . . . X . X .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Bitboard>
+            </Fragment>
+          </div>
+        </Slide>
+      </Stack>
+
       <Slide>
         <h3>Knight Moves</h3>
-        <p>♘ &middot; ♞</p>
-        <Code language="c++" lineNumbers="1-4|6-24">
+        <Code
+          language="c++"
+          lineNumbers="1-4|2|3|6-24|7|9|10|11|12|13|14|15|16|17|18|19|11-19|"
+        >
           {`constexpr Bitboard GetKnightAttacks(Square square) {
   static std::array<Bitboard, kNumSquares> kKnightAttacks = GenerateKnightAttacks();
   return kKnightAttacks[square];
@@ -584,7 +655,6 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
  for (int square = kFirstSquare; square < kNumSquares; ++square) {
    Bitboard start(static_cast<Square>(square));
-
    attacks[square] = kEmptyBoard                                  //
                      | start.Shift<kNorth>().Shift<kNorthEast>()  //
                      | start.Shift<kEast>().Shift<kNorthEast>()   //
