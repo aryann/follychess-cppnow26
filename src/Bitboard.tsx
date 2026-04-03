@@ -1,4 +1,3 @@
-import { produce } from "immer";
 import React, { useState } from "react";
 
 type BitboardProps = {
@@ -53,13 +52,7 @@ export const Bitboard = (props: BitboardProps) => {
         }}
         onMouseOver={() => setSelected(index)}
         onMouseLeave={() => setSelected(null)}
-        onClick={() => {
-          setBoard(
-            produce(board, (draft: boolean[]) => {
-              draft[index] = !draft[index];
-            }),
-          );
-        }}
+        onClick={() => setBoard(board.with(index, !board[index]))}
       >
         {content}
       </span>
