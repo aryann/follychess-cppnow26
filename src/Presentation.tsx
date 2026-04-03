@@ -54,6 +54,101 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
+        <h2>Motivation</h2>
+
+        <p>
+          This presentation is based on{" "}
+          <a href="https://follychess.com">FollyChess</a>, <br />a C++ chess
+          engine I've been writing.
+        </p>
+
+        <p></p>
+      </Slide>
+
+      <Slide>
+        <h2>Motivation</h2>
+
+        <Fragment>
+          <p>There is no shortage of chess engines, so why write one?</p>
+        </Fragment>
+
+        <Fragment>
+          <p>It's a great learning opportunity!</p>
+        </Fragment>
+      </Slide>
+
+      <Slide>
+        <h2>Learning Opportunities</h2>
+        <h3>Performance</h3>
+        <p>
+          Using branchless algorithms, benchmarking, profiling, and advanced C++
+          features such as <code>consteval</code> and templates.
+        </p>
+      </Slide>
+
+      <Slide>
+        <h2>Learning Opportunities</h2>
+        <h3>Search</h3>
+        <p>
+          Applying Alpha-Beta pruning, iterative deepening, move ordering, and
+          transposition tables to manage a{" "}
+          <a href="https://en.wikipedia.org/wiki/Branching_factor">branching</a>{" "}
+          factor of ~35.
+        </p>
+      </Slide>
+
+      <Slide>
+        <h2>Learning Opportunities</h2>
+        <h3>Complexity Management</h3>
+        <p>
+          Maintaining acceptable abstractions without compromising performance.
+        </p>
+      </Slide>
+
+      <Slide>
+        <h2>Learning Opportunities</h2>
+        <h3>Heuristic Modeling</h3>
+        <p>
+          Translating qualitative chess concepts (e.g., "king safety") into
+          numerical features for the engine to evaluate.
+        </p>
+      </Slide>
+
+      <Slide>
+        <h2>Learning Opportunities</h2>
+        <h3>Verification</h3>
+        <p>
+          Validating search logic improvements through simulations rather than
+          unit tests.
+        </p>
+      </Slide>
+
+      <Slide>
+        <h2>Scope of This Talk</h2>
+        <ul>
+          <Fragment>
+            <li>
+              There is <em>a lot</em> we can cover.
+            </li>
+          </Fragment>
+          <Fragment>
+            <li>This talk focuses on a narrow sliver.</li>
+          </Fragment>
+          <Fragment>
+            <li>
+              We'll discuss efficient move generation for bishops, rooks, and
+              queens.
+            </li>
+          </Fragment>
+          <Fragment>
+            <li>
+              Before we begin, we'll need to introduce some core concepts...
+            </li>
+          </Fragment>
+        </ul>
+      </Slide>
+
+      <Slide>
         <h2>Part 2</h2>
         <h3>Fundamental Chess Engine Data Structures</h3>
       </Slide>
