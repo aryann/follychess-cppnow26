@@ -5,6 +5,7 @@ import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
 import { Bitboard } from "./Bitboard";
 import "./Presentation.css";
+import title from "./assets/title.png";
 
 export const Presentation = () => {
   return (
@@ -17,7 +18,7 @@ export const Presentation = () => {
         hash: true,
       }}
     >
-      <Slide backgroundImage="src/title.png"></Slide>
+      <Slide backgroundImage={title}></Slide>
 
       <Slide>
         <h2>From 20 Nanoseconds to One</h2>
