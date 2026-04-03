@@ -18,7 +18,7 @@ export const Presentation = () => {
         hash: true,
       }}
     >
-      <Slide backgroundImage={title}></Slide>
+      <Slide backgroundImage={title} backgroundSize="contain"></Slide>
 
       <Slide>
         <h2>From 20 Nanoseconds to One</h2>
