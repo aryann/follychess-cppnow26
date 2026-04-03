@@ -26,25 +26,32 @@ const parse = (input: string) => {
 export const Bitboard = (props: BitboardProps) => {
   const board = parse(props.children);
 
-  const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
+  const [selectedRank, setSelectedRank] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<number | null>(null);
 
-  const renderCell = (index: number, content: string | number) => {
-    const isActive = index === hovered || index == selected;
+  const renderCell = (
+    index: number,
+    content: string | number,
+    width?: number,
+  ) => {
+    const isActive =
+      index === selected ||
+      Math.floor(index / 8) === selectedRank ||
+      index % 8 === selectedFile;
 
     return (
       <span
         style={{
           cursor: "pointer",
           display: "inline-block",
-          borderRadius: "4px",
           backgroundColor: isActive ? "yellow" : "transparent",
-          fontWeight: isActive ? "bold" : "normal",
-          color: isActive ? "black" : "inherit", // Bright blue
-          transform: isActive ? "scale(2)" : undefined,
+          color: isActive ? "black" : "inherit",
+          width: width ? `${width}px` : undefined,
+          textAlign: "center",
         }}
-        onMouseOver={() => setHovered(index)}
-        onMouseLeave={() => setHovered(null)}
+        onMouseOver={() => setSelected(index)}
+        onMouseLeave={() => setSelected(null)}
         onClick={() => setSelected(index === selected ? null : index)}
       >
         {content}
@@ -77,15 +84,60 @@ export const Bitboard = (props: BitboardProps) => {
 
         <code>
           <pre>
-            {board.map((value, index) => (
-              <React.Fragment key={`square-${index}`}>
-                {index % 8 === 0 && `${8 - index / 8}:`}{" "}
-                {renderCell(index, value ? "X" : "·")}
-                {index % 8 === 7 && "\n"}
-              </React.Fragment>
-            ))}
+            {Array.from({ length: 8 }, (_, rank) => {
+              const isActive = selectedRank == rank;
 
-            {"   a b c d e f g h"}
+              return (
+                <span
+                  key={rank}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: isActive ? "yellow" : "transparent",
+                    color: isActive ? "black" : "inherit",
+                  }}
+                >
+                  <span
+                    onMouseOver={() => setSelectedRank(rank)}
+                    onMouseLeave={() => setSelectedRank(null)}
+                  >
+                    {8 - rank}:
+                  </span>
+                  {Array.from({ length: 8 }, (_, file) => {
+                    const index = rank * 8 + file;
+
+                    return (
+                      <span key={index}>
+                        {renderCell(index, board[index] ? "X" : ".", 24)}
+                      </span>
+                    );
+                  })}
+                  {"\n"}
+                </span>
+              );
+            })}
+
+            {"  "}
+            {Array.from({ length: 8 }, (_, file) => {
+              const isActive = selectedFile == file;
+
+              return (
+                <span
+                  key={file}
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    width: "24px",
+                    textAlign: "center",
+                    backgroundColor: isActive ? "yellow" : "transparent",
+                    color: isActive ? "black" : "inherit",
+                  }}
+                  onMouseOver={() => setSelectedFile(file)}
+                  onMouseLeave={() => setSelectedFile(null)}
+                >
+                  {String.fromCharCode("a".charCodeAt(0) + file)}
+                </span>
+              );
+            })}
           </pre>
         </code>
       </div>
