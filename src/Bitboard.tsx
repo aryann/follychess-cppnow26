@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import React, { useState } from "react";
 
 type BitboardProps = {
@@ -6,7 +7,7 @@ type BitboardProps = {
   title?: string;
 };
 
-const parse = (input: string) => {
+const parse = (input: string): boolean[] => {
   const board = [];
   for (const char of input) {
     if (char == ".") {
@@ -24,7 +25,7 @@ const parse = (input: string) => {
 };
 
 export const Bitboard = (props: BitboardProps) => {
-  const board = parse(props.children);
+  const [board, setBoard] = useState<boolean[]>(parse(props.children));
 
   const [selected, setSelected] = useState<number | null>(null);
   const [selectedRank, setSelectedRank] = useState<number | null>(null);
@@ -52,7 +53,13 @@ export const Bitboard = (props: BitboardProps) => {
         }}
         onMouseOver={() => setSelected(index)}
         onMouseLeave={() => setSelected(null)}
-        onClick={() => setSelected(index === selected ? null : index)}
+        onClick={() => {
+          setBoard(
+            produce(board, (draft: boolean[]) => {
+              draft[index] = !draft[index];
+            }),
+          );
+        }}
       >
         {content}
       </span>
@@ -67,6 +74,7 @@ export const Bitboard = (props: BitboardProps) => {
         flexDirection: "column",
         alignItems: "center",
         columnGap: "1em",
+        userSelect: "none",
       }}
     >
       <div
