@@ -597,20 +597,16 @@ constexpr Bitboard Bitboard::Shift() const {
         <Slide>
           <h3>Knight Moves</h3>
           <p>Starting position, B1 knight</p>
-          <Code language="c++" lineNumbers="|9">
-            {`Position position = MakePosition(
-  "8: r n b q k b n r"
-  "7: p p p p p p p p"
-  "6: . . . . . . . ."
-  "5: . . . . . . . ."
-  "4: . . . . . . . ."
-  "3: . . . . . . . ."
-  "2: P P P P P P P P"
-  "1: R N B Q K B N R"
-  "   a b c d e f g h"
-  //
-  "   w KQkq - 0 1");`}
-          </Code>
+          <Board highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
+7: p p p p p p p p
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: P P P P P P P P
+1: R N B Q K B N R
+   a b c d e f g h
+`}</Board>
         </Slide>
 
         <Slide>
@@ -698,20 +694,19 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
         <Slide>
           <h3>Knight Moves</h3>
           <p>Midgame position, F6 knight</p>
-          <Code language="c++" lineNumbers="|4">
-            {`Position position = MakePosition(
-  "8: r . . . k . . r"
-  "7: P p p p . p p p"
-  "6: . b . . . n b N"
-  "5: n P . . . . . ."
-  "4: B B P . P . . ."
-  "3: q . . . . N . ."
-  "2: P p . P . . P P"
-  "1: R . . Q . R K ."
-  "   a b c d e f g h"
-  //
-  "   w kq - 0 1");`}
-          </Code>
+          <Board
+            highlight="f6"
+            highlightSecondary="d5,e4,g4,h5,g8"
+          >{`8: r . . . k . . r
+7: P p p p . p p p
+6: . b . . . n b N
+5: n P . . . . . .
+4: B B P . P . . .
+3: q . . . . N . .
+2: P p . P . . P P
+1: R . . Q . R K .
+   a b c d e f g h
+`}</Board>
         </Slide>
 
         <Slide>
