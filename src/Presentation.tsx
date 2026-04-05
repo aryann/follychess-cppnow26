@@ -617,14 +617,14 @@ constexpr Bitboard Bitboard::Shift() const {
           <h3>Knight Moves</h3>
           <p>Starting position, B1 knight</p>
           <Code language="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(A4);
+            {`Bitboard pseudo_attacks = GetKnightAttacks(B1);
 Bitboard valid_destinations = ~position.GetPieces(kWhite);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <Fragment>
-              <Bitboard title="pseudo_attacks">{`8: . . . . . . . .
+              <Bitboard title="pseudo_attacks" highlight="a3,c3" highlightSecondary="b1">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -637,7 +637,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             </Fragment>
 
             <Fragment>
-              <Bitboard title="valid_destinations">{`8: X X X X X X X X
+              <Bitboard title="valid_destinations" highlight="a3,c3" >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X X X X X X
@@ -650,7 +650,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             </Fragment>
 
             <Fragment>
-              <Bitboard title="moves">{`8: . . . . . . . .
+              <Bitboard title="moves" highlight="a3,c3" >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .

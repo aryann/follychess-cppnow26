@@ -4,6 +4,21 @@ type BitboardProps = {
   children: string;
   showBits?: boolean;
   title?: string;
+  highlight?: string;
+  highlightSecondary?: string;
+};
+
+const parseHighlight = (input?: string): Set<number> => {
+  if (!input) return new Set();
+  const squares = input.split(",").map((s) => s.trim());
+  const indices = new Set<number>();
+  for (const square of squares) {
+    const file = square.charCodeAt(0) - "a".charCodeAt(0);
+    const rank = parseInt(square[1]);
+    const row = 8 - rank;
+    indices.add(row * 8 + file);
+  }
+  return indices;
 };
 
 const parse = (input: string): boolean[] => {
@@ -25,6 +40,8 @@ const parse = (input: string): boolean[] => {
 
 export const Bitboard = (props: BitboardProps) => {
   const [board, setBoard] = useState<boolean[]>(parse(props.children));
+  const highlighted = parseHighlight(props.highlight);
+  const highlightedSecondary = parseHighlight(props.highlightSecondary);
 
   const [selected, setSelected] = useState<number | null>(null);
   const [selectedRank, setSelectedRank] = useState<number | null>(null);
@@ -35,18 +52,25 @@ export const Bitboard = (props: BitboardProps) => {
     content: string | number,
     width?: number,
   ) => {
+    const isHighlighted = highlighted.has(index);
+    const isHighlightedSecondary = highlightedSecondary.has(index);
     const isActive =
       index === selected ||
       Math.floor(index / 8) === selectedRank ||
       index % 8 === selectedFile;
+
+    const bg = (isActive || isHighlighted) ? "yellow" : isHighlightedSecondary
+      ? "cyan"
+      : "transparent";
+    const fg = isActive || isHighlighted || isHighlightedSecondary ? "black" : "inherit";
 
     return (
       <span
         style={{
           cursor: "pointer",
           display: "inline-block",
-          backgroundColor: isActive ? "yellow" : "transparent",
-          color: isActive ? "black" : "inherit",
+          backgroundColor: bg,
+          color: fg,
           width: width ? `${width}px` : undefined,
           textAlign: "center",
         }}
