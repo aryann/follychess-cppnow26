@@ -3,7 +3,7 @@ import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
-import { Bitboard } from "./Bitboard";
+import { Board } from "./Board";
 import "./Presentation.css";
 import title from "./assets/title.png";
 
@@ -276,7 +276,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
 
         <Slide>
           <h3>Bitboard</h3>
-          <Bitboard showBits>{`8: . . . . . . . .
+          <Board showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -285,7 +285,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
 2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
         </Slide>
       </Stack>
 
@@ -625,7 +625,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <Fragment>
 
-              <Bitboard title="position" highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
+              <Board title="position" highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -634,11 +634,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: P P P P P P P P
 1: R N B Q K B N R
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
 
             <Fragment>
-              <Bitboard title="pseudo_attacks" highlight="a3,c3" highlightSecondary="b1">{`8: . . . . . . . .
+              <Board title="pseudo_attacks" highlight="a3,c3" highlightSecondary="b1">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -647,11 +647,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
 
             <Fragment>
-              <Bitboard title="valid_destinations" highlight="a3,c3" >{`8: X X X X X X X X
+              <Board title="valid_destinations" highlight="a3,c3" >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X X X X X X
@@ -660,11 +660,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
 
             <Fragment>
-              <Bitboard title="moves" highlight="a3,c3" >{`8: . . . . . . . .
+              <Board title="moves" highlight="a3,c3" >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -673,7 +673,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
           </div>
         </Slide>
@@ -710,7 +710,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <Fragment>
-              <Bitboard title="pseudo_attacks">{`8: . . . . X . X .
+              <Board title="pseudo_attacks">{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
 5: . . . X . . . X
@@ -719,11 +719,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
 
             <Fragment>
-              <Bitboard title="valid_destinations">{`8: . X X X . X X .
+              <Board title="valid_destinations">{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
 5: . X X X X X X X
@@ -732,11 +732,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: X . X X X X X X
 1: X X X X X X X X
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
 
             <Fragment>
-              <Bitboard title="moves">{`8: . . . . . . X .
+              <Board title="moves">{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . X
@@ -745,7 +745,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
             </Fragment>
           </div>
         </Slide>
@@ -790,7 +790,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <p>D5 rook with no blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Bitboard title="rook">{`8: . . . . . . . .
+            <Board title="rook">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -799,9 +799,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
 
-            <Bitboard title="blockers">{`8: . . . . . . . .
+            <Board title="blockers">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -810,9 +810,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
 
-            <Bitboard title="pseudo-attacks">{`8: . . . X . . . .
+            <Board title="pseudo-attacks">{`8: . . . X . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: X X X . X X X X
@@ -821,7 +821,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . X . . . .
 1: . . . X . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
           </div>
         </Slide>
 
@@ -830,7 +830,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <p>D5 rook with blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Bitboard title="start">{`8: . . . . . . . .
+            <Board title="start">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -839,9 +839,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . . . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
 
-            <Bitboard title="blockers">{`8: . . . . . . . .
+            <Board title="blockers">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -850,9 +850,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
 
-            <Bitboard title="pseudo-attacks">{`8: . . . . . . . .
+            <Board title="pseudo-attacks">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
@@ -861,7 +861,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
-`}</Bitboard>
+`}</Board>
           </div>
         </Slide>
       </Stack>

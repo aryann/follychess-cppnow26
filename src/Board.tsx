@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-type BitboardProps = {
+type BoardProps = {
   children: string;
   showBits?: boolean;
   title?: string;
@@ -39,7 +39,7 @@ const parse = (input: string): string[] => {
   return board;
 };
 
-export const Bitboard = (props: BitboardProps) => {
+export const Board = (props: BoardProps) => {
   const board = parse(props.children);
   const highlighted = parseHighlight(props.highlight);
   const highlightedSecondary = parseHighlight(props.highlightSecondary);
