@@ -9,7 +9,10 @@ type BitboardProps = {
 };
 
 const parseHighlight = (input?: string): Set<number> => {
-  if (!input) return new Set();
+  if (!input) {
+    return new Set();
+  }
+
   const squares = input.split(",").map((s) => s.trim());
   const indices = new Set<number>();
   for (const square of squares) {
@@ -21,25 +24,23 @@ const parseHighlight = (input?: string): Set<number> => {
   return indices;
 };
 
-const parse = (input: string): boolean[] => {
-  const board = [];
+const parse = (input: string): string[] => {
+  const board: string[] = [];
   for (const char of input) {
-    if (char == ".") {
-      board.push(false);
-    } else if (char == "X") {
-      board.push(true);
+    if (char === "." || /[A-Za-z]/.test(char)) {
+      board.push(char);
     }
-  }
 
-  if (board.length != 64) {
-    throw Error("Invalid bitboard.");
+    if (board.length === 64) {
+      break;
+    }
   }
 
   return board;
 };
 
 export const Bitboard = (props: BitboardProps) => {
-  const [board, setBoard] = useState<boolean[]>(parse(props.children));
+  const board = parse(props.children);
   const highlighted = parseHighlight(props.highlight);
   const highlightedSecondary = parseHighlight(props.highlightSecondary);
 
@@ -76,7 +77,6 @@ export const Bitboard = (props: BitboardProps) => {
         }}
         onMouseOver={() => setSelected(index)}
         onMouseLeave={() => setSelected(null)}
-        onClick={() => setBoard(board.with(index, !board[index]))}
       >
         {content}
       </span>
@@ -132,7 +132,7 @@ export const Bitboard = (props: BitboardProps) => {
 
                     return (
                       <span key={index}>
-                        {renderCell(index, board[index] ? "X" : ".", 24)}
+                        {renderCell(index, board[index], 24)}
                       </span>
                     );
                   })}
@@ -170,12 +170,12 @@ export const Bitboard = (props: BitboardProps) => {
       {props.showBits && (
         <code>
           <pre>
-            {board.toReversed().map((value, reversedIndex) => {
+            {board.toReversed().map((char, reversedIndex) => {
               const originalIndex = 64 - reversedIndex - 1;
 
               return (
                 <React.Fragment key={`bit-${originalIndex}`}>
-                  {renderCell(originalIndex, value ? 1 : 0)}
+                  {renderCell(originalIndex, char === "." ? 0 : 1)}
                   {originalIndex % 8 === 0 && " "}
                 </React.Fragment>
               );
