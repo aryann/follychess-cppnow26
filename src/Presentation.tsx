@@ -1,4 +1,4 @@
-import { Code, Deck, Fragment, Slide, Stack } from "@revealjs/react";
+import { Code, Deck, Fragment, Slide } from "@revealjs/react";
 import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
@@ -205,11 +205,10 @@ export const Presentation = () => {
 };`}</Code>
       </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Bitboard</h3>
-          <Code language="cpp" lineNumbers="1-11|12-32">
-            {`// Represents an 8x8 chess board.
+      <Slide>
+        <h3>Bitboard</h3>
+        <Code language="cpp" lineNumbers="1-11|12-32">
+          {`// Represents an 8x8 chess board.
 //
 //   8:   0   1   2   3   4   5   6   7
 //   7:   8   9  10  11  12  13  14  15
@@ -242,15 +241,15 @@ class Bitboard {
   std::uint64_t data_;
 };
 `}
-          </Code>
-        </Slide>
+        </Code>
+      </Slide>
 
-        <Slide>
-          <h3>Bitboard</h3>
-          <Code
-            language="cpp"
-            lineNumbers="1-12|14-15|17-18|20-21|"
-          >{`Bitboard board(D5);
+      <Slide>
+        <h3>Bitboard</h3>
+        <Code
+          language="cpp"
+          lineNumbers="1-12|14-15|17-18|20-21|"
+        >{`Bitboard board(D5);
 
 EXPECT_THAT(board,
             EqualsBitboard("8: . . . . . . . ."
@@ -272,11 +271,11 @@ EXPECT_THAT(board.Get(B1), IsTrue());
 board.Clear(B1);
 EXPECT_THAT(board.Get(B1), IsFalse());
 `}</Code>
-        </Slide>
+      </Slide>
 
-        <Slide>
-          <h3>Bitboard</h3>
-          <Board showBits>{`8: . . . . . . . .
+      <Slide>
+        <h3>Bitboard</h3>
+        <Board showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -286,8 +285,7 @@ EXPECT_THAT(board.Get(B1), IsFalse());
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-        </Slide>
-      </Stack>
+      </Slide>
 
       <Slide>
         <h3>Piece & Side</h3>
@@ -315,33 +313,32 @@ constexpr std::size_t kNumSides = 2;`}
         </Code>
       </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Position</h3>
-          <p>The state of the game at a specific moment:</p>
-          <ul>
-            <Fragment>
-              <li>Arrangement of pieces on the board</li>
-            </Fragment>
-            <Fragment>
-              <li>Castling rights</li>
-            </Fragment>
-            <Fragment>
-              <li>Move counters</li>
-            </Fragment>
-            <Fragment>
-              <li>En-Passant target square</li>
-            </Fragment>
-            <Fragment>
-              <li>Side to move</li>
-            </Fragment>
-          </ul>
-        </Slide>
+      <Slide>
+        <h3>Position</h3>
+        <p>The state of the game at a specific moment:</p>
+        <ul>
+          <Fragment>
+            <li>Arrangement of pieces on the board</li>
+          </Fragment>
+          <Fragment>
+            <li>Castling rights</li>
+          </Fragment>
+          <Fragment>
+            <li>Move counters</li>
+          </Fragment>
+          <Fragment>
+            <li>En-Passant target square</li>
+          </Fragment>
+          <Fragment>
+            <li>Side to move</li>
+          </Fragment>
+        </ul>
+      </Slide>
 
-        <Slide>
-          <h3>Position</h3>
-          <Code language="cpp" lineNumbers="4-5|">
-            {`class Position {
+      <Slide>
+        <h3>Position</h3>
+        <Code language="cpp" lineNumbers="4-5|">
+          {`class Position {
  // ...
  private:
   std::array<Bitboard, kNumPieces> pieces_;
@@ -356,16 +353,18 @@ constexpr std::size_t kNumSides = 2;`}
   int full_moves_;
 };
           `}
-          </Code>
-        </Slide>
+        </Code>
+      </Slide>
 
-        <Slide>
-          <h3>Position</h3>
-          <p>Getting pieces</p>
-          <Code
-            language="cpp"
-            lineNumbers="1-12|14-26|28-40|42-54|56-68|70-82|84-96|98-110|112-124|126-138"
-          >{`Position position = MakePosition(
+      <Slide>
+        <h3>Position</h3>
+        <p>
+          <code>GetPieces()</code>
+        </p>
+        <Code
+          language="cpp"
+          lineNumbers="1-12|14-26|28-40|42-54|56-68|70-82|84-96|98-110|112-124|126-138"
+        >{`Position position = MakePosition(
     "8: r n b q k b n r"
     "7: p p p p p p p p"
     "6: . . . . . . . ."
@@ -503,14 +502,16 @@ EXPECT_THAT(
     "2: X X X X X X X X"
     "1: . . . . . . . ."
     "   a b c d e f g h"));`}</Code>
-        </Slide>
+      </Slide>
 
-        <Slide>
-          <h3>Position</h3>
-          <p>GetPieces() implementation</p>
+      <Slide>
+        <h3>Position</h3>
+        <p>
+          <code>GetPieces()</code> implementation
+        </p>
 
-          <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
-            {`Bitboard Position::GetPieces(Side side) const {
+        <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
+          {`Bitboard Position::GetPieces(Side side) const {
   return sides_[side];
 }
 
@@ -525,49 +526,96 @@ Bitboard Position::GetPieces() const {
 Bitboard Position::GetPieces(Side side, Piece type) const {
   return sides_[side] & pieces_[type];
 }`}
-          </Code>
-        </Slide>
-      </Stack>
+        </Code>
+      </Slide>
 
       <Slide>
         <h2>Part 3</h2>
         <h3>Intro to Move Generation</h3>
       </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Shifting Bitboards</h3>
+      <Slide>
+        <h3>Shifting Bitboards</h3>
 
-          <Code language="cpp" lineNumbers="2-11|11|13-22">{` 
-EXPECT_THAT(
-  MakeBitboard(
-    "8: . . . . . . . ."
-    "7: . . . X . . . ."
-    "6: . . . . . . . ."
-    "5: . X . . X . . X"
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . X . . . ."
-    "1: . . . . . . . ."
-    "   a b c d e f g h").Shift<kNorthWest>(),
+        <p>North example</p>
 
-  EqualsBitboard(
-    "8: . . . . X . . ."
-    "7: . . . . . . . ."
-    "6: . . X . . X . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . X . . ."
-    "2: . . . . . . . ."
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));    
-    `}</Code>
-        </Slide>
+        <div className="r-stack">
+          <Fragment className="fade-out" index={0}>
+            <Board title="input" highlight="d7,b5,e5,h5,d2">{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . X . . X
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
 
-        <Slide>
-          <h3>Shifting Bitboards</h3>
-          <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
-            {`template <Direction Direction>
+          <Fragment className="current-visible" index={0}>
+            <Board
+              title="input.Shift<kNorth>()"
+              highlight="d8,b6,e6,h6,d3"
+            >{`8: . . . X . . . .
+7: . . . . . . . .
+6: . X . . X . . X
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . X . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+        </div>
+      </Slide>
+
+      <Slide>
+        <h3>Shifting Bitboards</h3>
+
+        <p>Northwest example</p>
+
+        <div className="r-stack">
+          <Fragment className="fade-out" index={0}>
+            <Board
+              title="input"
+              highlight="d7,b5,e5,d2"
+              highlightSecondary="h5"
+            >{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . X . . X
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+
+          <Fragment className="current-visible" index={0}>
+            <Board
+              title="input.Shift<kNorthWest>()"
+              highlight="e8,c6,f6,e3"
+            >{`8: . . . . X . . .
+7: . . . . . . . .
+6: . . X . . X . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . X . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+        </div>
+      </Slide>
+
+      <Slide>
+        <h3>Shifting Bitboards</h3>
+        <Code language="cpp" lineNumbers="|4|6|8|10|12|14|16|18|">
+          {`template <Direction Direction>
 constexpr Bitboard Bitboard::Shift() const {
 
   if constexpr (Direction == kNorth)     { return *this >> 8; }
@@ -589,15 +637,13 @@ constexpr Bitboard Bitboard::Shift() const {
   return kEmptyBoard;
 }
 `}
-          </Code>
-        </Slide>
-      </Stack>
+        </Code>
+      </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Starting position, B1 knight</p>
-          <Board highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
+      <Slide>
+        <h3>Knight Moves</h3>
+        <p>Starting position, B1 knight</p>
+        <Board highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -607,24 +653,24 @@ constexpr Bitboard Bitboard::Shift() const {
 1: R N B Q K B N R
    a b c d e f g h
 `}</Board>
-        </Slide>
+      </Slide>
 
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Starting position, B1 knight</p>
-          <Code language="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(B1);
+      <Slide>
+        <h3>Knight Moves</h3>
+        <p>Starting position, B1 knight</p>
+        <Code language="c++" lineNumbers>
+          {`Bitboard pseudo_attacks = GetKnightAttacks(B1);
 Bitboard valid_destinations = ~position.GetPieces(kWhite);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
-          </Code>
+        </Code>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Fragment>
-              <Board
-                title="position"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: r n b q k b n r
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Fragment>
+            <Board
+              title="position"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -634,14 +680,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: R N B Q K B N R
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="pseudo_attacks"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: . . . . . . . .
+          <Fragment>
+            <Board
+              title="pseudo_attacks"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -651,14 +697,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="valid_destinations"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: X X X X X X X X
+          <Fragment>
+            <Board
+              title="valid_destinations"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X X X X X X
@@ -668,14 +714,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="moves"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: . . . . . . . .
+          <Fragment>
+            <Board
+              title="moves"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -685,19 +731,17 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
-          </div>
-        </Slide>
-      </Stack>
+          </Fragment>
+        </div>
+      </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Midgame position, F6 knight</p>
-          <Board
-            highlight="f6"
-            highlightSecondary="d5,e4,g4,h5,g8"
-          >{`8: r . . . k . . r
+      <Slide>
+        <h3>Knight Moves</h3>
+        <p>Midgame position, F6 knight</p>
+        <Board
+          highlight="f6"
+          highlightSecondary="d5,e4,g4,h5,g8"
+        >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
 5: n P . . . . . .
@@ -707,24 +751,24 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: R . . Q . R K .
    a b c d e f g h
 `}</Board>
-        </Slide>
+      </Slide>
 
-        <Slide>
-          <h3>Knight Moves</h3>
-          <p>Midgame position, F6 knight</p>
-          <Code language="c++" lineNumbers>
-            {`Bitboard pseudo_attacks = GetKnightAttacks(F6);
+      <Slide>
+        <h3>Knight Moves</h3>
+        <p>Midgame position, F6 knight</p>
+        <Code language="c++" lineNumbers>
+          {`Bitboard pseudo_attacks = GetKnightAttacks(F6);
 Bitboard valid_destinations = ~position.GetPieces(kBlack);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
-          </Code>
+        </Code>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Fragment>
-              <Board
-                title="position"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
-              >{`8: r . . . k . . r
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Fragment>
+            <Board
+              title="position"
+              highlight="f6"
+              highlightSecondary="d5,e4,g4,h5,g8"
+            >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
 5: n P . . . . . .
@@ -734,14 +778,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: R . . Q . R K .
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="pseudo_attacks"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
-              >{`8: . . . . X . X .
+          <Fragment>
+            <Board
+              title="pseudo_attacks"
+              highlight="f6"
+              highlightSecondary="d5,e4,g4,h5,g8"
+            >{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
 5: . . . X . . . X
@@ -751,14 +795,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="valid_destinations"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
-              >{`8: . X X X . X X .
+          <Fragment>
+            <Board
+              title="valid_destinations"
+              highlight="f6"
+              highlightSecondary="d5,e4,g4,h5,g8"
+            >{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
 5: . X X X X X X X
@@ -768,14 +812,14 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: X X X X X X X X
    a b c d e f g h
 `}</Board>
-            </Fragment>
+          </Fragment>
 
-            <Fragment>
-              <Board
-                title="moves"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
-              >{`8: . . . . . . X .
+          <Fragment>
+            <Board
+              title="moves"
+              highlight="f6"
+              highlightSecondary="d5,e4,g4,h5,g8"
+            >{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . X
@@ -785,10 +829,9 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
-          </div>
-        </Slide>
-      </Stack>
+          </Fragment>
+        </div>
+      </Slide>
 
       <Slide>
         <h3>Knight Moves</h3>
@@ -823,13 +866,12 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Code>
       </Slide>
 
-      <Stack>
-        <Slide>
-          <h3>Generating Rook Moves</h3>
-          <p>D5 rook with no blockers</p>
+      <Slide>
+        <h3>Generating Rook Moves</h3>
+        <p>D5 rook with no blockers</p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Board title="rook">{`8: . . . . . . . .
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Board title="rook">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -840,7 +882,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="blockers">{`8: . . . . . . . .
+          <Board title="blockers">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -851,7 +893,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="pseudo-attacks">{`8: . . . X . . . .
+          <Board title="pseudo-attacks">{`8: . . . X . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: X X X . X X X X
@@ -861,15 +903,15 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 1: . . . X . . . .
    a b c d e f g h
 `}</Board>
-          </div>
-        </Slide>
+        </div>
+      </Slide>
 
-        <Slide>
-          <h3>Generating Rook Moves</h3>
-          <p>D5 rook with blockers</p>
+      <Slide>
+        <h3>Generating Rook Moves</h3>
+        <p>D5 rook with blockers</p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Board title="start">{`8: . . . . . . . .
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Board title="start">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -880,7 +922,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="blockers">{`8: . . . . . . . .
+          <Board title="blockers">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -891,7 +933,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="pseudo-attacks">{`8: . . . . . . . .
+          <Board title="pseudo-attacks">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
@@ -901,9 +943,8 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </div>
-        </Slide>
-      </Stack>
+        </div>
+      </Slide>
 
       <Slide>
         <h2>Part 4</h2>
