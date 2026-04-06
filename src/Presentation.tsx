@@ -44,18 +44,19 @@ export const Presentation = () => {
           </Fragment>
           <Fragment>
             <li>
-              Chess programming is a large domain. We can't cover all of it
-              today.
+              Chess programming is a large domain. We can't cover all of it.
             </li>
           </Fragment>
           <Fragment>
             <li>
-              Instead, we'll focus on a tiny sliver: efficient bishop, rook, and
+              Instead, we'll review a tiny sliver: efficient bishop, rook, and
               queen move generation.
             </li>
           </Fragment>
           <Fragment>
-            <li>Before jumping in, we'll quickly cover the basics.</li>
+            <li>
+              But first, we'll cover my motivation and chess engine basics.
+            </li>
           </Fragment>
         </ul>
       </Slide>
@@ -65,7 +66,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Motivation</h2>
+        <h2>Why a Chess Engine?</h2>
 
         <Fragment>
           <p>There is no shortage of chess engines, so why write one?</p>
@@ -76,56 +77,40 @@ export const Presentation = () => {
         </Fragment>
       </Slide>
 
-      <Stack>
-        <Slide>
-          <h2>Learning Opportunities</h2>
-          <h3>Performance</h3>
-          <p>
-            Using branchless algorithms, benchmarking, profiling, and advanced
-            C++ features such as <code>consteval</code> and templates.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h2>Learning Opportunities</h2>
-          <h3>Search</h3>
-          <p>
-            Applying Alpha-Beta pruning, iterative deepening, move ordering, and
-            transposition tables to manage a{" "}
-            <a href="https://en.wikipedia.org/wiki/Branching_factor">
-              branching
-            </a>{" "}
-            factor of ~35.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h2>Learning Opportunities</h2>
-          <h3>Complexity Management</h3>
-          <p>
-            Maintaining acceptable abstractions without compromising
-            performance.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h2>Learning Opportunities</h2>
-          <h3>Heuristic Modeling</h3>
-          <p>
-            Translating qualitative chess concepts (e.g., "king safety") into
-            numerical features for the engine to evaluate.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h2>Learning Opportunities</h2>
-          <h3>Verification</h3>
-          <p>
-            Validating search logic improvements through simulations rather than
-            unit tests.
-          </p>
-        </Slide>
-      </Stack>
+      <Slide>
+        <h3>Learning Opportunities</h3>
+        <dl>
+          <Fragment>
+            <dt>Performance</dt>
+            <dd>
+              Branchless algorithms, benchmarking, <code>consteval</code>,
+              templates
+            </dd>
+          </Fragment>
+          <Fragment>
+            <dt>Search</dt>
+            <dd>
+              Alpha-beta pruning, iterative deepening, transposition tables
+            </dd>
+          </Fragment>
+          <Fragment>
+            <dt>Complexity Management</dt>
+            <dd>Maintaining abstractions without compromising performance</dd>
+          </Fragment>
+          <Fragment>
+            <dt>Heuristic Modeling</dt>
+            <dd>
+              Translating qualitative chess concepts into numerical values
+            </dd>
+          </Fragment>
+          <Fragment>
+            <dt>Verification</dt>
+            <dd>
+              Validating improvements through simulations rather than unit tests
+            </dd>
+          </Fragment>
+        </dl>
+      </Slide>
 
       <Slide>
         <h2>Part 2</h2>
