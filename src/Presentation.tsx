@@ -725,8 +725,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           <h3>Knight Moves</h3>
           <p>Midgame position, F6 knight</p>
           <Board
-            highlight="f6"
-            highlightSecondary="d5,e4,g4,h5,g8"
+            highlight="d5,e4,g4,h5,g8"
+            highlightSecondary="f6"
           >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
@@ -752,8 +752,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Fragment>
               <Board
                 title="position"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
+                highlight="d5,e4,g4,h5,g8"
+                highlightSecondary="f6"
               >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
@@ -769,8 +769,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Fragment>
               <Board
                 title="pseudo_attacks"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
+                highlight="d5,e4,g4,h5,g8"
+                highlightSecondary="f6"
               >{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
@@ -786,8 +786,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Fragment>
               <Board
                 title="valid_destinations"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
+                highlight="d5,e4,g4,h5,g8"
+                highlightSecondary="f6"
               >{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
@@ -803,8 +803,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
             <Fragment>
               <Board
                 title="moves"
-                highlight="f6"
-                highlightSecondary="d5,e4,g4,h5,g8"
+                highlight="d5,e4,g4,h5,g8"
+                highlightSecondary="f6"
               >{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
