@@ -20,7 +20,7 @@ export const Presentation = () => {
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
 
-      <Slide>
+      <Slide visibility="hidden">
         <h2>From 20 Nanoseconds to One</h2>
         <p>
           Optimizing Bishop, Rook, and Queen
@@ -34,38 +34,34 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h3>Agenda</h3>
+        <h2>Agenda</h2>
         <ul>
           <Fragment>
-            <li>Part 1: Motivation</li>
+            <li>
+              This talk is about <a href="https://follychess.com">FollyChess</a>
+              , my C++ chess engine.
+            </li>
           </Fragment>
           <Fragment>
-            <li>Part 2: Fundamental Chess Engine Data Structures</li>
+            <li>
+              Chess programming is a large domain. We can't cover all of it
+              today.
+            </li>
           </Fragment>
           <Fragment>
-            <li>Part 3: Intro to Move Generation </li>
+            <li>
+              Instead, we'll focus on a tiny sliver: efficient bishop, rook, and
+              queen move generation.
+            </li>
           </Fragment>
           <Fragment>
-            <li>Part 4: Speeding Up Bishop, Rook, and Queen Move Generation</li>
+            <li>Before jumping in, we'll quickly cover the basics.</li>
           </Fragment>
         </ul>
       </Slide>
 
       <Slide>
-        <h2>Part 1</h2>
-        <h3>Motivation</h3>
-      </Slide>
-
-      <Slide>
-        <h2>Motivation</h2>
-
-        <p>
-          This presentation is based on{" "}
-          <a href="https://follychess.com">FollyChess</a>, <br />a C++ chess
-          engine I've been writing.
-        </p>
-
-        <p></p>
+        <h2>Part 1: Motivation</h2>
       </Slide>
 
       <Slide>
@@ -132,33 +128,8 @@ export const Presentation = () => {
       </Stack>
 
       <Slide>
-        <h2>Scope of This Talk</h2>
-        <ul>
-          <Fragment>
-            <li>
-              There is <em>a lot</em> we can cover.
-            </li>
-          </Fragment>
-          <Fragment>
-            <li>This talk focuses on a narrow sliver.</li>
-          </Fragment>
-          <Fragment>
-            <li>
-              We'll discuss efficient move generation for bishops, rooks, and
-              queens.
-            </li>
-          </Fragment>
-          <Fragment>
-            <li>
-              Before we begin, we'll need to introduce some core concepts...
-            </li>
-          </Fragment>
-        </ul>
-      </Slide>
-
-      <Slide>
         <h2>Part 2</h2>
-        <h3>Fundamental Chess Engine Data Structures</h3>
+        <h3>Fundamental Data Structures</h3>
       </Slide>
 
       <Slide>
