@@ -883,6 +883,57 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
       <Stack>
         <Slide>
+          <h3>Sliding Piece Moves</h3>
+          <p>
+            Bishops, rooks, and queens are sliding pieces that move along rays.
+          </p>
+
+          <dl>
+            <dt>Bishops</dt>
+            <dd>4 rays along diagonals</dd>
+            <dt>Rooks</dt>
+            <dd>4 rays along ranks and files</dd>
+            <dt>Queens</dt>
+            <dd>8 rays along diagonals, ranks, and files</dd>
+          </dl>
+        </Slide>
+
+        <Slide>
+          <h3>Sliding Piece Moves</h3>
+          <p>Sliding piece paths can be blocked by other pieces.</p>
+          <p>
+            This makes generating their moves more complex than other pieces.
+          </p>
+        </Slide>
+
+        <Slide>
+          <h3>Sliding Piece Moves</h3>
+          <p>For each ray:</p>
+
+          <ol>
+            <Fragment>
+              <li>Raycast until a blocker is hit. Include the blocker.</li>
+            </Fragment>
+            <Fragment>
+              <li>Filter the last square:</li>
+            </Fragment>
+            <ul>
+              <Fragment>
+                <li>If empty, include as quiet move.</li>
+              </Fragment>
+              <Fragment>
+                <li>If enemy, include as capturing move.</li>
+              </Fragment>
+              <Fragment>
+                <li>If friendly, exclude.</li>
+              </Fragment>
+            </ul>
+          </ol>
+        </Slide>
+      </Stack>
+
+      <Stack>
+        <Slide>
           <h3>Rook Moves</h3>
           <p>D5 rook with no blockers</p>
 
@@ -923,7 +974,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Slide>
 
         <Slide>
-          <h3>Generating Rook Moves</h3>
+          <h3>Rook Moves</h3>
           <p>D5 rook with blockers</p>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -962,6 +1013,21 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           </div>
         </Slide>
       </Stack>
+
+      <Slide>
+        <h3>Bishop Moves</h3>
+
+        <p>Same as rooks, but on diagonals.</p>
+      </Slide>
+
+      <Slide>
+        <h3>Queen Moves</h3>
+
+        <p>A queen is just a rook and a bishop combined.</p>
+
+        <Code language="cpp">{`Bitboard moves = GetRookMoves(square) | GetBishopMoves(square);
+        `}</Code>
+      </Slide>
 
       <Slide>
         <h2>Part 4</h2>
