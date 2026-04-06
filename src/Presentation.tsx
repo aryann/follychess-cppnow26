@@ -1092,6 +1092,56 @@ Bitboard moves = pseudo_moves & ~friendly;
         `}</Code>
       </Slide>
 
+      <Stack>
+        <Slide>
+          <h3>
+            <code>GenerateSlidingAttacks()</code>
+          </h3>
+
+          <Code language="cpp" lineNumbers>{`template <Direction... Directions>
+Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
+  return (GenerateRayAttacks<Directions>(from, occupied) | ...);
+}
+
+template <Direction Direction>
+Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
+  Bitboard attacks;
+  Bitboard curr(from);
+  while (curr) {
+    curr = curr.Shift<Direction>();
+    attacks |= curr;
+    if (curr & occupied) { break; }
+  }
+  return attacks;
+}
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>
+            <code>GenerateSlidingAttacks()</code>
+          </h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`Bitboard GenerateBishopAttacks(Square from, Bitboard occupied) {
+ return GenerateSlidingAttacks<
+    kNorthEast, kNorthWest, kSouthEast, kSouthWest>(from, occupied);
+} 
+            
+Bitboard GenerateRookAttacks(Square from, Bitboard occupied) {
+ return GenerateSlidingAttacks<
+    kNorth, kEast, kSouth, kWest>(from, occupied);
+}
+
+Bitboard GenerateQueenAttacks(Square from, Bitboard occupied) {
+ return GenerateRookAttacks(from, occupied) | GenerateBishopAttacks(from, occupied);
+}
+`}</Code>
+        </Slide>
+      </Stack>
+
       <Slide>
         <h2>Part 4</h2>
         <h3>Speeding Up Bishop, Rook, and Queen Move Generation</h3>
