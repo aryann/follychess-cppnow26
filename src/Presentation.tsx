@@ -1036,43 +1036,106 @@ Bitboard moves = pseudo_moves & ~friendly;
 
         <Slide>
           <h3>Rook Moves</h3>
-          <p>D5 rook with blockers</p>
+          <p>B4 rook with blockers</p>
 
-          <div className="v-stack">
-            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-              <Board title="start">{`8: . . . . . . . .
+          <Code language="cpp" lineNumbers>{`
+Bitboard occupied = position.GetPieces();
+Bitboard pseudo_moves = GenerateSlidingAttacks<kNorth, kEast, kSouth, kWest>(B4, occupied);
+Bitboard friendly = position.GetPieces(kWhite);
+Bitboard moves = pseudo_moves & ~friendly;
+          `}</Code>
+
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                <Board title="position" highlight="b4">{`8: . . . . . . . .
+7: . . p . . . . .
+6: . . . p . . . .
+5: K P . . . . . r
+4: . R . . . p . k
+3: . . . . . . . .
+2: . . . . P . P .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+                <Board
+                  title="occupied"
+                  highlight="b4"
+                  highlightSecondary="c7,d6,a5,b5,h5,f4,h4,e2,g2"
+                >{`8: . . . . . . . .
+7: . . X . . . . .
+6: . . . X . . . .
+5: X X . . . . . X
+4: . X . . . X . X
+3: . . . . . . . .
+2: . . . . X . X .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+                <Board
+                  title="pseudo_moves"
+                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
+                >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
-5: . . . X . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
+5: . X . . . . . .
+4: X . X X X X . .
+3: . X . . . . . .
+2: . X . . . . . .
+1: . X . . . . . .
    a b c d e f g h
 `}</Board>
+              </div>
+            </Fragment>
 
-              <Board title="blockers">{`8: . . . . . . . .
-7: . . . X . . . .
+            <Fragment
+              className="current-visibile"
+              index={0}
+              style={{ width: "100%" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                <Board
+                  title="pseudo_moves"
+                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
+                >{`8: . . . . . . . .
+7: . . . . . . . .
 6: . . . . . . . .
-5: . X . . X . X .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . X . . . .
-1: . . . . . . . .
+5: . X . . . . . .
+4: X . X X X X . .
+3: . X . . . . . .
+2: . X . . . . . .
+1: . X . . . . . .
    a b c d e f g h
 `}</Board>
 
-              <Board title="pseudo-attacks">{`8: . . . . . . . .
-7: . . . X . . . .
-6: . . . X . . . .
-5: . X X . X . . .
-4: . . . X . . . .
-3: . . . X . . . .
-2: . . . X . . . .
-1: . . . . . . . .
+                <Board title="~friendly">{`8: X X X X X X X X
+7: X X X X X X X X
+6: X X X X X X X X
+5: . . X X X X X X
+4: X . X X X X X X
+3: X X X X X X X X
+2: X X X X . X . X
+1: X X X X X X X X
    a b c d e f g h
 `}</Board>
-            </div>
+
+                <Board
+                  title="moves"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                >{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: X . X X X X . .
+3: . X . . . . . .
+2: . X . . . . . .
+1: . X . . . . . .
+   a b c d e f g h
+`}</Board>
+              </div>
+            </Fragment>
           </div>
         </Slide>
       </Stack>
@@ -1094,9 +1157,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
       <Stack>
         <Slide>
-          <h3>
-            <code>GenerateSlidingAttacks()</code>
-          </h3>
+          <h3>Sliding Piece Move Code</h3>
 
           <Code language="cpp" lineNumbers>{`template <Direction... Directions>
 Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
@@ -1118,9 +1179,7 @@ Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>
-            <code>GenerateSlidingAttacks()</code>
-          </h3>
+          <h3>Sliding Piece Move Code</h3>
 
           <Code
             language="cpp"
