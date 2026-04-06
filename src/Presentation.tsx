@@ -937,8 +937,28 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Rook Moves</h3>
           <p>D5 rook with no blockers</p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Board title="rook">{`8: . . . . . . . .
+          <Code language="cpp" lineNumbers>{`
+Bitboard occupied = position.GetPieces();
+Bitboard pseudo_moves = GenerateSlidingAttacks<kNorth, kEast, kSouth, kWest>(D5, occupied);
+Bitboard friendly = position.GetPieces(kWhite);
+Bitboard moves = pseudo_moves & ~friendly;
+          `}</Code>
+
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                <Board title="position" highlight="d5">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . R . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+                <Board title="occupied" highlight="d5">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -949,18 +969,10 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="blockers">{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-
-            <Board title="pseudo-attacks">{`8: . . . X . . . .
+                <Board
+                  title="pseudo_moves"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: . . . X . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: X X X . X X X X
@@ -970,6 +982,55 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 1: . . . X . . . .
    a b c d e f g h
 `}</Board>
+              </div>
+            </Fragment>
+
+            <Fragment
+              className="current-visibile"
+              index={0}
+              style={{ width: "100%" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                <Board
+                  title="pseudo_moves"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: . . . X . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: X X X . X X X X
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . X . . . .
+   a b c d e f g h
+`}</Board>
+
+                <Board title="~friendly" highlight="d5">{`8: X X X X X X X X
+7: X X X X X X X X
+6: X X X X X X X X
+5: X X X . X X X X
+4: X X X X X X X X
+3: X X X X X X X X
+2: X X X X X X X X
+1: X X X X X X X X
+   a b c d e f g h
+`}</Board>
+
+                <Board
+                  title="moves"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: . . . X . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: X X X . X X X X
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . X . . . .
+   a b c d e f g h
+`}</Board>
+              </div>
+            </Fragment>
           </div>
         </Slide>
 
@@ -977,8 +1038,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Rook Moves</h3>
           <p>D5 rook with blockers</p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Board title="start">{`8: . . . . . . . .
+          <div className="v-stack">
+            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Board title="start">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -989,7 +1051,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="blockers">{`8: . . . . . . . .
+              <Board title="blockers">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -1000,7 +1062,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
    a b c d e f g h
 `}</Board>
 
-            <Board title="pseudo-attacks">{`8: . . . . . . . .
+              <Board title="pseudo-attacks">{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X . . .
@@ -1010,6 +1072,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
+            </div>
           </div>
         </Slide>
       </Stack>
@@ -1023,9 +1086,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
       <Slide>
         <h3>Queen Moves</h3>
 
-        <p>A queen is just a rook and a bishop combined.</p>
+        <p>A queen is just a bishop and rook combined.</p>
 
-        <Code language="cpp">{`Bitboard moves = GetRookMoves(square) | GetBishopMoves(square);
+        <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
         `}</Code>
       </Slide>
 
