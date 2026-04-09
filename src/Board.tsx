@@ -67,7 +67,7 @@ export const Board = (props: BoardProps) => {
       bg = "cyan";
     }
     if (isActive) {
-      bg = "white";
+      bg = "yellow";
     }
 
     const fg =
@@ -98,7 +98,6 @@ export const Board = (props: BoardProps) => {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-        columnGap: "1em",
         userSelect: "none",
       }}
     >

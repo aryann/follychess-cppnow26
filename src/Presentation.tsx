@@ -7,6 +7,12 @@ import { Board } from "./Board";
 import "./Presentation.css";
 import title from "./assets/title.png";
 
+const Row = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+    {children}
+  </div>
+);
+
 export const Presentation = () => {
   return (
     <Deck
@@ -118,39 +124,58 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h3>Terminology</h3>
-        <dl>
-          <Fragment>
-            <dt>Board</dt>
-            <dd>The 8 x 8 grid</dd>
-          </Fragment>
+        <h3>Board</h3>
 
-          <Fragment>
-            <dt>File</dt>
-            <dd>Columns on the board, labeled A-H</dd>
-          </Fragment>
+        <p>An 8 x 8 grid of squares</p>
 
-          <Fragment>
+        <Board>{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+      </Slide>
+
+      <Slide>
+        <h3>Rank & File</h3>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+            gap: "1em",
+          }}
+        >
+          <dl>
             <dt>Rank</dt>
-            <dd>Rows on the board, labeled 1-8</dd>
-          </Fragment>
+            <dd>Rows, labeled 1-8</dd>
 
-          <Fragment>
-            <dt>Square</dt>
-            <dd>
-              An index (0-63) representing an intersection of Rank and File
-            </dd>
-          </Fragment>
+            <dt>File</dt>
+            <dd>Columns, labeled A-H</dd>
+          </dl>
 
-          <Fragment>
-            <dt>Bitboard</dt>
-            <dd>A 64 bit integer representing piece presence</dd>
-          </Fragment>
-        </dl>
+          <Board>{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+        </div>
       </Slide>
 
       <Slide>
         <h3>Square</h3>
+
+        <p>An index (0-63) representing the intersection of a Rank and File</p>
 
         <Code language="cpp" lineNumbers>{`enum Square : std::uint8_t {
  // clang-format off
@@ -169,19 +194,25 @@ export const Presentation = () => {
       <Stack>
         <Slide>
           <h3>Bitboard</h3>
-          <Code language="cpp" lineNumbers="1-11|12-32">
-            {`// Represents an 8x8 chess board.
-//
-//   8:   0   1   2   3   4   5   6   7
-//   7:   8   9  10  11  12  13  14  15
-//   6:  16  17  18  19  20  21  22  23
-//   5:  24  25  26  27  28  29  30  31
-//   4:  32  33  34  35  36  37  38  39
-//   3:  40  41  42  43  44  45  46  47
-//   2:  48  49  50  51  52  53  54  55
-//   1:  56  57  58  59  60  61  62  63
-//       a   b   c   d   e   f   g   h
-class Bitboard {
+
+          <p>An unsigned 64 bit integer representing piece presence</p>
+
+          <Board showBits>{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . . . . . .
+5: . X . . X . X .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+        </Slide>
+
+        <Slide>
+          <h3>Bitboard</h3>
+          <Code language="cpp" lineNumbers="|16">
+            {`class [[nodiscard]] Bitboard {
  public:
   constexpr explicit Bitboard(Square square) : data_(1ULL << square) {}
 
@@ -189,14 +220,10 @@ class Bitboard {
     return data_ & 1ULL << square;
   }
 
-  constexpr void Set(Square square) {
-    data_ |= 1ULL << square;
-  }
+  constexpr void Set(Square square) { data_ |= 1ULL << square; }
 
-  constexpr void Clear(Square square) {
-    data_ &= ~(1ULL << square);
-  }
-
+  constexpr void Clear(Square square) { data_ &= ~(1ULL << square); }
+ 
   // ...
 
  private:
@@ -234,26 +261,12 @@ board.Clear(B1);
 EXPECT_THAT(board.Get(B1), IsFalse());
 `}</Code>
         </Slide>
-
-        <Slide>
-          <h3>Bitboard</h3>
-          <Board showBits>{`8: . . . . . . . .
-7: . . . X . . . .
-6: . . . . . . . .
-5: . X . . X . X .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . X . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-        </Slide>
       </Stack>
 
       <Slide>
-        <h3>Piece & Side</h3>
+        <h3>Piece</h3>
 
-        <Code language="cpp" lineNumbers="1-9|11|13-17|19|21-34">
+        <Code language="cpp" lineNumbers>
           {`enum Piece : std::uint8_t {
   kPawn,
   kKnight,
@@ -264,9 +277,15 @@ EXPECT_THAT(board.Get(B1), IsFalse());
   kEmptyPiece,
 };
 
-constexpr std::size_t kNumPieces = 6;
+constexpr std::size_t kNumPieces = 6;`}
+        </Code>
+      </Slide>
 
-enum Side : std::uint8_t {
+      <Slide>
+        <h3>Side</h3>
+
+        <Code language="cpp" lineNumbers>
+          {`enum Side : std::uint8_t {
   kWhite,
   kBlack,
   kEmptySide,
@@ -301,6 +320,112 @@ constexpr std::size_t kNumSides = 2;`}
 
         <Slide>
           <h3>Position</h3>
+          <p>Text representations</p>
+
+          <Row>
+            <Board title="Starting">{`8: r n b q k b n r
+7: p p p p p p p p
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: P P P P P P P P
+1: R N B Q K B N R
+   a b c d e f g h
+`}</Board>
+
+            <Board title="Midgame">{`8: . . k r . b n r
+7: p . p . p p p p
+6: p . P . . q . .
+5: . . . P . . . .
+4: . . . P . . . .
+3: P Q N . . . . .
+2: . P . . . P P P
+1: R . B . K . . R
+   a b c d e f g h
+`}</Board>
+
+            <Board title="Endgame">{`8: . . . . . . . .
+7: . . p . . . . .
+6: . . . p . . . .
+5: K P . . . . . r
+4: . R . . . p P k
+3: . . . . . . . .
+2: . . . . P . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Row>
+        </Slide>
+
+        <Slide>
+          <h3>Position</h3>
+          <p>
+            <code>GetPieces(Piece)</code>
+          </p>
+
+          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kPawn),
+
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: X X X X X X X X"
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));
+    `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Position</h3>
+          <p>
+            <code>GetPieces(Side)</code>
+          </p>
+
+          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kWhite),
+
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: X X X X X X X X"
+    "   a b c d e f g h"));
+    `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Position</h3>
+          <p>
+            <code>GetPieces(Side, Piece)</code>
+          </p>
+
+          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+  starting_position.GetPieces(kWhite, kPawn),
+  
+  EqualsBitboard(
+    "8: . . . . . . . ."
+    "7: . . . . . . . ."
+    "6: . . . . . . . ."
+    "5: . . . . . . . ."
+    "4: . . . . . . . ."
+    "3: . . . . . . . ."
+    "2: X X X X X X X X"
+    "1: . . . . . . . ."
+    "   a b c d e f g h"));
+    `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Position</h3>
           <Code language="cpp" lineNumbers="4-5|">
             {`class Position {
  // ...
@@ -324,154 +449,6 @@ constexpr std::size_t kNumSides = 2;`}
           <h3>Position</h3>
           <p>
             <code>GetPieces()</code>
-          </p>
-          <Code
-            language="cpp"
-            lineNumbers="1-12|14-26|28-40|42-54|56-68|70-82|84-96|98-110|112-124|126-138"
-          >{`Position position = MakePosition(
-    "8: r n b q k b n r"
-    "7: p p p p p p p p"
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: P P P P P P P P"
-    "1: R N B Q K B N R"
-    "   a b c d e f g h"
-    //
-    "   w KQkq - 0 1");
-                   
-// Get all pawns:                                 
-EXPECT_THAT(
-  position.GetPieces(kPawn),
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: X X X X X X X X"
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));
-
-// Get all bishops:
-EXPECT_THAT(
-  position.GetPieces(kBishop),
-  EqualsBitboard(
-    "8: . . X . . X . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: . . X . . X . ."
-    "   a b c d e f g h"));
-
-// Get all knights:
-EXPECT_THAT(
-  position.GetPieces(kKnight),
-  EqualsBitboard(
-    "8: . X . . . . X ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: . X . . . . X ."
-    "   a b c d e f g h"));
-
-// Get all rooks:
-EXPECT_THAT(
-  position.GetPieces(kRook),
-  EqualsBitboard(
-    "8: X . . . . . . X"
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: X . . . . . . X"
-    "   a b c d e f g h"));
-
-// Get all queens:
-EXPECT_THAT(
-  position.GetPieces(kQueen),
-  EqualsBitboard(
-    "8: . . . X . . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: . . . X . . . ."
-    "   a b c d e f g h"));
-
-// Get all kings:
-EXPECT_THAT(
-  position.GetPieces(kKing),
-  EqualsBitboard(
-    "8: . . . . X . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: . . . . X . . ."
-    "   a b c d e f g h"));
-
-// Get all white pieces:
-EXPECT_THAT(
-  position.GetPieces(kWhite),
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: X X X X X X X X"
-    "   a b c d e f g h"));
-
-// Get all black pieces:
-EXPECT_THAT(
-  position.GetPieces(kBlack),
-  EqualsBitboard(
-    "8: X X X X X X X X"
-    "7: X X X X X X X X"
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: . . . . . . . ."
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));
-
-// Get all white pawns:
-EXPECT_THAT(
-  position.GetPieces(kWhite, kPawn),
-  EqualsBitboard(
-    "8: . . . . . . . ."
-    "7: . . . . . . . ."
-    "6: . . . . . . . ."
-    "5: . . . . . . . ."
-    "4: . . . . . . . ."
-    "3: . . . . . . . ."
-    "2: X X X X X X X X"
-    "1: . . . . . . . ."
-    "   a b c d e f g h"));`}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Position</h3>
-          <p>
-            <code>GetPieces()</code> implementation
           </p>
 
           <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
@@ -635,7 +612,7 @@ Bitboard valid_destinations = ~position.GetPieces(kWhite);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Row>
             <Board
               title="position"
               highlight="a3,c3"
@@ -695,7 +672,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </div>
+          </Row>
         </Slide>
 
         <Slide>
@@ -725,7 +702,7 @@ Bitboard valid_destinations = ~position.GetPieces(kBlack);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Row>
             <Board
               title="position"
               highlight="d5,e4,g4,h5,g8"
@@ -785,7 +762,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </div>
+          </Row>
         </Slide>
 
         <Slide>
@@ -892,7 +869,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
-              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Row>
                 <Board
                   title="position"
                   highlightSecondary="d5"
@@ -937,7 +914,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 1: . . . X . . . .
    a b c d e f g h
 `}</Board>
-              </div>
+              </Row>
             </Fragment>
 
             <Fragment
@@ -945,7 +922,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               index={0}
               style={{ width: "100%" }}
             >
-              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Row>
                 <Board
                   title="pseudo_moves"
                   highlightSecondary="d5"
@@ -990,7 +967,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 1: . . . X . . . .
    a b c d e f g h
 `}</Board>
-              </div>
+              </Row>
             </Fragment>
           </div>
         </Slide>
@@ -1008,7 +985,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
-              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Row>
                 <Board
                   title="position"
                   highlightSecondary="b4"
@@ -1053,7 +1030,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 1: . X . . . . . .
    a b c d e f g h
 `}</Board>
-              </div>
+              </Row>
             </Fragment>
 
             <Fragment
@@ -1061,7 +1038,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               index={0}
               style={{ width: "100%" }}
             >
-              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Row>
                 <Board
                   title="pseudo_moves"
                   highlightSecondary="b4"
@@ -1106,7 +1083,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 1: . X . . . . . .
    a b c d e f g h
 `}</Board>
-              </div>
+              </Row>
             </Fragment>
           </div>
         </Slide>
@@ -1268,7 +1245,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
             file.
           </p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Row>
             <Board
               title="D5 Relevant Squares"
               highlightSecondary="d5"
@@ -1298,7 +1275,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 1: X X X X X X X .
    a b c d e f g h
 `}</Board>
-          </div>
+          </Row>
         </Slide>
 
         <Slide>
@@ -1311,7 +1288,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
             filtered later if it's occupied by a friendly piece.
           </p>
 
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Row>
             <Board
               title="D5 Relevant Squares"
               highlightSecondary="d5"
@@ -1341,7 +1318,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 1: . X X X X X X .
    a b c d e f g h
 `}</Board>
-          </div>
+          </Row>
         </Slide>
 
         <Slide>
