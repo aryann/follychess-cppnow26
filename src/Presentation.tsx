@@ -798,6 +798,14 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Slide>
       </Stack>
 
+      <Slide>
+        <h3>What About Checks?</h3>
+
+        <p>Some moves place the king in check.</p>
+
+        <p>These moves are filtered later.</p>
+      </Slide>
+
       <Stack>
         <Slide>
           <h3>Sliding Piece Moves</h3>
@@ -824,9 +832,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         <Slide>
           <h3>Sliding Piece Moves</h3>
           <p>Sliding piece paths can be blocked by other pieces.</p>
-          <p>
-            This makes their move generation more complex than other pieces.
-          </p>
+          <p>This makes their move generation more complex.</p>
         </Slide>
 
         <Slide>
@@ -1106,7 +1112,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
       <Stack>
         <Slide>
-          <h3>Sliding Piece Move Code</h3>
+          <h3>Sliding Piece Moves</h3>
 
           <Code
             language="cpp"
@@ -1130,7 +1136,10 @@ Bitboard GenerateQueenAttacks(Square from, Bitboard occupied) {
         <Slide>
           <h3>Sliding Piece Move Code</h3>
 
-          <Code language="cpp" lineNumbers>{`template <Direction... Directions>
+          <Code
+            language="cpp"
+            lineNumbers="1-4|6-16|8|9|10|11|12|13|"
+          >{`template <Direction... Directions>
 Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
   return (GenerateRayAttacks<Directions>(from, occupied) | ...);
 }
@@ -1160,12 +1169,9 @@ Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
 
       <Slide>
         <h3>Performance</h3>
-        <p>On-the-fly move generation takes ~22-40 nanoseconds.</p>
+        <p>On-the-fly move generation takes ~22-40 nanoseconds</p>
 
-        <p>
-          This latency is too high when searching millions of positions per
-          second.
-        </p>
+        <p>This is too slow when searching millions of positions/second</p>
         <Code
           language="plaintext"
           lineNumbers="10-12"
@@ -1187,19 +1193,14 @@ BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     1
       <Slide>
         <h3>Precomputation</h3>
 
-        <p>Map every possible board state to an attack bitboard.</p>
+        <p>Map every possible board state to an attack Bitboard.</p>
 
-        <p>
-          There are 64 squares and roughly 2<sup>64</sup> ways the board can be
-          occupied.
-        </p>
-
-        <Code language="cpp">
+        <Code language="cpp" lineNumbers>
           {`template <Piece Piece>
 Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
   static_assert(Piece == kBishop || Piece == kRook || Piece == kQueen);
 
-  static std::array<
+  static const std::array<
     std::array<Bitboard, kNumOccupancies>, 
     kNumSquares> kSlidingAttacks = GenerateSlidingAttacksTable<Piece>();
   
@@ -1209,90 +1210,53 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
       </Slide>
 
       <Slide>
-        <h3>Storage Requirement</h3>
+        <h3>Precomputation Size</h3>
 
-        <p>
-          <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
-        </p>
+        <Fragment>
+          <p>
+            <code>num_squares * ~num_occupancies * sizeof(Bitboard)</code>
+          </p>
+        </Fragment>
 
-        <p>
-          <code>
-            64 * 2<sup>64</sup> * 8 bytes
-          </code>
-        </p>
+        <Fragment>
+          <p>
+            <code>
+              64 * ~2<sup>64</sup> * 8 bytes
+            </code>
+          </p>
+        </Fragment>
 
-        <p>
-          <code>9,444,732,965,739,290,427,392 bytes</code>
-        </p>
+        <Fragment>
+          <p>
+            <code>9,444,732,965,739,290,427,392 bytes</code>
+          </p>
+        </Fragment>
 
-        <p>9.44 Zettabytes or ~10% total world storage</p>
+        <Fragment>
+          <p>9.44 Zettabytes or ~10% total world storage</p>
+        </Fragment>
       </Slide>
 
       <Slide>
-        <p>We need a better way to improve performance.</p>
+        <h3>There Is a Better Way!</h3>
 
-        <p>
-          We'll focus on rooks. The same concepts apply to bishops and queens.
-        </p>
+        <p>The examples focus on rooks.</p>
+        <p>The same concepts apply to bishops and queens.</p>
       </Slide>
 
       <Stack>
         <Slide>
-          <h3>Relevancy Squares</h3>
+          <h3>Relevant Squares</h3>
 
           <p>
-            A rook's movement is only affected by pieces on its own rank and
-            file.
+            A rook's movement is only affected by pieces on its own Rank and
+            File, excluding edges
           </p>
-
           <Row>
             <Board
               title="D5 Relevant Squares"
               highlightSecondary="d5"
-              highlight="d8,d7,d6,d4,d3,d2,d1,a5,b5,c5,e5,f5,g5,h5"
-            >{`8: . . . X . . . .
-7: . . . X . . . .
-6: . . . X . . . .
-5: X X X . X X X X
-4: . . . X . . . .
-3: . . . X . . . .
-2: . . . X . . . .
-1: . . . X . . . .
-   a b c d e f g h
-`}</Board>
-
-            <Board
-              title="H1 Relevant Squares"
-              highlightSecondary="h1"
-              highlight="h8,h7,h6,h5,h4,h3,h2,a1,b1,c1,d1,e1,f1,g1"
-            >{`8: . . . . . . . X
-7: . . . . . . . X
-6: . . . . . . . X
-5: . . . . . . . X
-4: . . . . . . . X
-3: . . . . . . . X
-2: . . . . . . . X
-1: X X X X X X X .
-   a b c d e f g h
-`}</Board>
-          </Row>
-        </Slide>
-
-        <Slide>
-          <h3>Relevancy Squares</h3>
-
-          <p>In fact, the last square on each ray doesn't matter.</p>
-
-          <p>
-            If you can make it to an edge square, include it. It will get
-            filtered later if it's occupied by a friendly piece.
-          </p>
-
-          <Row>
-            <Board
-              title="D5 Relevant Squares"
-              highlightSecondary="d5"
-              highlight="d7,d6,d4,d3,d2,a5,b5,c5,e5,f5,g5"
+              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
             >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
@@ -1322,33 +1286,41 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Relevancy Squares</h3>
+          <h3>Relevant Squares</h3>
 
-          <p>For each square, a rook has 10-12 relevant squares.</p>
+          <p>For each square, a rook has 10-12 relevant squares</p>
 
-          <p>What if the lookup table ignored the irrelevant squares?</p>
+          <p>Can the lookup table ignore the irrelevant squares?</p>
         </Slide>
 
         <Slide>
           <h3>New Storage Requirements</h3>
 
-          <p>
-            <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
-          </p>
+          <Fragment>
+            <p>
+              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
+            </p>
+          </Fragment>
 
-          <p>
-            <code>
-              64 * 2<sup>12</sup> * 8 bytes
-            </code>
-          </p>
+          <Fragment>
+            <p>
+              <code>
+                64 * 2<sup>12</sup> * 8 bytes
+              </code>
+            </p>
+          </Fragment>
 
-          <p>
-            <code>2,097,152 bytes</code>
-          </p>
+          <Fragment>
+            <p>
+              <code>2,097,152 bytes</code>
+            </p>
+          </Fragment>
 
-          <p>
-            <code>~2 MB</code>
-          </p>
+          <Fragment>
+            <p>
+              <code>~2 MB</code>
+            </p>
+          </Fragment>
         </Slide>
       </Stack>
 
@@ -1357,7 +1329,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
           <h3>Map Idea</h3>
 
           <p>
-            Let's create a map of (square, occupancy) -&gt; attack Bitboard.
+            <code>(square, occupancy) -&gt; attack Bitboard</code>
           </p>
 
           <Code language="cpp" lineNumbers>
@@ -1407,27 +1379,33 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 
       <Stack>
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Contiguous Bitboards</h3>
 
-          <p>What if we could store all the attack Bitboards contiguously?</p>
-
-          <p>
-            The D5 rook has 10 relevant squares. It can be blocked in 2
-            <sup>10</sup> == 1024 ways.
-          </p>
-
-          <p>
-            Can we map each occupancy Bitboard to an index in the range{" "}
-            <code>[0, 1024)</code>?
-          </p>
+          <ul>
+            <li>
+              The D5 rook can be blocked 2<sup>10</sup> == 1024 unique ways
+            </li>
+            <li>Store the 1024 attack Bitboards contiguously</li>
+            <li>
+              Map each occupancy Bitboard to an index in the range{" "}
+              <code>[0, 1024)</code>
+            </li>
+            <li>This way, you can just use an array, no hash map!</li>
+          </ul>
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Contiguous Bitboards</h3>
 
-          <p>Can we map a 64-bit integer into a dense 10-bit integer?</p>
+          <p>But the occupancy Bitboards are 64-bit integers!</p>
+
+          <p>Can we extract just the relevant bits?</p>
         </Slide>
       </Stack>
+
+      <Slide>
+        <h3>PEXT</h3>
+      </Slide>
 
       <Slide>
         <h3>Final Performance</h3>
