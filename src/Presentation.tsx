@@ -16,11 +16,12 @@ export const Presentation = () => {
         width: 1400,
         height: 800,
         hash: true,
+        slideNumber: true,
       }}
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
 
-      <Slide visibility="hidden">
+      <Slide>
         <h2>From 20 Nanoseconds to One</h2>
         <p>
           Optimizing Bishop, Rook, and Queen
@@ -664,7 +665,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 5: . . . . . . . .
 4: . . . . . . . .
 3: X . X . . . . .
-2: . . . . . . . .
+2: . . . X . . . .
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
