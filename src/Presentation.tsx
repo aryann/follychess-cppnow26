@@ -637,12 +637,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Fragment>
-              <Board
-                title="position"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: r n b q k b n r
+            <Board
+              title="position"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -652,14 +651,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: R N B Q K B N R
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="pseudo_attacks"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: . . . . . . . .
+            <Board
+              title="pseudo_attacks"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -669,14 +666,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="valid_destinations"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: X X X X X X X X
+            <Board
+              title="valid_destinations"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X X X X X X
@@ -686,14 +681,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="moves"
-                highlight="a3,c3"
-                highlightSecondary="b1"
-              >{`8: . . . . . . . .
+            <Board
+              title="moves"
+              highlight="a3,c3"
+              highlightSecondary="b1"
+            >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -703,7 +696,6 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
           </div>
         </Slide>
 
@@ -735,12 +727,11 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <Fragment>
-              <Board
-                title="position"
-                highlight="d5,e4,g4,h5,g8"
-                highlightSecondary="f6"
-              >{`8: r . . . k . . r
+            <Board
+              title="position"
+              highlight="d5,e4,g4,h5,g8"
+              highlightSecondary="f6"
+            >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
 5: n P . . . . . .
@@ -750,14 +741,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: R . . Q . R K .
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="pseudo_attacks"
-                highlight="d5,e4,g4,h5,g8"
-                highlightSecondary="f6"
-              >{`8: . . . . X . X .
+            <Board
+              title="pseudo_attacks"
+              highlight="d5,e4,g4,h5,g8"
+              highlightSecondary="f6"
+            >{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
 5: . . . X . . . X
@@ -767,14 +756,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="valid_destinations"
-                highlight="d5,e4,g4,h5,g8"
-                highlightSecondary="f6"
-              >{`8: . X X X . X X .
+            <Board
+              title="valid_destinations"
+              highlight="d5,e4,g4,h5,g8"
+              highlightSecondary="f6"
+            >{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
 5: . X X X X X X X
@@ -784,14 +771,12 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: X X X X X X X X
    a b c d e f g h
 `}</Board>
-            </Fragment>
 
-            <Fragment>
-              <Board
-                title="moves"
-                highlight="d5,e4,g4,h5,g8"
-                highlightSecondary="f6"
-              >{`8: . . . . . . X .
+            <Board
+              title="moves"
+              highlight="d5,e4,g4,h5,g8"
+              highlightSecondary="f6"
+            >{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . X
@@ -801,7 +786,6 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-            </Fragment>
           </div>
         </Slide>
 
@@ -846,12 +830,18 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           </p>
 
           <dl>
-            <dt>Bishops</dt>
-            <dd>4 rays along diagonals</dd>
-            <dt>Rooks</dt>
-            <dd>4 rays along ranks and files</dd>
-            <dt>Queens</dt>
-            <dd>8 rays along diagonals, ranks, and files</dd>
+            <Fragment>
+              <dt>Bishops</dt>
+              <dd>4 rays along diagonals</dd>
+            </Fragment>
+            <Fragment>
+              <dt>Rooks</dt>
+              <dd>4 rays along ranks and files</dd>
+            </Fragment>
+            <Fragment>
+              <dt>Queens</dt>
+              <dd>8 rays along diagonals, ranks, and files</dd>
+            </Fragment>
           </dl>
         </Slide>
 
@@ -859,7 +849,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Sliding Piece Moves</h3>
           <p>Sliding piece paths can be blocked by other pieces.</p>
           <p>
-            This makes generating their moves more complex than other pieces.
+            This makes their move generation more complex than other pieces.
           </p>
         </Slide>
 
@@ -896,7 +886,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
           <Code language="cpp" lineNumbers>{`
 Bitboard occupied = position.GetPieces();
-Bitboard pseudo_moves = GenerateSlidingAttacks<kNorth, kEast, kSouth, kWest>(D5, occupied);
+Bitboard pseudo_moves = GenerateRookMoves(D5, occupied);
 Bitboard friendly = position.GetPieces(kWhite);
 Bitboard moves = pseudo_moves & ~friendly;
           `}</Code>
@@ -904,7 +894,11 @@ Bitboard moves = pseudo_moves & ~friendly;
           <div className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
               <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                <Board title="position" highlight="d5">{`8: . . . . . . . .
+                <Board
+                  title="position"
+                  highlightSecondary="d5"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . R . . . .
@@ -915,7 +909,11 @@ Bitboard moves = pseudo_moves & ~friendly;
    a b c d e f g h
 `}</Board>
 
-                <Board title="occupied" highlight="d5">{`8: . . . . . . . .
+                <Board
+                  title="occupied"
+                  highlightSecondary="d5"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -928,6 +926,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="pseudo_moves"
+                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -950,6 +949,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               <div style={{ display: "flex", justifyContent: "space-evenly" }}>
                 <Board
                   title="pseudo_moves"
+                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -962,7 +962,11 @@ Bitboard moves = pseudo_moves & ~friendly;
    a b c d e f g h
 `}</Board>
 
-                <Board title="~friendly" highlight="d5">{`8: X X X X X X X X
+                <Board
+                  title="~friendly"
+                  highlightSecondary="d5"
+                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X . X X X X
@@ -975,6 +979,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="moves"
+                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -997,7 +1002,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
           <Code language="cpp" lineNumbers>{`
 Bitboard occupied = position.GetPieces();
-Bitboard pseudo_moves = GenerateSlidingAttacks<kNorth, kEast, kSouth, kWest>(B4, occupied);
+Bitboard pseudo_moves = GenerateRookMoves(B4, occupied);
 Bitboard friendly = position.GetPieces(kWhite);
 Bitboard moves = pseudo_moves & ~friendly;
           `}</Code>
@@ -1005,7 +1010,11 @@ Bitboard moves = pseudo_moves & ~friendly;
           <div className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
               <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                <Board title="position" highlight="b4">{`8: . . . . . . . .
+                <Board
+                  title="position"
+                  highlightSecondary="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r
@@ -1018,8 +1027,8 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="occupied"
-                  highlight="b4"
-                  highlightSecondary="c7,d6,a5,b5,h5,f4,h4,e2,g2"
+                  highlightSecondary="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . X . . . . .
 6: . . . X . . . .
@@ -1033,7 +1042,8 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="pseudo_moves"
-                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlightSecondary="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -1055,7 +1065,8 @@ Bitboard moves = pseudo_moves & ~friendly;
               <div style={{ display: "flex", justifyContent: "space-evenly" }}>
                 <Board
                   title="pseudo_moves"
-                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlightSecondary="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -1067,7 +1078,11 @@ Bitboard moves = pseudo_moves & ~friendly;
    a b c d e f g h
 `}</Board>
 
-                <Board title="~friendly">{`8: X X X X X X X X
+                <Board
+                  title="~friendly"
+                  highlightSecondary="b4"
+                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: . . X X X X X X
@@ -1080,6 +1095,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="moves"
+                  highlightSecondary="b4"
                   highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .

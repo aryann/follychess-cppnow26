@@ -60,10 +60,18 @@ export const Board = (props: BoardProps) => {
       Math.floor(index / 8) === selectedRank ||
       index % 8 === selectedFile;
 
-    const bg = (isActive || isHighlighted) ? "yellow" : isHighlightedSecondary
-      ? "cyan"
-      : "transparent";
-    const fg = isActive || isHighlighted || isHighlightedSecondary ? "black" : "inherit";
+    let bg = "transparent";
+    if (isHighlighted) {
+      bg = "yellow";
+    } else if (isHighlightedSecondary) {
+      bg = "cyan";
+    }
+    if (isActive) {
+      bg = "white";
+    }
+
+    const fg =
+      isActive || isHighlighted || isHighlightedSecondary ? "black" : "inherit";
 
     return (
       <span
