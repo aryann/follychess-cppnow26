@@ -1438,6 +1438,10 @@ BM_LookupAttacksFromMagicTables<kRook>                 1.25 ns     1.24 ns    57
 BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    362654841
 `}</Code>
       </Slide>
+
+      <Slide>
+        <h2>Thank You!</h2>
+      </Slide>
     </Deck>
   );
 };
