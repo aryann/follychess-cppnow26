@@ -1169,9 +1169,9 @@ Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
 
       <Slide>
         <h3>Performance</h3>
-        <p>On-the-fly move generation takes ~22-40 nanoseconds</p>
+        <p>Takes ~22-40 nanoseconds per piece</p>
 
-        <p>This is too slow when searching millions of positions/second</p>
+        <p>Too slow when searching millions of positions/second</p>
         <Code
           language="plaintext"
           lineNumbers="10-12"
@@ -1191,7 +1191,7 @@ BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     1
       </Slide>
 
       <Slide>
-        <h3>Precomputation</h3>
+        <h3>Lookup</h3>
 
         <p>Map every possible board state to an attack Bitboard.</p>
 
@@ -1210,11 +1210,11 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
       </Slide>
 
       <Slide>
-        <h3>Precomputation Size</h3>
+        <h3>Lookup Table Size</h3>
 
         <Fragment>
           <p>
-            <code>num_squares * ~num_occupancies * sizeof(Bitboard)</code>
+            <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
           </p>
         </Fragment>
 
@@ -1238,10 +1238,21 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
       </Slide>
 
       <Slide>
-        <h3>There Is a Better Way!</h3>
+        <h3>Reducing Lookup Table Size</h3>
 
-        <p>The examples focus on rooks.</p>
-        <p>The same concepts apply to bishops and queens.</p>
+        <Fragment>
+          <p>
+            For each sliding piece, only the occupancy of some squares matter.
+          </p>
+        </Fragment>
+
+        <Fragment>
+          <p>Let's examing rooks.</p>
+        </Fragment>
+
+        <Fragment>
+          <p>The same concept applies to bishops and queens.</p>
+        </Fragment>
       </Slide>
 
       <Stack>
@@ -1288,49 +1299,17 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
         <Slide>
           <h3>Relevant Squares</h3>
 
-          <p>For each square, a rook has 10-12 relevant squares</p>
+          <p>For each square, a rook has 10-12 relevant squares.</p>
 
-          <p>Can the lookup table ignore the irrelevant squares?</p>
-        </Slide>
-
-        <Slide>
-          <h3>New Storage Requirements</h3>
-
-          <Fragment>
-            <p>
-              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>
-                64 * 2<sup>12</sup> * 8 bytes
-              </code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>2,097,152 bytes</code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>~2 MB</code>
-            </p>
-          </Fragment>
+          <p>Can we ignore the irrelevant squares?</p>
         </Slide>
       </Stack>
 
       <Stack>
         <Slide>
-          <h3>Map Idea</h3>
+          <h3>Map</h3>
 
-          <p>
-            <code>(square, occupancy) -&gt; attack Bitboard</code>
-          </p>
+          <p>Same idea as before, but with a map instead of an array.</p>
 
           <Code language="cpp" lineNumbers>
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
@@ -1347,7 +1326,39 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Map Idea</h3>
+          <h3>Map Size</h3>
+
+          <Fragment>
+            <p>
+              <code>
+                num_squares * num_occupancies * map_overhead * sizeof(Bitboard)
+              </code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>
+                64 * ~2<sup>12</sup> * ~2 * 8 bytes
+              </code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~4,194,304 bytes</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~4 MB</code>
+            </p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Map</h3>
 
           <Code
             language="plaintext"
@@ -1400,6 +1411,36 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
           <p>But the occupancy Bitboards are 64-bit integers!</p>
 
           <p>Can we extract just the relevant bits?</p>
+        </Slide>
+
+        <Slide>
+          <h3>Size</h3>
+
+          <Fragment>
+            <p>
+              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>
+                64 * 2<sup>12</sup> (worst-case) * 8 bytes
+              </code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>2,097,152 bytes</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~2 MB</code>
+            </p>
+          </Fragment>
         </Slide>
       </Stack>
 
