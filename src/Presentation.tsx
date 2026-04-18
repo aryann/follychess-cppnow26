@@ -1526,13 +1526,176 @@ info depth  4 score cp 55 nodes    1487 nps   43598 ...
 info depth  5 score cp 46 nodes    3763 nps  104388 ...
 info depth  6 score cp 43 nodes   18506 nps  411948 ...
 info depth  7 score cp 76 nodes   29699 nps  602461 ...
-info depth  8 score cp 10 nodes  229538 nps  203085 ...
+info depth  8 score cp 10 nodes  229538 nps 2030856 ...
 info depth  9 score cp 18 nodes 1262758 nps 3593752 ...
 info depth 10 score cp 15 nodes 1799335 nps 3622464 ...
 info depth 11 score cp 40 nodes 2641193 nps 3652348 ...
 info depth 12 score cp  5 nodes 6433881 nps 3831432 ...
 bestmove b4f4`}
         </Code>
+      </Slide>
+
+      <Slide>
+        <h3>Performance in Real Search</h3>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th rowSpan={2}>Depth</th>
+                <th colSpan={3}>Starting</th>
+                <th colSpan={3}>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
+                    Perft Position 3
+                  </a>
+                </th>
+              </tr>
+
+              <tr>
+                <th>Lazy</th>
+                <th>Magic</th>
+                <th>Speedup</th>
+
+                <th>Lazy</th>
+                <th>Magic</th>
+                <th>Speedup</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th>1</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>1,394</td>
+                <td>1,119</td>
+                <td>0.80</td>
+              </tr>
+
+              <tr>
+                <th>2</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>13,489</td>
+                <td>10,701</td>
+                <td>0.79</td>
+              </tr>
+
+              <tr>
+                <th>3</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>43,317</td>
+                <td>32,054</td>
+                <td>0.74</td>
+              </tr>
+
+              <tr>
+                <th>4</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>59,049</td>
+                <td>43,598</td>
+                <td>0.74</td>
+              </tr>
+
+              <tr>
+                <th>5</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>143,376</td>
+                <td>104,388</td>
+                <td>0.73</td>
+              </tr>
+
+              <tr>
+                <th>6</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>521,711</td>
+                <td>411,948</td>
+                <td>0.79</td>
+              </tr>
+
+              <tr>
+                <th>7</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>735,369</td>
+                <td>602,461</td>
+                <td>0.82</td>
+              </tr>
+
+              <tr>
+                <th>8</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>2,067,715</td>
+                <td>2,030,856</td>
+                <td>0.98</td>
+              </tr>
+
+              <tr>
+                <th>9</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>2,969,819</td>
+                <td>3,593,752</td>
+                <td>1.21</td>
+              </tr>
+
+              <tr>
+                <th>10</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>2,993,273</td>
+                <td>3,622,464</td>
+                <td>1.21</td>
+              </tr>
+
+              <tr>
+                <th>11</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>2,909,475</td>
+                <td>3,652,348</td>
+                <td>1.26</td>
+              </tr>
+
+              <tr>
+                <th>12</th>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td>3,059,197</td>
+                <td>3,831,432</td>
+                <td>1.25</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </Slide>
 
       <Slide>
