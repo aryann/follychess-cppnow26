@@ -1489,7 +1489,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
       <Slide>
         <h3>Universal Chess Interface (UCI)</h3>
 
-        <Code language="plaintext" lineNumbers>
+        <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
           {`
 $ follychess
 position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
@@ -1524,7 +1524,7 @@ bestmove c4c5
 
       <Slide>
         <h3>Depth 10 Search Performance</h3>
-        <p>(nodes per second)</p>
+        <p>Nodes per second</p>
         <div>
           <table>
             <thead>
@@ -1539,9 +1539,9 @@ bestmove c4c5
             <tbody>
               <tr>
                 <td>Initial</td>
-                <td>2192215</td>
-                <td>2612228</td>
-                <td></td>
+                <td>2,192,215</td>
+                <td>2,612,228</td>
+                <td>1.19</td>
               </tr>
 
               <tr>
@@ -1550,9 +1550,9 @@ bestmove c4c5
                     Perft 3
                   </a>
                 </td>
-                <td>2948287</td>
-                <td>3833231</td>
-                <td></td>
+                <td>2,948,287</td>
+                <td>3,833,231</td>
+                <td>1.30</td>
               </tr>
 
               <tr>
@@ -1561,9 +1561,9 @@ bestmove c4c5
                     Perft 4
                   </a>
                 </td>
-                <td>2557210</td>
-                <td>2807615</td>
-                <td></td>
+                <td>2,557,210</td>
+                <td>2,807,615</td>
+                <td>1.10</td>
               </tr>
 
               <tr>
@@ -1572,9 +1572,9 @@ bestmove c4c5
                     Perft 5
                   </a>
                 </td>
-                <td>2169405</td>
-                <td>2435906</td>
-                <td></td>
+                <td>2,169,405</td>
+                <td>2,435,906</td>
+                <td>1.12</td>
               </tr>
 
               <tr>
@@ -1583,9 +1583,9 @@ bestmove c4c5
                     Perft 6
                   </a>
                 </td>
-                <td>2377000</td>
-                <td>2525090</td>
-                <td></td>
+                <td>2,377,000</td>
+                <td>2,525,090</td>
+                <td>1.06</td>
               </tr>
             </tbody>
           </table>
