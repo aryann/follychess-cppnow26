@@ -1481,80 +1481,55 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
       </Slide>
 
       <Slide>
-        <h3>Lazy Move Generation</h3>
-        <p>
-          <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
-            "Perft Position 3"
-          </a>
-        </p>
-        <Code language="text">
-          {`$ follychess
->>> position fen 8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1
->>> go depth 12
-info depth  1 score cp 25 nodes      34 nps    1394 ...
-info depth  2 score cp 57 nodes     332 nps   13489 ...
-info depth  3 score cp 35 nodes    1081 nps   43317 ...
-info depth  4 score cp 55 nodes    1487 nps   59049 ...
-info depth  5 score cp 46 nodes    3763 nps  143376 ...
-info depth  6 score cp 43 nodes   18506 nps  521711 ...
-info depth  7 score cp 76 nodes   29699 nps  735369 ...
-info depth  8 score cp 10 nodes  293371 nps 2067715 ...
-info depth  9 score cp 18 nodes 1098552 nps 2969819 ...
-info depth 10 score cp 11 nodes 1340116 nps 2993273 ...
-info depth 11 score cp 22 nodes 2057456 nps 2909475 ...
-info depth 12 score cp  8 nodes 9360203 nps 3059197 ...
-bestmove b4f4`}
+        <h3>
+          How does this impact finding the best move for a given position?
+        </h3>
+      </Slide>
+
+      <Slide>
+        <h3>Universal Chess Interface (UCI)</h3>
+
+        <Code language="plaintext" lineNumbers>
+          {`
+$ follychess
+position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
+d
+8: r . . . k . . r
+7: P p p p . p p p
+6: . b . . . n b N
+5: n P . . . . . .
+4: B B P . P . . .
+3: q . . . . N . .
+2: P p . P . . P P
+1: R . . Q . R K .
+   a b c d e f g h
+
+   w kq - 0 1
+
+go depth 10
+info depth 1 score cp -249 nodes 782 nps 19822 pv c4c5 b2a1r b4a3 a1d1 a4d1 b6a7
+info depth 2 score cp -249 nodes 1327 nps 32765 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+info depth 3 score cp -249 nodes 3481 nps 80588 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+info depth 4 score cp -274 nodes 13995 nps 261883 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+info depth 5 score cp -274 nodes 32034 nps 479990 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+info depth 6 score cp -302 nodes 97776 nps 891383 pv c4c5 b6c5 b4c5 a3c5 d2d4 c5b6
+info depth 7 score cp -260 nodes 394057 nps 1737388 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+info depth 8 score cp -260 nodes 848622 nps 2321683 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+info depth 9 score cp -375 nodes 1458344 nps 2542025 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d4c5 a1d1 a4d1 g7h6
+info depth 10 score cp -338 nodes 4698200 nps 2509260 pv c4c5 b6c5 b4c5 a3c5 g1h1 h8f8 d2d3 b2a1q d1a1 a5c4
+bestmove c4c5
+  `}
         </Code>
       </Slide>
 
       <Slide>
-        <h3>Magic Move Generation</h3>
-        <p>
-          <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
-            "Perft Position 3"
-          </a>
-        </p>
-
-        <Code language="text">
-          {`$ follychess
->>> position fen 8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1
->>> go depth 12
-info depth  1 score cp 25 nodes      34 nps    1119 ...
-info depth  2 score cp 57 nodes     332 nps   10701 ...
-info depth  3 score cp 35 nodes    1081 nps   32054 ...
-info depth  4 score cp 55 nodes    1487 nps   43598 ...
-info depth  5 score cp 46 nodes    3763 nps  104388 ...
-info depth  6 score cp 43 nodes   18506 nps  411948 ...
-info depth  7 score cp 76 nodes   29699 nps  602461 ...
-info depth  8 score cp 10 nodes  229538 nps 2030856 ...
-info depth  9 score cp 18 nodes 1262758 nps 3593752 ...
-info depth 10 score cp 15 nodes 1799335 nps 3622464 ...
-info depth 11 score cp 40 nodes 2641193 nps 3652348 ...
-info depth 12 score cp  5 nodes 6433881 nps 3831432 ...
-bestmove b4f4`}
-        </Code>
-      </Slide>
-
-      <Slide>
-        <h3>Performance in Real Search</h3>
+        <h3>Depth 10 Search Performance</h3>
+        <p>(nodes per second)</p>
         <div>
           <table>
             <thead>
               <tr>
-                <th rowSpan={2}>Depth</th>
-                <th colSpan={3}>Starting</th>
-                <th colSpan={3}>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
-                    Perft Position 3
-                  </a>
-                </th>
-              </tr>
-
-              <tr>
-                <th>Lazy</th>
-                <th>Magic</th>
-                <th>Speedup</th>
-
+                <th>Position</th>
                 <th>Lazy</th>
                 <th>Magic</th>
                 <th>Speedup</th>
@@ -1563,135 +1538,54 @@ bestmove b4f4`}
 
             <tbody>
               <tr>
-                <th>1</th>
+                <td>Initial</td>
+                <td>2192215</td>
+                <td>2612228</td>
                 <td></td>
-                <td></td>
-                <td></td>
-
-                <td>1,394</td>
-                <td>1,119</td>
-                <td>0.80</td>
               </tr>
 
               <tr>
-                <th>2</th>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
+                    Perft 3
+                  </a>
+                </td>
+                <td>2948287</td>
+                <td>3833231</td>
                 <td></td>
-                <td></td>
-                <td></td>
-
-                <td>13,489</td>
-                <td>10,701</td>
-                <td>0.79</td>
               </tr>
 
               <tr>
-                <th>3</th>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_4">
+                    Perft 4
+                  </a>
+                </td>
+                <td>2557210</td>
+                <td>2807615</td>
                 <td></td>
-                <td></td>
-                <td></td>
-
-                <td>43,317</td>
-                <td>32,054</td>
-                <td>0.74</td>
               </tr>
 
               <tr>
-                <th>4</th>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
+                    Perft 5
+                  </a>
+                </td>
+                <td>2169405</td>
+                <td>2435906</td>
                 <td></td>
-                <td></td>
-                <td></td>
-
-                <td>59,049</td>
-                <td>43,598</td>
-                <td>0.74</td>
               </tr>
 
               <tr>
-                <th>5</th>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_6">
+                    Perft 6
+                  </a>
+                </td>
+                <td>2377000</td>
+                <td>2525090</td>
                 <td></td>
-                <td></td>
-                <td></td>
-
-                <td>143,376</td>
-                <td>104,388</td>
-                <td>0.73</td>
-              </tr>
-
-              <tr>
-                <th>6</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>521,711</td>
-                <td>411,948</td>
-                <td>0.79</td>
-              </tr>
-
-              <tr>
-                <th>7</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>735,369</td>
-                <td>602,461</td>
-                <td>0.82</td>
-              </tr>
-
-              <tr>
-                <th>8</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>2,067,715</td>
-                <td>2,030,856</td>
-                <td>0.98</td>
-              </tr>
-
-              <tr>
-                <th>9</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>2,969,819</td>
-                <td>3,593,752</td>
-                <td>1.21</td>
-              </tr>
-
-              <tr>
-                <th>10</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>2,993,273</td>
-                <td>3,622,464</td>
-                <td>1.21</td>
-              </tr>
-
-              <tr>
-                <th>11</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>2,909,475</td>
-                <td>3,652,348</td>
-                <td>1.26</td>
-              </tr>
-
-              <tr>
-                <th>12</th>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td>3,059,197</td>
-                <td>3,831,432</td>
-                <td>1.25</td>
               </tr>
             </tbody>
           </table>
