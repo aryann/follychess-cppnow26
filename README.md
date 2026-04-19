@@ -7,4 +7,4 @@ $ pnpm install
 $ pnpm dev
 ```
 
-The slides are hosted at [cppnow26.follychess.com](http://cppnow26.follychess.com/).
+The slides are hosted at [cppnow26.follychess.com](https://cppnow26.follychess.com/).
