@@ -1534,8 +1534,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
             <tbody>
               <tr>
                 <td>Initial</td>
-                <td>2,192,215</td>
-                <td>2,612,228</td>
+                <td>2.192</td>
+                <td>2.612</td>
                 <td>1.19</td>
               </tr>
 
@@ -1545,8 +1545,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
                     Perft 3
                   </a>
                 </td>
-                <td>2,948,287</td>
-                <td>3,833,231</td>
+                <td>2.948</td>
+                <td>3.833</td>
                 <td>1.30</td>
               </tr>
 
@@ -1556,8 +1556,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
                     Perft 4
                   </a>
                 </td>
-                <td>2,557,210</td>
-                <td>2,807,615</td>
+                <td>2.557</td>
+                <td>2.808</td>
                 <td>1.10</td>
               </tr>
 
@@ -1567,8 +1567,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
                     Perft 5
                   </a>
                 </td>
-                <td>2,169,405</td>
-                <td>2,435,906</td>
+                <td>2.169</td>
+                <td>2.436</td>
                 <td>1.12</td>
               </tr>
 
@@ -1578,8 +1578,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
                     Perft 6
                   </a>
                 </td>
-                <td>2,377,000</td>
-                <td>2,525,090</td>
+                <td>2.377</td>
+                <td>2.525</td>
                 <td>1.06</td>
 
               </tr>
@@ -1592,7 +1592,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
       <Slide>
         <h3>Performance: Perft</h3>
 
-        <p>Time to generate all positions to depth 5</p>
+        <p>Generating all positions to depth 5</p>
 
         <table>
           <thead>
