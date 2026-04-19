@@ -1449,7 +1449,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
       </Slide>
 
       <Slide>
-        <h3>Final Performance</h3>
+        <h3>Performance: Microbenchmarks</h3>
         <Code
           language="plaintext"
           lineNumbers="22-24"
@@ -1480,52 +1480,47 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
 `}</Code>
       </Slide>
 
-      <Slide>
-        <h3>
-          How does this impact finding the best move for a given position?
-        </h3>
-      </Slide>
+      <Stack>
+        <Slide>
+          <h3>Performance: Depth 10 Best Move Search</h3>
 
-      <Slide>
-        <h3>Universal Chess Interface (UCI)</h3>
+          <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
+            {`
+  $ follychess
+  position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
+  d
+  8: r . . . k . . r
+  7: P p p p . p p p
+  6: . b . . . n b N
+  5: n P . . . . . .
+  4: B B P . P . . .
+  3: q . . . . N . .
+  2: P p . P . . P P
+  1: R . . Q . R K .
+    a b c d e f g h
 
-        <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
-          {`
-$ follychess
-position fen r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
-d
-8: r . . . k . . r
-7: P p p p . p p p
-6: . b . . . n b N
-5: n P . . . . . .
-4: B B P . P . . .
-3: q . . . . N . .
-2: P p . P . . P P
-1: R . . Q . R K .
-   a b c d e f g h
+    w kq - 0 1
 
-   w kq - 0 1
+  go depth 10
+  info depth 1 score cp -249 nodes 782 nps 19822 pv c4c5 b2a1r b4a3 a1d1 a4d1 b6a7
+  info depth 2 score cp -249 nodes 1327 nps 32765 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+  info depth 3 score cp -249 nodes 3481 nps 80588 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
+  info depth 4 score cp -274 nodes 13995 nps 261883 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+  info depth 5 score cp -274 nodes 32034 nps 479990 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
+  info depth 6 score cp -302 nodes 97776 nps 891383 pv c4c5 b6c5 b4c5 a3c5 d2d4 c5b6
+  info depth 7 score cp -260 nodes 394057 nps 1737388 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+  info depth 8 score cp -260 nodes 848622 nps 2321683 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
+  info depth 9 score cp -375 nodes 1458344 nps 2542025 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d4c5 a1d1 a4d1 g7h6
+  info depth 10 score cp -338 nodes 4698200 nps 2509260 pv c4c5 b6c5 b4c5 a3c5 g1h1 h8f8 d2d3 b2a1q d1a1 a5c4
+  bestmove c4c5
+    `}
+          </Code>
+        </Slide>
 
-go depth 10
-info depth 1 score cp -249 nodes 782 nps 19822 pv c4c5 b2a1r b4a3 a1d1 a4d1 b6a7
-info depth 2 score cp -249 nodes 1327 nps 32765 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
-info depth 3 score cp -249 nodes 3481 nps 80588 pv c4c5 b2a1q b4a3 a1d1 a4d1 b6a7
-info depth 4 score cp -274 nodes 13995 nps 261883 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
-info depth 5 score cp -274 nodes 32034 nps 479990 pv c4c5 a3b4 c5b6 b2a1q d1a1 b4a4 b6c7 g6e4
-info depth 6 score cp -302 nodes 97776 nps 891383 pv c4c5 b6c5 b4c5 a3c5 d2d4 c5b6
-info depth 7 score cp -260 nodes 394057 nps 1737388 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
-info depth 8 score cp -260 nodes 848622 nps 2321683 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d1a1 c5a7
-info depth 9 score cp -375 nodes 1458344 nps 2542025 pv c4c5 b6c5 b4c5 a3c5 d2d4 b2a1q d4c5 a1d1 a4d1 g7h6
-info depth 10 score cp -338 nodes 4698200 nps 2509260 pv c4c5 b6c5 b4c5 a3c5 g1h1 h8f8 d2d3 b2a1q d1a1 a5c4
-bestmove c4c5
-  `}
-        </Code>
-      </Slide>
+        <Slide>
+          <h3>Performance: Depth 10 Best Move Search</h3>
+          <p>Million nodes per second</p>
 
-      <Slide>
-        <h3>Depth 10 Search Performance</h3>
-        <p>Nodes per second</p>
-        <div>
           <table>
             <thead>
               <tr>
@@ -1586,10 +1581,60 @@ bestmove c4c5
                 <td>2,377,000</td>
                 <td>2,525,090</td>
                 <td>1.06</td>
+
               </tr>
             </tbody>
           </table>
-        </div>
+
+        </Slide>
+      </Stack>
+
+      <Slide>
+        <h3>Performance: Perft</h3>
+
+        <p>Time to generate all positions to depth 5</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Position</th>
+              <th><a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">Lazy</a></th>
+              <th><a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">Magic</a></th>
+              <th>Speedup</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Initial</td>
+              <td>233 ms</td>
+              <td>195 ms</td>
+              <td>1.20</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_2">
+                  Perft 2
+                </a>
+              </td>
+              <td>9,014 ms</td>
+              <td>7,074 ms</td>
+              <td>1.27</td>
+            </tr>
+
+            <tr>
+              <td>
+                <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
+                  Perft 5
+                </a>
+              </td>
+              <td>4,536 ms</td>
+              <td>3,426 ms</td>
+              <td>1.32</td>
+            </tr>
+          </tbody>
+        </table>
       </Slide>
 
       <Slide>
