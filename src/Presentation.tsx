@@ -1449,6 +1449,202 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
       </Slide>
 
       <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <div className="r-stack">
+          <Fragment className="fade-out" index={0}>
+            <Board
+              title="D5 Relevant Squares"
+              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+              showBits
+            >{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: . X X . X X X .
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+
+          <Fragment className="current-visible" index={0}>
+            <Board
+              title="D5 Relevant Squares"
+              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+              showBits
+              showLabels
+            >{`8: . . . . . . . .
+7: . . . A . . . .
+6: . . . B . . . .
+5: . C D . E F G .
+4: . . . H . . . .
+3: . . . I . . . .
+2: . . . J . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+        </div>
+      </Slide>
+
+      <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <Board
+          highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+          hideBoard
+          showBits
+          showLabels
+        >{`8: . . . . . . . .
+7: . . . A . . . .
+6: . . . B . . . .
+5: . C D . E F G .
+4: . . . H . . . .
+3: . . . I . . . .
+2: . . . J . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+        <p>&rarr;</p>
+
+        <div className="r-stack">
+          <Fragment className="fade-out" index={0}>
+            <Board
+              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+              hideBoard
+              showBits
+              showLabels
+            >{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . A B
+1: C D E F G H I J
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+
+          <Fragment className="current-visible" index={0}>
+            <Board
+              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+              hideBoard
+              showBits
+              showLabels
+            >{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . J I
+1: H G F E D C B A
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+
+          <Fragment className="fade-in" index={1}>
+            <Board
+              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+              hideBoard
+              showBits
+              showLabels
+            >{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . A J
+1: I C G F E D H B
+   a b c d e f g h
+`}</Board>
+          </Fragment>
+        </div>
+      </Slide>
+
+      <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <Code language="cpp" lineNumbers>{`
+[[nodiscard]] std::size_t CalculateIndex(
+  std::int64_t magic, Bitboard occupied, Bitboard relevancy_mask) {
+
+  // Clear non-relevant squares:
+  std::size_t index = occupied & relevancy_mask;
+
+  // Moves the relevant square values to the upper bits:
+  index = index * magic;
+
+  // Moves the relevant square values to the lower bits,
+  // so we're left with a small number:
+  index = index >> (64 - relevancy_mask.GetCount());
+
+  return index;
+}
+`}</Code>
+      </Slide>
+
+      <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <p>
+          Find <code>magic</code> for each square:
+        </p>
+        <ol>
+          <Fragment>
+            <li>Generate a random number.</li>
+          </Fragment>
+          <Fragment>
+            <li>
+              Call <code>CalculateIndex()</code> for every possible occupancy.
+            </li>
+          </Fragment>
+          <Fragment>
+            <li>
+              If two occupancies lead to the same index, go back to step 1.
+              Otherwise, you found the magic number for the square.
+            </li>
+          </Fragment>
+        </ol>
+      </Slide>
+
+      <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <Code
+          language="plaintext"
+          lineNumbers
+        >{`Found magic for a8 after 8097 attempts: 4618499800499814914
+Found magic for a8 after 14818 attempts: 36029348119068678
+Found magic for b8 after 2119 attempts: 580427833214631970
+Found magic for b8 after 22393 attempts: 18031996064260096
+Found magic for c8 after 177 attempts: 19149103103475792
+Found magic for c8 after 17526 attempts: 13871096199760580608
+Found magic for d8 after 1912 attempts: 583227147398709256
+Found magic for d8 after 245292 attempts: 72062133818904577
+Found magic for e8 after 1018 attempts: 145245632193366016
+Found magic for e8 after 29928 attempts: 2449986784802119824
+Found magic for f8 after 1481 attempts: 572916560560704
+...
+`}</Code>
+      </Slide>
+
+      <Slide>
+        <h3>Magic Bitboards</h3>
+
+        <p>Why shift right versus selecting the lower bits?</p>
+
+        <p>
+          When multiplying, information flows from lower bits to upper bits.
+        </p>
+      </Slide>
+
+      <Slide>
         <h3>Performance: Microbenchmarks</h3>
         <Code
           language="plaintext"
@@ -1581,11 +1777,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
                 <td>2.377</td>
                 <td>2.525</td>
                 <td>1.06</td>
-
               </tr>
             </tbody>
           </table>
-
         </Slide>
       </Stack>
 
@@ -1598,8 +1792,16 @@ BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    36
           <thead>
             <tr>
               <th>Position</th>
-              <th><a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">Lazy</a></th>
-              <th><a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">Magic</a></th>
+              <th>
+                <a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">
+                  Lazy
+                </a>
+              </th>
+              <th>
+                <a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">
+                  Magic
+                </a>
+              </th>
               <th>Speedup</th>
             </tr>
           </thead>

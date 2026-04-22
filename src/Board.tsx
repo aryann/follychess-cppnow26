@@ -2,7 +2,9 @@ import React, { useState } from "react";
 
 type BoardProps = {
   children: string;
+  hideBoard?: boolean;
   showBits?: boolean;
+  showLabels?: boolean;
   title?: string;
   highlight?: string;
   highlightSecondary?: string;
@@ -114,64 +116,66 @@ export const Board = (props: BoardProps) => {
           </code>
         )}
 
-        <code>
-          <pre>
-            {Array.from({ length: 8 }, (_, rank) => {
-              const isActive = selectedRank == rank;
+        {!props.hideBoard && (
+          <code>
+            <pre>
+              {Array.from({ length: 8 }, (_, rank) => {
+                const isActive = selectedRank == rank;
 
-              return (
-                <span
-                  key={rank}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: isActive ? "yellow" : "transparent",
-                    color: isActive ? "black" : "inherit",
-                  }}
-                >
+                return (
                   <span
-                    onMouseOver={() => setSelectedRank(rank)}
-                    onMouseLeave={() => setSelectedRank(null)}
+                    key={rank}
+                    style={{
+                      cursor: "pointer",
+                      backgroundColor: isActive ? "yellow" : "transparent",
+                      color: isActive ? "black" : "inherit",
+                    }}
                   >
-                    {8 - rank}:
+                    <span
+                      onMouseOver={() => setSelectedRank(rank)}
+                      onMouseLeave={() => setSelectedRank(null)}
+                    >
+                      {8 - rank}:
+                    </span>
+                    {Array.from({ length: 8 }, (_, file) => {
+                      const index = rank * 8 + file;
+
+                      return (
+                        <span key={index}>
+                          {renderCell(index, board[index], 24)}
+                        </span>
+                      );
+                    })}
+                    {"\n"}
                   </span>
-                  {Array.from({ length: 8 }, (_, file) => {
-                    const index = rank * 8 + file;
+                );
+              })}
 
-                    return (
-                      <span key={index}>
-                        {renderCell(index, board[index], 24)}
-                      </span>
-                    );
-                  })}
-                  {"\n"}
-                </span>
-              );
-            })}
+              {"  "}
+              {Array.from({ length: 8 }, (_, file) => {
+                const isActive = selectedFile == file;
 
-            {"  "}
-            {Array.from({ length: 8 }, (_, file) => {
-              const isActive = selectedFile == file;
-
-              return (
-                <span
-                  key={file}
-                  style={{
-                    cursor: "pointer",
-                    display: "inline-block",
-                    width: "24px",
-                    textAlign: "center",
-                    backgroundColor: isActive ? "yellow" : "transparent",
-                    color: isActive ? "black" : "inherit",
-                  }}
-                  onMouseOver={() => setSelectedFile(file)}
-                  onMouseLeave={() => setSelectedFile(null)}
-                >
-                  {String.fromCharCode("a".charCodeAt(0) + file)}
-                </span>
-              );
-            })}
-          </pre>
-        </code>
+                return (
+                  <span
+                    key={file}
+                    style={{
+                      cursor: "pointer",
+                      display: "inline-block",
+                      width: "24px",
+                      textAlign: "center",
+                      backgroundColor: isActive ? "yellow" : "transparent",
+                      color: isActive ? "black" : "inherit",
+                    }}
+                    onMouseOver={() => setSelectedFile(file)}
+                    onMouseLeave={() => setSelectedFile(null)}
+                  >
+                    {String.fromCharCode("a".charCodeAt(0) + file)}
+                  </span>
+                );
+              })}
+            </pre>
+          </code>
+        )}
       </div>
 
       {props.showBits && (
@@ -182,7 +186,10 @@ export const Board = (props: BoardProps) => {
 
               return (
                 <React.Fragment key={`bit-${originalIndex}`}>
-                  {renderCell(originalIndex, char === "." ? 0 : 1)}
+                  {renderCell(
+                    originalIndex,
+                    char === "." ? 0 : props.showLabels ? char : 1,
+                  )}
                   {originalIndex % 8 === 0 && " "}
                 </React.Fragment>
               );
