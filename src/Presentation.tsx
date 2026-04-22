@@ -1448,16 +1448,17 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
         <h3>PEXT</h3>
       </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+      <Stack>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <div className="r-stack">
-          <Fragment className="fade-out" index={0}>
-            <Board
-              title="D5 Relevant Squares"
-              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-              showBits
-            >{`8: . . . . . . . .
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0}>
+              <Board
+                title="D5 Relevant Squares"
+                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                showBits
+              >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X X X .
@@ -1467,15 +1468,15 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </Fragment>
+            </Fragment>
 
-          <Fragment className="current-visible" index={0}>
-            <Board
-              title="D5 Relevant Squares"
-              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-              showBits
-              showLabels
-            >{`8: . . . . . . . .
+            <Fragment className="current-visible" index={0}>
+              <Board
+                title="D5 Relevant Squares"
+                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                showBits
+                showLabels
+              >{`8: . . . . . . . .
 7: . . . A . . . .
 6: . . . B . . . .
 5: . C D . E F G .
@@ -1485,19 +1486,19 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </Fragment>
-        </div>
-      </Slide>
+            </Fragment>
+          </div>
+        </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <Board
-          highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-          hideBoard
-          showBits
-          showLabels
-        >{`8: . . . . . . . .
+          <Board
+            highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+            hideBoard
+            showBits
+            showLabels
+          >{`8: . . . . . . . .
 7: . . . A . . . .
 6: . . . B . . . .
 5: . C D . E F G .
@@ -1508,16 +1509,16 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
    a b c d e f g h
 `}</Board>
 
-        <p>&rarr;</p>
+          <p>&rarr;</p>
 
-        <div className="r-stack">
-          <Fragment className="fade-out" index={0}>
-            <Board
-              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-              hideBoard
-              showBits
-              showLabels
-            >{`8: . . . . . . . .
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0}>
+              <Board
+                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+                hideBoard
+                showBits
+                showLabels
+              >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -1527,15 +1528,15 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: C D E F G H I J
    a b c d e f g h
 `}</Board>
-          </Fragment>
+            </Fragment>
 
-          <Fragment className="current-visible" index={0}>
-            <Board
-              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-              hideBoard
-              showBits
-              showLabels
-            >{`8: . . . . . . . .
+            <Fragment className="current-visible" index={0}>
+              <Board
+                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+                hideBoard
+                showBits
+                showLabels
+              >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -1545,15 +1546,15 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: H G F E D C B A
    a b c d e f g h
 `}</Board>
-          </Fragment>
+            </Fragment>
 
-          <Fragment className="fade-in" index={1}>
-            <Board
-              highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-              hideBoard
-              showBits
-              showLabels
-            >{`8: . . . . . . . .
+            <Fragment className="fade-in" index={1}>
+              <Board
+                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+                hideBoard
+                showBits
+                showLabels
+              >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -1563,14 +1564,14 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: I C G F E D H B
    a b c d e f g h
 `}</Board>
-          </Fragment>
-        </div>
-      </Slide>
+            </Fragment>
+          </div>
+        </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <Code language="cpp" lineNumbers>{`
+          <Code language="cpp" lineNumbers>{`
 [[nodiscard]] std::size_t CalculateIndex(
   std::int64_t magic, Bitboard occupied, Bitboard relevancy_mask) {
 
@@ -1587,39 +1588,39 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
   return index;
 }
 `}</Code>
-      </Slide>
+        </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <p>
-          Find <code>magic</code> for each square:
-        </p>
-        <ol>
-          <Fragment>
-            <li>Generate a random number.</li>
-          </Fragment>
-          <Fragment>
-            <li>
-              Call <code>CalculateIndex()</code> for every possible occupancy.
-            </li>
-          </Fragment>
-          <Fragment>
-            <li>
-              If two occupancies lead to the same index, go back to step 1.
-              Otherwise, you found the magic number for the square.
-            </li>
-          </Fragment>
-        </ol>
-      </Slide>
+          <p>
+            Find <code>magic</code> for each square:
+          </p>
+          <ol>
+            <Fragment>
+              <li>Generate a random number.</li>
+            </Fragment>
+            <Fragment>
+              <li>
+                Call <code>CalculateIndex()</code> for every possible occupancy.
+              </li>
+            </Fragment>
+            <Fragment>
+              <li>
+                If two occupancies lead to the same index, go back to step 1.
+                Otherwise, you found the magic number for the square.
+              </li>
+            </Fragment>
+          </ol>
+        </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <Code
-          language="plaintext"
-          lineNumbers
-        >{`Found magic for a8 after 8097 attempts: 4618499800499814914
+          <Code
+            language="plaintext"
+            lineNumbers
+          >{`Found magic for a8 after 8097 attempts: 4618499800499814914
 Found magic for a8 after 14818 attempts: 36029348119068678
 Found magic for b8 after 2119 attempts: 580427833214631970
 Found magic for b8 after 22393 attempts: 18031996064260096
@@ -1632,17 +1633,121 @@ Found magic for e8 after 29928 attempts: 2449986784802119824
 Found magic for f8 after 1481 attempts: 572916560560704
 ...
 `}</Code>
-      </Slide>
+        </Slide>
 
-      <Slide>
-        <h3>Magic Bitboards</h3>
+        <Slide>
+          <h3>Magic Bitboards</h3>
 
-        <p>Why shift right versus selecting the lower bits?</p>
+          <p>Why shift right versus selecting the lower bits?</p>
 
-        <p>
-          When multiplying, information flows from lower bits to upper bits.
-        </p>
-      </Slide>
+          <p>
+            When multiplying, information flows from lower bits to upper bits.
+          </p>
+        </Slide>
+      </Stack>
+
+      <Stack>
+        <Slide>
+          <h3>Magic Bitboard File</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`void AddMagicEntry(const MagicEntry& entry, std::ofstream& output) {
+ std::println(output, "    MagicEntry{{");
+ std::println(output, "      .mask = Bitboard({}ULL),", entry.mask.Data());
+ std::println(output, "      .magic = {}ULL,", entry.magic);
+ std::println(output, "      .shift = {}U,", entry.shift);
+ std::println(output, "      .attack_table_index = {},",
+              entry.attack_table_index);
+ std::println(output, "    }},");
+}
+
+void AddTable(std::ofstream& output) {
+  SlidingAttackTables table = follychess::GenerateSlidingAttackTables();
+
+  std::println(output, "constexpr SlidingAttackTables kSliderAttacks = {{");
+  std::println(output, "  .attacks = {{");
+  for (int i = 0; i < SlidingAttackTables::kAttackTableSize; ++i) {
+    std::println(output, "    Bitboard({}ULL),", table.attacks[i].Data());
+  }
+  std::println(output, "   }},");
+
+  std::println(output, "  .bishop_magic_squares = {{");
+  for (int i = 0; i < kNumSquares; ++i) {
+    AddMagicEntry(table.bishop_magic_squares[i], output);
+  }
+  std::println(output, "  }},");
+
+  std::println(output, "  .rook_magic_squares = {{");
+  for (int i = 0; i < kNumSquares; ++i) {
+    AddMagicEntry(table.rook_magic_squares[i], output);
+  }
+  std::println(output, "  }},");
+  std::println(output, "}};");
+}`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`constexpr SlidingAttackTables kSlidingAttackTables = {
+  // ...
+  .rook_magic_squares = {
+    MagicEntry{ // A8
+      .mask = Bitboard(282578800148862ULL),
+      .magic = 1188950851939467536ULL,
+      .shift = 52U,
+      .attack_table_index = 32768,
+    },
+    MagicEntry{ // B8
+      .mask = Bitboard(565157600297596ULL),
+      .magic = 18014467247833160ULL,
+      .shift = 53U,
+      .attack_table_index = 36864,
+  },
+  MagicEntry{ // C8
+      .mask = Bitboard(1130315200595066ULL),
+      .magic = 144124267638915216ULL,
+      .shift = 53U,
+      .attack_table_index = 40960,
+  },
+  // ...
+          `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`constexpr SlidingAttackTables kSlidingAttackTables = {
+ .attacks = {
+   Bitboard(9241421688590303744ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(512ULL),
+   Bitboard(134480384ULL),
+   Bitboard(512ULL),
+   Bitboard(134480384ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(262656ULL),
+   Bitboard(512ULL),
+   Bitboard(512ULL),
+   Bitboard(68853957120ULL),
+   Bitboard(512ULL),
+   Bitboard(35253226045952ULL),
+   Bitboard(262656ULL),
+   // ...`}</Code>
+        </Slide>
+      </Stack>
 
       <Slide>
         <h3>Performance: Microbenchmarks</h3>
