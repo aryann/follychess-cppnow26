@@ -487,6 +487,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
               <Board
                 title="input"
                 highlight="d7,b5,e5,h5,d2"
+                showBits
               >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
@@ -503,6 +504,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
               <Board
                 title="input.Shift<kNorth>()"
                 highlight="d8,b6,e6,h6,d3"
+                showBits
               >{`8: . . . X . . . .
 7: . . . . . . . .
 6: . X . . X . . X
@@ -528,6 +530,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
                 title="input"
                 highlight="d7,b5,e5,d2"
                 highlightSecondary="h5"
+                showBits
               >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
@@ -544,6 +547,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
               <Board
                 title="input.Shift<kNorthWest>()"
                 highlight="e8,c6,f6,e3"
+                showBits
               >{`8: . . . . X . . .
 7: . . . . . . . .
 6: . . X . . X . .

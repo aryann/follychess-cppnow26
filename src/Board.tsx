@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { type ReactNode, useState } from "react";
+
+const CodeBlock = (props: { children: ReactNode }) => (
+  <code>
+    <pre style={{ marginLeft: 0, marginRight: 0 }}>{props.children}</pre>
+  </code>
+);
 
 type BoardProps = {
   children: string;
@@ -108,90 +114,82 @@ export const Board = (props: BoardProps) => {
           alignItems: "center",
         }}
       >
-        {props.title && (
-          <code>
-            <pre style={{ marginLeft: 0, marginRight: 0 }}>{props.title}</pre>
-          </code>
-        )}
+        {props.title && <CodeBlock>{props.title}</CodeBlock>}
 
-        <code>
-          <pre style={{ marginLeft: 0, marginRight: 0 }}>
-            {Array.from({ length: 8 }, (_, rank) => {
-              const isActive = selectedRank == rank;
+        <CodeBlock>
+          {Array.from({ length: 8 }, (_, rank) => {
+            const isActive = selectedRank == rank;
 
-              return (
+            return (
+              <span
+                key={rank}
+                style={{
+                  cursor: "pointer",
+                  backgroundColor: isActive ? "yellow" : "transparent",
+                  color: isActive ? "black" : "inherit",
+                }}
+              >
                 <span
-                  key={rank}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: isActive ? "yellow" : "transparent",
-                    color: isActive ? "black" : "inherit",
-                  }}
+                  onMouseOver={() => setSelectedRank(rank)}
+                  onMouseLeave={() => setSelectedRank(null)}
                 >
-                  <span
-                    onMouseOver={() => setSelectedRank(rank)}
-                    onMouseLeave={() => setSelectedRank(null)}
-                  >
-                    {8 - rank}:
-                  </span>
-                  {Array.from({ length: 8 }, (_, file) => {
-                    const index = rank * 8 + file;
-
-                    return (
-                      <span key={index}>
-                        {renderCell(index, board[index], 24)}
-                      </span>
-                    );
-                  })}
-                  {"\n"}
+                  {8 - rank}:
                 </span>
-              );
-            })}
+                {Array.from({ length: 8 }, (_, file) => {
+                  const index = rank * 8 + file;
 
-            {"  "}
-            {Array.from({ length: 8 }, (_, file) => {
-              const isActive = selectedFile == file;
+                  return (
+                    <span key={index}>
+                      {renderCell(index, board[index], 24)}
+                    </span>
+                  );
+                })}
+                {"\n"}
+              </span>
+            );
+          })}
 
-              return (
-                <span
-                  key={file}
-                  style={{
-                    cursor: "pointer",
-                    display: "inline-block",
-                    width: "24px",
-                    textAlign: "center",
-                    backgroundColor: isActive ? "yellow" : "transparent",
-                    color: isActive ? "black" : "inherit",
-                  }}
-                  onMouseOver={() => setSelectedFile(file)}
-                  onMouseLeave={() => setSelectedFile(null)}
-                >
-                  {String.fromCharCode("a".charCodeAt(0) + file)}
-                </span>
-              );
-            })}
-          </pre>
-        </code>
+          {"  "}
+          {Array.from({ length: 8 }, (_, file) => {
+            const isActive = selectedFile == file;
+
+            return (
+              <span
+                key={file}
+                style={{
+                  cursor: "pointer",
+                  display: "inline-block",
+                  width: "24px",
+                  textAlign: "center",
+                  backgroundColor: isActive ? "yellow" : "transparent",
+                  color: isActive ? "black" : "inherit",
+                }}
+                onMouseOver={() => setSelectedFile(file)}
+                onMouseLeave={() => setSelectedFile(null)}
+              >
+                {String.fromCharCode("a".charCodeAt(0) + file)}
+              </span>
+            );
+          })}
+        </CodeBlock>
       </div>
 
       {props.showBits && (
-        <code>
-          <pre style={{ marginLeft: 0, marginRight: 0 }}>
-            {board.toReversed().map((char, reversedIndex) => {
-              const originalIndex = 64 - reversedIndex - 1;
+        <CodeBlock>
+          {board.toReversed().map((char, reversedIndex) => {
+            const originalIndex = 64 - reversedIndex - 1;
 
-              return (
-                <React.Fragment key={`bit-${originalIndex}`}>
-                  {renderCell(
-                    originalIndex,
-                    char === "." ? 0 : props.showLabels ? char : 1,
-                  )}
-                  {originalIndex % 8 === 0 && originalIndex !== 0 && " "}
-                </React.Fragment>
-              );
-            })}
-          </pre>
-        </code>
+            return (
+              <React.Fragment key={`bit-${originalIndex}`}>
+                {renderCell(
+                  originalIndex,
+                  char === "." ? 0 : props.showLabels ? char : 1,
+                )}
+                {originalIndex % 8 === 0 && originalIndex !== 0 && " "}
+              </React.Fragment>
+            );
+          })}
+        </CodeBlock>
       )}
     </div>
   );
@@ -257,18 +255,16 @@ export const Integer = (props: IntegerProps) => {
         alignItems: "center",
       }}
     >
-      <code>
-        <pre style={{ marginLeft: 0, marginRight: 0 }}>
-          {bits.map((char, index) => {
-            return (
-              <React.Fragment key={`bit-${index}`}>
-                {renderCell(index, char)}
-                {index % 8 === 7 && index !== 63 && " "}
-              </React.Fragment>
-            );
-          })}
-        </pre>
-      </code>
+      <CodeBlock>
+        {bits.map((char, index) => {
+          return (
+            <React.Fragment key={`bit-${index}`}>
+              {renderCell(index, char)}
+              {index % 8 === 7 && index !== 63 && " "}
+            </React.Fragment>
+          );
+        })}
+      </CodeBlock>
     </div>
   );
 };
