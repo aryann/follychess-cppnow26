@@ -100,7 +100,6 @@ export const Board = (props: BoardProps) => {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-        userSelect: "none",
       }}
     >
       <div
