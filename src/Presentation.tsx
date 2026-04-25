@@ -3,7 +3,7 @@ import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
-import { Board } from "./Board";
+import { Board, Integer } from "./Board";
 import "./Presentation.css";
 import title from "./assets/title.png";
 
@@ -1486,6 +1486,10 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
+
+              <Integer>
+                {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+              </Integer>
             </Fragment>
           </div>
         </Slide>
@@ -1493,77 +1497,25 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
         <Slide>
           <h3>Magic Bitboards</h3>
 
-          <Board
-            highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-            hideBoard
-            showBits
-            showLabels
-          >{`8: . . . . . . . .
-7: . . . A . . . .
-6: . . . B . . . .
-5: . C D . E F G .
-4: . . . H . . . .
-3: . . . I . . . .
-2: . . . J . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
+          <Integer>
+            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+          </Integer>
 
           <p>&rarr;</p>
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
-              <Board
-                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-                hideBoard
-                showBits
-                showLabels
-              >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . A B
-1: C D E F G H I J
-   a b c d e f g h
-`}</Board>
+              <Integer>
+                {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
+              </Integer>
             </Fragment>
 
             <Fragment className="current-visible" index={0}>
-              <Board
-                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-                hideBoard
-                showBits
-                showLabels
-              >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . J I
-1: H G F E D C B A
-   a b c d e f g h
-`}</Board>
+              <Integer>{`ABCDEFGH IJ...... ........ ........ ........ ........ ........ ........`}</Integer>
             </Fragment>
 
             <Fragment className="fade-in" index={1}>
-              <Board
-                highlight="g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-                hideBoard
-                showBits
-                showLabels
-              >{`8: . . . . . . . .
-7: . . . . . . . .
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: . . . . . . A J
-1: I C G F E D H B
-   a b c d e f g h
-`}</Board>
+              <Integer>{`BHDEFGCI JA...... ........ ........ ........ ........ ........ ........`}</Integer>
             </Fragment>
           </div>
         </Slide>
