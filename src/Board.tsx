@@ -12,7 +12,6 @@ type BoardProps = {
   showLabels?: boolean;
   title?: string;
   highlight?: string;
-  highlightSecondary?: string;
 };
 
 const parseHighlight = (input?: string): Set<number> => {
@@ -49,7 +48,6 @@ const parse = (input: string): string[] => {
 export const Board = (props: BoardProps) => {
   const board = parse(props.children);
   const highlighted = parseHighlight(props.highlight);
-  const highlightedSecondary = parseHighlight(props.highlightSecondary);
 
   const [selected, setSelected] = useState<number | null>(null);
   const [selectedRank, setSelectedRank] = useState<number | null>(null);
@@ -61,7 +59,6 @@ export const Board = (props: BoardProps) => {
     width?: number,
   ) => {
     const isHighlighted = highlighted.has(index);
-    const isHighlightedSecondary = highlightedSecondary.has(index);
     const isActive =
       index === selected ||
       Math.floor(index / 8) === selectedRank ||
@@ -70,15 +67,12 @@ export const Board = (props: BoardProps) => {
     let bg = "transparent";
     if (isHighlighted) {
       bg = "white";
-    } else if (isHighlightedSecondary) {
-      bg = "cyan";
     }
     if (isActive) {
       bg = "yellow";
     }
 
-    const fg =
-      isActive || isHighlighted || isHighlightedSecondary ? "black" : "inherit";
+    const fg = isActive || isHighlighted ? "black" : "inherit";
 
     return (
       <span

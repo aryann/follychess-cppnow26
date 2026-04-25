@@ -529,7 +529,6 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
               <Board
                 title="input"
                 highlight="d7,b5,e5,d2"
-                highlightSecondary="h5"
                 showBits
               >{`8: . . . . . . . .
 7: . . . X . . . .
@@ -595,7 +594,7 @@ constexpr Bitboard Bitboard::Shift() const {
         <Slide>
           <h3>Knight Moves</h3>
           <p>Starting position, B1 knight</p>
-          <Board highlight="a3,c3" highlightSecondary="b1">{`8: r n b q k b n r
+          <Board highlight="b1,a3,c3">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -617,11 +616,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
           <Row>
-            <Board
-              title="position"
-              highlight="a3,c3"
-              highlightSecondary="b1"
-            >{`8: r n b q k b n r
+            <Board title="position" highlight="b1,a3,c3">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -634,8 +629,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
             <Board
               title="pseudo_attacks"
-              highlight="a3,c3"
-              highlightSecondary="b1"
+              highlight="a3,c3,d2"
             >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -649,8 +643,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
             <Board
               title="valid_destinations"
-              highlight="a3,c3"
-              highlightSecondary="b1"
+              highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,a5,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3"
             >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
@@ -662,11 +655,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="moves"
-              highlight="a3,c3"
-              highlightSecondary="b1"
-            >{`8: . . . . . . . .
+            <Board title="moves" highlight="a3,c3">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -682,10 +671,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
         <Slide>
           <h3>Knight Moves</h3>
           <p>Midgame position, F6 knight</p>
-          <Board
-            highlight="d5,e4,g4,h5,g8"
-            highlightSecondary="f6"
-          >{`8: r . . . k . . r
+          <Board highlight="f6,d5,e4,g4,h5,g8">{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
 5: n P . . . . . .
@@ -709,8 +695,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
           <Row>
             <Board
               title="position"
-              highlight="d5,e4,g4,h5,g8"
-              highlightSecondary="f6"
+              highlight="f6,d5,e4,g4,h5,g8"
             >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
@@ -724,8 +709,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
             <Board
               title="pseudo_attacks"
-              highlight="d5,e4,g4,h5,g8"
-              highlightSecondary="f6"
+              highlight="d5,d7,e8,e4,g4,h5,h7,g8"
             >{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
@@ -739,8 +723,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 
             <Board
               title="valid_destinations"
-              highlight="d5,e4,g4,h5,g8"
-              highlightSecondary="f6"
+              highlight="b8,c8,d8,f8,g8,a7,e7,a6,c6,d6,e6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,b3,c3,d3,e3,f3,g3,h3,a2,c2,d2,e2,f2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
             >{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
@@ -752,11 +735,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="moves"
-              highlight="d5,e4,g4,h5,g8"
-              highlightSecondary="f6"
-            >{`8: . . . . . . X .
+            <Board title="moves" highlight="d5,e4,g4,h5,g8">{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . X
@@ -803,7 +782,7 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
       </Stack>
 
       <Slide>
-        <h3>What About Checks?</h3>
+        <h3>Checks</h3>
 
         <p>Some moves place the king in check.</p>
 
@@ -870,6 +849,22 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
           <h3>Rook Moves</h3>
           <p>D5 rook with no blockers</p>
 
+          <Board highlight="d5,d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1">{`8: . . . . . . . .
+7: . . . . . . . .
+6: . . . . . . . .
+5: . . . R . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: . . . . . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+        </Slide>
+
+        <Slide>
+          <h3>Rook Moves</h3>
+          <p>D5 rook with no blockers</p>
+
           <Code language="cpp" lineNumbers>{`
 Bitboard occupied = position.GetPieces();
 Bitboard pseudo_moves = GenerateRookMoves(D5, occupied);
@@ -882,8 +877,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               <Row>
                 <Board
                   title="position"
-                  highlightSecondary="d5"
-                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                  highlight="d5,d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -895,11 +889,7 @@ Bitboard moves = pseudo_moves & ~friendly;
    a b c d e f g h
 `}</Board>
 
-                <Board
-                  title="occupied"
-                  highlightSecondary="d5"
-                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
-                >{`8: . . . . . . . .
+                <Board title="occupied" highlight="d5">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . .
@@ -912,7 +902,6 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="pseudo_moves"
-                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -935,7 +924,6 @@ Bitboard moves = pseudo_moves & ~friendly;
               <Row>
                 <Board
                   title="pseudo_moves"
-                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -950,8 +938,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="~friendly"
-                  highlightSecondary="d5"
-                  highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
+                  highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,a5,b5,c5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,e2,f2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
                 >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
@@ -965,7 +952,6 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="moves"
-                  highlightSecondary="d5"
                   highlight="d8,d7,d6,a5,b5,c5,e5,f5,g5,h5,d4,d3,d2,d1"
                 >{`8: . . . X . . . .
 7: . . . X . . . .
@@ -986,6 +972,22 @@ Bitboard moves = pseudo_moves & ~friendly;
           <h3>Rook Moves</h3>
           <p>B4 rook with blockers</p>
 
+          <Board highlight="b4,a4,c4,d4,e4,f4,b3,b2,b1">{`8: . . . . . . . .
+7: . . p . . . . .
+6: . . . p . . . .
+5: K P . . . . . r
+4: . R . . . p . k
+3: . . . . . . . .
+2: . . . . P . P .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+        </Slide>
+
+        <Slide>
+          <h3>Rook Moves</h3>
+          <p>B4 rook with blockers</p>
+
           <Code language="cpp" lineNumbers>{`
 Bitboard occupied = position.GetPieces();
 Bitboard pseudo_moves = GenerateRookMoves(B4, occupied);
@@ -998,8 +1000,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               <Row>
                 <Board
                   title="position"
-                  highlightSecondary="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlight="b4,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
@@ -1013,8 +1014,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="occupied"
-                  highlightSecondary="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlight="c7,d6,a5,b5,h5,b4,f4,h4,e2,g2"
                 >{`8: . . . . . . . .
 7: . . X . . . . .
 6: . . . X . . . .
@@ -1028,8 +1028,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="pseudo_moves"
-                  highlightSecondary="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -1051,8 +1050,7 @@ Bitboard moves = pseudo_moves & ~friendly;
               <Row>
                 <Board
                   title="pseudo_moves"
-                  highlightSecondary="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlight="b5,a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
@@ -1066,8 +1064,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="~friendly"
-                  highlightSecondary="b4"
-                  highlight="a4,c4,d4,e4,f4,b3,b2,b1"
+                  highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,c5,d5,e5,f5,g5,h5,a4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3,a2,b2,c2,d2,f2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
                 >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
@@ -1081,7 +1078,6 @@ Bitboard moves = pseudo_moves & ~friendly;
 
                 <Board
                   title="moves"
-                  highlightSecondary="b4"
                   highlight="a4,c4,d4,e4,f4,b3,b2,b1"
                 >{`8: . . . . . . . .
 7: . . . . . . . .
@@ -1110,7 +1106,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
         <p>A queen is just a bishop and rook combined.</p>
 
-        <Code language="cpp">{`Bitboard pseudo_moves = GetBishopMoves(square) | GetRookMoves(square);
+        <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
         `}</Code>
       </Slide>
 
