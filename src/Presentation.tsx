@@ -1444,9 +1444,43 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
         </Slide>
       </Stack>
 
-      <Slide>
-        <h3>PEXT</h3>
-      </Slide>
+      <Stack>
+        <Slide>
+          <h3>PEXT Instruction</h3>
+
+          <p>
+            Parallel Bits Extract (PEXT) extracts bits from an integer based on
+            a mask.
+          </p>
+
+          <p>
+            Results are packed into the contiguous low-order bits of the result.
+          </p>
+        </Slide>
+
+        <Slide>
+          <h3>PEXT Instruction</h3>
+
+          <Code language="cpp" lineNumbers>{`// Extract none:
+EXPECT_THAT(Pext({ .in = 0b11111111, .mask = 0b00000000 }), Eq(0b00000000));
+
+// Extract all bits:
+EXPECT_THAT(Pext({ .in = 0b11110111, .mask = 0b11111111 }), Eq(0b11110111));
+
+// Extract upper four bits:
+EXPECT_THAT(Pext({ .in = 0b11001010, .mask = 0b11110000 }), Eq(0b00001100));
+
+// Extract first and last bits:
+EXPECT_THAT(Pext({ .in = 0b10000001, .mask = 0b10000001 }), Eq(0b00000011));
+
+// Extract every other bit:
+EXPECT_THAT(Pext({ .in = 0b10110100, .mask = 0b10101010 }), Eq(0b00001100));
+
+// Extract bits at indices 1, 4, and 7:
+EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
+        `}</Code>
+        </Slide>
+      </Stack>
 
       <Stack>
         <Slide>
