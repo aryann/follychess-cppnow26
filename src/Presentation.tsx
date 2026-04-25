@@ -93,26 +93,26 @@ export const Presentation = () => {
             <dd>
               Avoiding branches, benchmarking, using <code>consteval</code> &
               templates, maintaining abstractions without compromising
-              performance
+              performance.
             </dd>
           </Fragment>
           <Fragment>
             <dt>Search</dt>
             <dd>
-              Alpha-beta pruning, iterative deepening, transposition tables
+              Alpha-beta pruning, iterative deepening, transposition tables.
             </dd>
           </Fragment>
 
           <Fragment>
             <dt>Heuristic Modeling</dt>
             <dd>
-              Translating qualitative chess concepts into numerical values
+              Translating qualitative chess concepts into numerical values.
             </dd>
           </Fragment>
           <Fragment>
             <dt>Verification</dt>
             <dd>
-              Validating improvements through simulations rather than unit tests
+              Validating improvements through simulations rather than unit tests.
             </dd>
           </Fragment>
         </dl>
@@ -831,13 +831,13 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
             </Fragment>
             <ul>
               <Fragment>
-                <li>If empty, include as quiet move.</li>
+                <li>If empty, include as quiet move</li>
               </Fragment>
               <Fragment>
-                <li>If enemy, include as capturing move.</li>
+                <li>If enemy, include as capturing move</li>
               </Fragment>
               <Fragment>
-                <li>If friendly, exclude.</li>
+                <li>If friendly, exclude</li>
               </Fragment>
             </ul>
           </ol>
@@ -1134,7 +1134,7 @@ Bitboard GenerateQueenAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Sliding Piece Move Code</h3>
+          <h3>Sliding Piece Moves</h3>
 
           <Code
             language="cpp"
@@ -1145,7 +1145,7 @@ Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
 }
 
 template <Direction Direction>
-Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
+Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
   Bitboard attacks;
   Bitboard curr(from);
   while (curr) {
@@ -1157,25 +1157,16 @@ Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
 }
 `}</Code>
         </Slide>
-      </Stack>
 
-      <Slide>
-        <h2>Part 4</h2>
-        <h3>
-          Fast Bishop, Rook, and Queen
-          <br /> Move Generation
-        </h3>
-      </Slide>
+        <Slide>
+          <h3>Performance</h3>
+          <p>Takes ~22-40 nanoseconds per piece</p>
 
-      <Slide>
-        <h3>Performance</h3>
-        <p>Takes ~22-40 nanoseconds per piece</p>
-
-        <p>Too slow when searching millions of positions/second</p>
-        <Code
-          language="plaintext"
-          lineNumbers="10-12"
-        >{`Run on (10 X 24 MHz CPU s)
+          <p>Too slow when searching millions of positions/second</p>
+          <Code
+            language="plaintext"
+            lineNumbers="10-12"
+          >{`Run on (10 X 24 MHz CPU s)
 CPU Caches:
  L1 Data 64 KiB
  L1 Instruction 128 KiB
@@ -1188,6 +1179,15 @@ BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     3
 BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
 BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
 `}</Code>
+        </Slide>
+      </Stack>
+
+      <Slide>
+        <h2>Part 4</h2>
+        <h3>
+          Fast Bishop, Rook, and Queen
+          <br /> Move Generation
+        </h3>
       </Slide>
 
       <Slide>
@@ -1242,12 +1242,13 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 
         <Fragment>
           <p>
-            For each sliding piece, only the occupancy of some squares matter.
+            For each sliding piece, only the occupancy of some squares
+            matters.
           </p>
         </Fragment>
 
         <Fragment>
-          <p>Let's examing rooks.</p>
+          <p>Let's examine rooks.</p>
         </Fragment>
 
         <Fragment>
@@ -1260,13 +1261,12 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
           <h3>Relevant Squares</h3>
 
           <p>
-            A rook's movement is only affected by pieces on its own Rank and
-            File, excluding edges
+            A rook's movement is only affected by pieces on its own rank and
+            file, excluding edges.
           </p>
           <Row>
             <Board
               title="D5 Relevant Squares"
-              highlightSecondary="d5"
               highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
             >{`8: . . . . . . . .
 7: . . . X . . . .
@@ -1281,7 +1281,6 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 
             <Board
               title="H1 Relevant Squares"
-              highlightSecondary="h1"
               highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
             >{`8: . . . . . . . .
 7: . . . . . . . X
@@ -1394,7 +1393,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 
           <ul>
             <li>
-              The D5 rook can be blocked 2<sup>10</sup> == 1024 unique ways
+              The D5 rook can be blocked 2<sup>10</sup> == 1024 unique ways.
             </li>
             <li>Store the 1024 attack Bitboards contiguously</li>
             <li>
@@ -1588,17 +1587,17 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
           </p>
           <ol>
             <Fragment>
-              <li>Generate a random number.</li>
+              <li>Generate a random number</li>
             </Fragment>
             <Fragment>
               <li>
-                Call <code>CalculateIndex()</code> for every possible occupancy.
+                Call <code>CalculateIndex()</code> for every possible occupancy
               </li>
             </Fragment>
             <Fragment>
               <li>
                 If two occupancies lead to the same index, go back to step 1.
-                Otherwise, you found the magic number for the square.
+                Otherwise, you found the magic number for the square
               </li>
             </Fragment>
           </ol>
