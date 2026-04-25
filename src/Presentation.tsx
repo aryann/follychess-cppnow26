@@ -1468,6 +1468,10 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
+
+              <Integer>
+                {`........ ....1... ....1... ....1... .111.11. ....1... ....1... ........`}
+              </Integer>
             </Fragment>
 
             <Fragment className="current-visible" index={0}>

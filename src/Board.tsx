@@ -110,12 +110,12 @@ export const Board = (props: BoardProps) => {
       >
         {props.title && (
           <code>
-            <pre>{props.title}</pre>
+            <pre style={{ marginLeft: 0, marginRight: 0 }}>{props.title}</pre>
           </code>
         )}
 
         <code>
-          <pre>
+          <pre style={{ marginLeft: 0, marginRight: 0 }}>
             {Array.from({ length: 8 }, (_, rank) => {
               const isActive = selectedRank == rank;
 
@@ -176,7 +176,7 @@ export const Board = (props: BoardProps) => {
 
       {props.showBits && (
         <code>
-          <pre>
+          <pre style={{ marginLeft: 0, marginRight: 0 }}>
             {board.toReversed().map((char, reversedIndex) => {
               const originalIndex = 64 - reversedIndex - 1;
 
@@ -258,7 +258,7 @@ export const Integer = (props: IntegerProps) => {
       }}
     >
       <code>
-        <pre>
+        <pre style={{ marginLeft: 0, marginRight: 0 }}>
           {bits.map((char, index) => {
             return (
               <React.Fragment key={`bit-${index}`}>
