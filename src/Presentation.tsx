@@ -244,7 +244,7 @@ export const Presentation = () => {
           <h3>Bitboard</h3>
           <Code
             language="cpp"
-            lineNumbers="1-12|14-15|17-18|20-21|"
+            lineNumbers="1|3-12|14-15|17-18|20-21|"
           >{`Bitboard board(D5);
 
 EXPECT_THAT(board,
@@ -258,8 +258,8 @@ EXPECT_THAT(board,
                            "1: . . . . . . . ."
                            "   a b c d e f g h"));
 
-EXPECT_THAT(board.Get(A1), IsFalse());
 EXPECT_THAT(board.Get(D5), IsTrue());
+EXPECT_THAT(board.Get(B1), IsFalse());
 
 board.Set(B1);
 EXPECT_THAT(board.Get(B1), IsTrue());
@@ -330,7 +330,7 @@ constexpr std::size_t kNumSides = 2;`}
           <p>Text representations</p>
 
           <Row>
-            <Board title="Starting">{`8: r n b q k b n r
+            <Board title="Starting" footer="w KQkq - 0 1">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -341,7 +341,10 @@ constexpr std::size_t kNumSides = 2;`}
    a b c d e f g h
 `}</Board>
 
-            <Board title="Midgame">{`8: . . k r . b n r
+            <Board
+              title="Midgame example"
+              footer="b KQ - 1 15"
+            >{`8: . . k r . b n r
 7: p . p . p p p p
 6: p . P . . q . .
 5: . . . P . . . .
@@ -352,7 +355,10 @@ constexpr std::size_t kNumSides = 2;`}
    a b c d e f g h
 `}</Board>
 
-            <Board title="Endgame">{`8: . . . . . . . .
+            <Board
+              title="Endgame example"
+              footer="b - g3 3 25"
+            >{`8: . . . . . . . .
 7: . . p . . . . .
 6: . . . p . . . .
 5: K P . . . . . r

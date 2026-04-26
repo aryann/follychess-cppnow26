@@ -11,6 +11,7 @@ type BoardProps = {
   showBits?: boolean;
   showLabels?: boolean;
   title?: string;
+  footer?: string;
   highlight?: string;
 };
 
@@ -185,6 +186,8 @@ export const Board = (props: BoardProps) => {
           })}
         </CodeBlock>
       )}
+
+      {props.footer && <CodeBlock>{props.footer}</CodeBlock>}
     </div>
   );
 };
