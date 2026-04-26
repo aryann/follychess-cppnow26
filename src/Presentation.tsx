@@ -1176,24 +1176,22 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
 
         <Slide>
           <h3>Performance</h3>
-          <p>Takes ~22-40 nanoseconds per piece</p>
-
           <p>Too slow when searching millions of positions/second</p>
           <Code
             language="plaintext"
             lineNumbers="10-12"
           >{`Run on (10 X 24 MHz CPU s)
 CPU Caches:
- L1 Data 64 KiB
- L1 Instruction 128 KiB
- L2 Unified 4096 KiB (x10)
-Load Average: 9.88, 6.90, 5.88
----------------------------------------------------------------------------------------
-Benchmark                                                 Time         CPU   Iterations
----------------------------------------------------------------------------------------
-BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     33745348
-BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
-BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x10)
+Load Average: 3.72, 4.14, 3.54
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
+BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
+BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
 `}</Code>
         </Slide>
       </Stack>
@@ -1206,83 +1204,86 @@ BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     1
         </h3>
       </Slide>
 
-      <Slide>
-        <h3>Lookup</h3>
+      <Stack>
+        <Slide>
+          <h3>Approach 1: Naive Lookup</h3>
 
-        <p>Map every possible board state to an attack Bitboard.</p>
+          <p>Map every possible board state to an attack Bitboard.</p>
 
-        <Code language="cpp" lineNumbers>
-          {`template <Piece Piece>
-Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
-  static_assert(Piece == kBishop || Piece == kRook || Piece == kQueen);
-
+          <Code language="cpp" lineNumbers>
+            {`
+Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
     std::array<Bitboard, kNumOccupancies>, 
-    kNumSquares> kSlidingAttacks = GenerateSlidingAttacksTable<Piece>();
+    kNumSquares> kRookAttacks = GenerateRookAttacks();
   
-  return kSlidingAttacks[square][occupied];
+  return kRookAttacks[square][occupied];
 }`}
-        </Code>
-      </Slide>
+          </Code>
+        </Slide>
 
-      <Slide>
-        <h3>Lookup Table Size</h3>
+        <Slide>
+          <h3>Approach 1: Naive Lookup</h3>
 
-        <Fragment>
           <p>
-            <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
+            <code>sizeof(kRookAttacks) ==</code>
           </p>
-        </Fragment>
 
-        <Fragment>
-          <p>
-            <code>
-              64 * ~2<sup>64</sup> * 8 bytes
-            </code>
-          </p>
-        </Fragment>
+          <Fragment>
+            <p>
+              <code>num_squares * num_occupancies * sizeof(Bitboard) ==</code>
+            </p>
+          </Fragment>
 
-        <Fragment>
-          <p>
-            <code>9,444,732,965,739,290,427,392 bytes</code>
-          </p>
-        </Fragment>
+          <Fragment>
+            <p>
+              <code>
+                64 * ~2<sup>64</sup> * 8 bytes ==
+              </code>
+            </p>
+          </Fragment>
 
-        <Fragment>
-          <p>9.44 Zettabytes or ~10% total world storage</p>
-        </Fragment>
-      </Slide>
+          <Fragment>
+            <p>
+              <code>9,444,732,965,739,290,427,392 bytes ==</code>
+            </p>
+          </Fragment>
 
-      <Slide>
-        <h3>Reducing Lookup Table Size</h3>
-
-        <Fragment>
-          <p>
-            For each sliding piece, only the occupancy of some squares matters.
-          </p>
-        </Fragment>
-
-        <Fragment>
-          <p>Let's examine rooks.</p>
-        </Fragment>
-
-        <Fragment>
-          <p>The same concept applies to bishops and queens.</p>
-        </Fragment>
-      </Slide>
+          <Fragment>
+            <p>9.44 Zettabytes or ~10% total world storage</p>
+          </Fragment>
+        </Slide>
+      </Stack>
 
       <Stack>
         <Slide>
-          <h3>Relevant Squares</h3>
+          <h3>Approach 2: Relevant Squares Lookup</h3>
+
+          <Fragment>
+            <p>
+              For each sliding piece, only the occupancy of some squares
+              matters.
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>Can we ignore the irrelevant squares?</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Approach 2: Relevant Squares Lookup</h3>
 
           <p>
-            A rook's movement is only affected by pieces on its own rank and
-            file, excluding edges.
+            A rook is only affected by pieces on its own rank and file,
+            excluding edges.
           </p>
+
           <Row>
             <Board
-              title="D5 Relevant Squares"
+              title="D5 Example"
               highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+              footer="10 Relevant Squares"
             >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
@@ -1295,8 +1296,24 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 `}</Board>
 
             <Board
-              title="H1 Relevant Squares"
+              title="E8 Example"
+              highlight="b8,c8,d8,f8,g8,e7,e6,e5,e4,e3,e2"
+              footer="11 Relevant Squares"
+            >{`8: . X X X . X X .
+7: . . . . X . . .
+6: . . . . X . . .
+5: . . . . X . . .
+4: . . . . X . . .
+3: . . . . X . . .
+2: . . . . X . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+            <Board
+              title="H1 Example"
               highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
+              footer="12 Relevant Squares"
             >{`8: . . . . . . . .
 7: . . . . . . . X
 6: . . . . . . . X
@@ -1311,25 +1328,15 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Relevant Squares</h3>
-
-          <p>For each square, a rook has 10-12 relevant squares.</p>
-
-          <p>Can we ignore the irrelevant squares?</p>
-        </Slide>
-      </Stack>
-
-      <Stack>
-        <Slide>
-          <h3>Map</h3>
+          <h3>Approach 2: Relevant Squares Lookup</h3>
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
           <Code language="cpp" lineNumbers>
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
-    absl::flat_hash_map<Bitboard, Bitboard>,  // occupancy -> attacks
-    kNumSquares> kRookAttacks = GenerateRookAttacksMap();
+    absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attacks Bitboard
+    kNumSquares> kRookAttacks = GenerateRookAttacks();
 
   Bitboard mask = GetRookRelevantSquares(square);
   occupied &= mask;
@@ -1340,7 +1347,11 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Map Size</h3>
+          <h3>Approach 2: Relevant Squares Lookup</h3>
+
+          <p>
+            <code>Memory Requirements ==</code>
+          </p>
 
           <Fragment>
             <p>
@@ -1353,51 +1364,51 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
           <Fragment>
             <p>
               <code>
-                64 * ~2<sup>12</sup> * ~2 * 8 bytes
+                64 * ~2<sup>12</sup> * ~3 * 8 bytes
               </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~4,194,304 bytes</code>
+              <code>~6,291,456 bytes</code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~4 MB</code>
+              <code>~6 MB</code>
             </p>
           </Fragment>
         </Slide>
 
         <Slide>
-          <h3>Map</h3>
+          <h3>Approach 2: Relevant Squares Lookup</h3>
 
           <Code
             language="plaintext"
             lineNumbers="13-21"
           >{`Run on (10 X 24 MHz CPU s)
 CPU Caches:
- L1 Data 64 KiB
- L1 Instruction 128 KiB
- L2 Unified 4096 KiB (x10)
-Load Average: 9.88, 6.90, 5.88
----------------------------------------------------------------------------------------
-Benchmark                                                 Time         CPU   Iterations
----------------------------------------------------------------------------------------
-BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     33745348
-BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
-BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
-BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>     3.65 ns     3.65 ns    192545730
-BM_LookupAttacksFrom<absl::flat_hash_map, kRook>       7.70 ns     7.70 ns     88321389
-BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>      33.4 ns     33.4 ns     20735826
-BM_LookupAttacksFrom<std::map, kBishop>                26.7 ns     26.6 ns     25801220
-BM_LookupAttacksFrom<std::map, kRook>                  59.0 ns     58.9 ns     11554015
-BM_LookupAttacksFrom<std::map, kQueen>                  385 ns      385 ns      1702210
-BM_LookupAttacksFrom<std::unordered_map, kBishop>      7.97 ns     7.97 ns     88671573
-BM_LookupAttacksFrom<std::unordered_map, kRook>        10.5 ns     10.4 ns     66874082
-BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     11378537
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x10)
+Load Average: 3.72, 4.14, 3.54
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
+BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
+BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
+BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.55 ns         3.53 ns    194287935
+BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         7.65 ns         7.64 ns     92994832
+BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        11.3 ns         11.3 ns     61370132
+BM_LookupAttacksFrom<std::map, kBishop>                  23.6 ns         23.6 ns     29747992
+BM_LookupAttacksFrom<std::map, kRook>                    64.5 ns         64.5 ns     10737514
+BM_LookupAttacksFrom<std::map, kQueen>                   99.6 ns         99.6 ns      6844761
+BM_LookupAttacksFrom<std::unordered_map, kBishop>        7.80 ns         7.79 ns     89946546
+BM_LookupAttacksFrom<std::unordered_map, kRook>          9.84 ns         9.84 ns     70889665
+BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns     36815172
 `}</Code>
         </Slide>
       </Stack>
@@ -1475,7 +1486,10 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     1
         <Slide>
           <h3>PEXT Instruction</h3>
 
-          <Code language="cpp" lineNumbers>{`// Extract none:
+          <Code
+            language="cpp"
+            lineNumbers="|1-2|4-5|7-8|10-11|13-14|16-17|"
+          >{`// Extract none:
 EXPECT_THAT(Pext({ .in = 0b11111111, .mask = 0b00000000 }), Eq(0b00000000));
 
 // Extract all bits:
@@ -1657,8 +1671,8 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
             </Fragment>
             <Fragment>
               <li>
-                If two occupancies lead to the same index, go back to step 1.
-                Otherwise, you found the magic number for the square
+                If two occupancies lead to the same index, go back to step 1;
+                otherwise, you found the magic number for the square
               </li>
             </Fragment>
           </ol>
@@ -1688,7 +1702,7 @@ Found magic for f8 after 1481 attempts: 572916560560704
         <Slide>
           <h3>Magic Bitboards</h3>
 
-          <p>Why shift right versus selecting the lower bits?</p>
+          <p>Why right-shift instead of masking the lower bits?</p>
 
           <p>
             When multiplying, information flows from lower bits to upper bits.
@@ -1801,25 +1815,31 @@ void AddTable(std::ofstream& output) {
 
       <Slide>
         <h3>Performance: Microbenchmarks</h3>
-        <Code language="plaintext" lineNumbers="16-18">{`
----------------------------------------------------------------------------------------
-Benchmark                                                 Time         CPU   Iterations
----------------------------------------------------------------------------------------
-BM_GenerateAttacksOnTheFly<kBishop>                    22.2 ns     21.8 ns     33745348
-BM_GenerateAttacksOnTheFly<kRook>                      25.2 ns     25.2 ns     28033977
-BM_GenerateAttacksOnTheFly<kQueen>                     40.2 ns     40.2 ns     17496982
-BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>     3.65 ns     3.65 ns    192545730
-BM_LookupAttacksFrom<absl::flat_hash_map, kRook>       7.70 ns     7.70 ns     88321389
-BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>      33.4 ns     33.4 ns     20735826
-BM_LookupAttacksFrom<std::map, kBishop>                26.7 ns     26.6 ns     25801220
-BM_LookupAttacksFrom<std::map, kRook>                  59.0 ns     58.9 ns     11554015
-BM_LookupAttacksFrom<std::map, kQueen>                  385 ns      385 ns      1702210
-BM_LookupAttacksFrom<std::unordered_map, kBishop>      7.97 ns     7.97 ns     88671573
-BM_LookupAttacksFrom<std::unordered_map, kRook>        10.5 ns     10.4 ns     66874082
-BM_LookupAttacksFrom<std::unordered_map, kQueen>       59.4 ns     59.4 ns     11378537
-BM_LookupAttacksFromMagicTables<kBishop>               1.19 ns     1.19 ns    600152610
-BM_LookupAttacksFromMagicTables<kRook>                 1.25 ns     1.24 ns    572498794
-BM_LookupAttacksFromMagicTables<kQueen>                2.03 ns     2.03 ns    362654841
+        <Code language="plaintext" lineNumbers="22-24">{`
+Run on (10 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x10)
+Load Average: 3.72, 4.14, 3.54
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+BM_GenerateAttacksLazily<kBishop>                        20.6 ns         20.6 ns     34174181
+BM_GenerateAttacksLazily<kRook>                          25.1 ns         25.1 ns     28057462
+BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns     17477760
+BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>       3.55 ns         3.53 ns    194287935
+BM_LookupAttacksFrom<absl::flat_hash_map, kRook>         7.65 ns         7.64 ns     92994832
+BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>        11.3 ns         11.3 ns     61370132
+BM_LookupAttacksFrom<std::map, kBishop>                  23.6 ns         23.6 ns     29747992
+BM_LookupAttacksFrom<std::map, kRook>                    64.5 ns         64.5 ns     10737514
+BM_LookupAttacksFrom<std::map, kQueen>                   99.6 ns         99.6 ns      6844761
+BM_LookupAttacksFrom<std::unordered_map, kBishop>        7.80 ns         7.79 ns     89946546
+BM_LookupAttacksFrom<std::unordered_map, kRook>          9.84 ns         9.84 ns     70889665
+BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns     36815172
+BM_LookupAttacksFromMagicTables<kBishop>                 1.23 ns         1.23 ns    571545213
+BM_LookupAttacksFromMagicTables<kRook>                   1.31 ns         1.31 ns    533565053
+BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns    351764097
 `}</Code>
       </Slide>
 
