@@ -41,7 +41,7 @@ export const Presentation = () => {
       </Slide>
 
       <Slide>
-        <h2>Agenda</h2>
+        <h2>Overview</h2>
         <ul>
           <Fragment>
             <li>
@@ -91,36 +91,32 @@ export const Presentation = () => {
           <Fragment>
             <dt>Performance</dt>
             <dd>
-              Avoiding branches, benchmarking, using <code>consteval</code> &
-              templates, maintaining abstractions without compromising
-              performance.
+              Benchmarking, avoiding branches, and zero-cost abstractions via{" "}
+              <code>consteval</code> and templates.
             </dd>
           </Fragment>
           <Fragment>
             <dt>Search</dt>
             <dd>
-              Alpha-beta pruning, iterative deepening, transposition tables.
+              Alpha-beta pruning, iterative deepening, and transposition tables.
             </dd>
           </Fragment>
-
           <Fragment>
-            <dt>Heuristic Modeling</dt>
+            <dt>Evaluation</dt>
             <dd>
               Translating qualitative chess concepts into numerical values.
             </dd>
           </Fragment>
           <Fragment>
             <dt>Verification</dt>
-            <dd>
-              Validating improvements through simulations rather than unit tests.
-            </dd>
+            <dd>Validating improvements through simulations.</dd>
           </Fragment>
         </dl>
       </Slide>
 
       <Slide>
         <h2>Part 2</h2>
-        <h3>Fundamental Data Structures</h3>
+        <h3>Data Structures</h3>
       </Slide>
 
       <Slide>
@@ -175,7 +171,7 @@ export const Presentation = () => {
       <Slide>
         <h3>Square</h3>
 
-        <p>An index (0-63) representing the intersection of a Rank and File</p>
+        <p>An index (0-63) representing a rank and file intersection</p>
 
         <Code language="cpp" lineNumbers>{`enum Square : std::uint8_t {
  // clang-format off
@@ -210,21 +206,32 @@ export const Presentation = () => {
         </Slide>
 
         <Slide>
-          <h3>Bitboard</h3>
-          <Code language="cpp" lineNumbers="|16">
+          <h3>
+            {" "}
+            <a
+              href="https://github.com/aryann/follychess/blob/main/engine/bitboard.h"
+              target="_blank"
+            >
+              Bitboard
+            </a>
+          </h3>
+          <Code language="cpp" lineNumbers="|19|3-4|6-8|10|12|14-16|">
             {`class [[nodiscard]] Bitboard {
  public:
+  constexpr explicit Bitboard(std::uint64_t data) : data_(data) {}
   constexpr explicit Bitboard(Square square) : data_(1ULL << square) {}
 
   [[nodiscard]] constexpr bool Get(Square square) const {
-    return data_ & 1ULL << square;
+    return (data_ & (1ULL << square)) != 0;
   }
 
   constexpr void Set(Square square) { data_ |= 1ULL << square; }
 
   constexpr void Clear(Square square) { data_ &= ~(1ULL << square); }
- 
-  // ...
+
+  constexpr Bitboard operator>>(int bits) const {
+    return Bitboard(data_ >> bits);
+  }
 
  private:
   std::uint64_t data_;
@@ -1242,8 +1249,7 @@ Bitboard GetSlidingAttacks(Square square, Bitboard occupied) {
 
         <Fragment>
           <p>
-            For each sliding piece, only the occupancy of some squares
-            matters.
+            For each sliding piece, only the occupancy of some squares matters.
           </p>
         </Fragment>
 
