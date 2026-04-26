@@ -1175,7 +1175,7 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Performance</h3>
+          <h3>Benchmarks</h3>
           <p>Too slow when searching millions of positions/second</p>
           <Code
             language="plaintext"
@@ -1206,9 +1206,12 @@ BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns
 
       <Stack>
         <Slide>
-          <h3>Approach 1: Naive Lookup</h3>
-
+          <h3>Approach 1: Brute-Force Lookup</h3>
           <p>Map every possible board state to an attack Bitboard.</p>
+        </Slide>
+
+        <Slide>
+          <h3>Implementation</h3>
 
           <Code language="cpp" lineNumbers>
             {`
@@ -1223,11 +1226,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Approach 1: Naive Lookup</h3>
-
-          <p>
-            <code>sizeof(kRookAttacks) ==</code>
-          </p>
+          <h3>Memory Requirements</h3>
 
           <Fragment>
             <p>
@@ -1245,19 +1244,19 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
           <Fragment>
             <p>
-              <code>9,444,732,965,739,290,427,392 bytes ==</code>
+              <code>~9,444,732,965,739,290,427,392 bytes ==</code>
             </p>
           </Fragment>
 
           <Fragment>
-            <p>9.44 Zettabytes or ~10% total world storage</p>
+            <p>~9.44 Zettabytes or ~10% total world storage</p>
           </Fragment>
         </Slide>
       </Stack>
 
       <Stack>
         <Slide>
-          <h3>Approach 2: Relevant Squares Lookup</h3>
+          <h3>Approach 2: Map Lookup</h3>
 
           <Fragment>
             <p>
@@ -1272,7 +1271,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Approach 2: Relevant Squares Lookup</h3>
+          <h3>Relevant Squares</h3>
 
           <p>
             A rook is only affected by pieces on its own rank and file,
@@ -1328,7 +1327,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Approach 2: Relevant Squares Lookup</h3>
+          <h3>Implementation</h3>
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
@@ -1338,7 +1337,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
     absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attacks Bitboard
     kNumSquares> kRookAttacks = GenerateRookAttacks();
 
-  Bitboard mask = GetRookRelevantSquares(square);
+  Bitboard mask = GetRookRelevancyMask(square);
   occupied &= mask;
 
   return kRookAttacks[square].find(occupied)->second;
@@ -1347,11 +1346,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Approach 2: Relevant Squares Lookup</h3>
-
-          <p>
-            <code>Memory Requirements ==</code>
-          </p>
+          <h3>Memory Requirements</h3>
 
           <Fragment>
             <p>
@@ -1383,7 +1378,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Approach 2: Relevant Squares Lookup</h3>
+          <h3>Benchmarks</h3>
 
           <Code
             language="plaintext"
@@ -1415,104 +1410,20 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
 
       <Stack>
         <Slide>
-          <h3>Contiguous Bitboards</h3>
-
-          <ul>
-            <li>
-              The D5 rook can be blocked 2<sup>10</sup> == 1024 unique ways.
-            </li>
-            <li>Store the 1024 attack Bitboards contiguously</li>
-            <li>
-              Map each occupancy Bitboard to an index in the range{" "}
-              <code>[0, 1024)</code>
-            </li>
-            <li>This way, you can just use an array, no hash map!</li>
-          </ul>
-        </Slide>
-
-        <Slide>
-          <h3>Contiguous Bitboards</h3>
-
-          <p>But the occupancy Bitboards are 64-bit integers!</p>
-
-          <p>Can we extract just the relevant bits?</p>
-        </Slide>
-
-        <Slide>
-          <h3>Size</h3>
-
-          <Fragment>
-            <p>
-              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>
-                64 * 2<sup>12</sup> (worst-case) * 8 bytes
-              </code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>2,097,152 bytes</code>
-            </p>
-          </Fragment>
-
-          <Fragment>
-            <p>
-              <code>~2 MB</code>
-            </p>
-          </Fragment>
-        </Slide>
-      </Stack>
-
-      <Stack>
-        <Slide>
-          <h3>PEXT Instruction</h3>
+          <h3>Approach 3: PEXT</h3>
 
           <p>
-            Parallel Bits Extract (PEXT) extracts bits from an integer based on
-            a mask.
+            Approach 2 uses maps because occupancy Bitboards don't form
+            contiguous indices.
           </p>
 
           <p>
-            Results are packed into the contiguous low-order bits of the result.
+            What if we could map the occupancy Bitboards to contiguous indices?
           </p>
         </Slide>
 
         <Slide>
-          <h3>PEXT Instruction</h3>
-
-          <Code
-            language="cpp"
-            lineNumbers="|1-2|4-5|7-8|10-11|13-14|16-17|"
-          >{`// Extract none:
-EXPECT_THAT(Pext({ .in = 0b11111111, .mask = 0b00000000 }), Eq(0b00000000));
-
-// Extract all bits:
-EXPECT_THAT(Pext({ .in = 0b11110111, .mask = 0b11111111 }), Eq(0b11110111));
-
-// Extract upper four bits:
-EXPECT_THAT(Pext({ .in = 0b11001010, .mask = 0b11110000 }), Eq(0b00001100));
-
-// Extract first and last bits:
-EXPECT_THAT(Pext({ .in = 0b10000001, .mask = 0b10000001 }), Eq(0b00000011));
-
-// Extract every other bit:
-EXPECT_THAT(Pext({ .in = 0b10110100, .mask = 0b10101010 }), Eq(0b00001100));
-
-// Extract bits at indices 1, 4, and 7:
-EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
-        `}</Code>
-        </Slide>
-      </Stack>
-
-      <Stack>
-        <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Intuition</h3>
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
@@ -1561,7 +1472,215 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Intuition</h3>
+
+          <Integer>
+            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+          </Integer>
+
+          <Fragment>
+            <p>&rarr;</p>
+
+            <Integer>
+              {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+            </Integer>
+          </Fragment>
+
+          <Fragment>
+            <p>This transformation forms a 10-bit integer!</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>PEXT Instruction</h3>
+
+          <p>
+            Parallel Bits Extract (PEXT) extracts bits from an integer based on
+            a mask.
+          </p>
+
+          <p>
+            Results are packed into the contiguous low-order bits of the result.
+          </p>
+        </Slide>
+
+        <Slide>
+          <h3>PEXT 8-bit Examples</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers="|1-2|4-5|7-8|10-11|13-14|16-17|"
+          >{`// Extract none:
+EXPECT_THAT(Pext({ .in = 0b11111111, .mask = 0b00000000 }), Eq(0b00000000));
+
+// Extract all bits:
+EXPECT_THAT(Pext({ .in = 0b11110111, .mask = 0b11111111 }), Eq(0b11110111));
+
+// Extract upper four bits:
+EXPECT_THAT(Pext({ .in = 0b11001010, .mask = 0b11110000 }), Eq(0b00001100));
+
+// Extract first and last bits:
+EXPECT_THAT(Pext({ .in = 0b10000001, .mask = 0b10000001 }), Eq(0b00000011));
+
+// Extract every other bit:
+EXPECT_THAT(Pext({ .in = 0b10110100, .mask = 0b10101010 }), Eq(0b00001100));
+
+// Extract bits at indices 1, 4, and 7:
+EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
+        `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Implementation</h3>
+          <Code language="cpp" lineNumbers>
+            {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+  // This varies between 2^10 and 2^12 depending on the square.
+  // For simplicity, we use the worst-case value.
+  constexpr std::size_t kNumOccupancies = 1 << 12;
+
+  static const std::array<
+    std::array<Bitboard, kNumOccupancies>,
+    kNumSquares> kRookAttacks = GenerateRookAttacks();
+
+  Bitboard mask = GetRookRelevancyMask(square);
+  std::size_t occupied_index = Pext(occupied, mask);
+
+  return kRookAttacks[square][occupied_index];
+}`}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <h3>Memory Requirements</h3>
+
+          <Fragment>
+            <p>
+              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>
+                64 * 2<sup>12</sup> * 8 bytes
+              </code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>2,097,152 bytes</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~2 MB</code>
+            </p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Limitations</h3>
+
+          <ul>
+            <Fragment>
+              <li>
+                PEXT is part of the{" "}
+                <a
+                  href="https://en.wikipedia.org/wiki/X86_Bit_manipulation_instruction_set"
+                  target="_blank"
+                >
+                  x86 BMI2 instruction set.
+                </a>
+              </li>
+            </Fragment>
+            <Fragment>
+              <li>
+                On some AMD architectures, PEXT is implemented in{" "}
+                <a
+                  href="https://orlp.net/blog/extracting-depositing-bits/"
+                  target="_blank"
+                >
+                  microcode
+                </a>
+                , so it is not performant.
+              </li>
+            </Fragment>
+            <Fragment>
+              <li>
+                Similar instruction exists in{" "}
+                <a
+                  href="https://developer.arm.com/documentation/ddi0602/2022-06/SVE-Instructions/BEXT--Gather-lower-bits-from-positions-selected-by-bitmask-"
+                  target="_blank"
+                >
+                  Arm's Scalable Vector Extension 2 (SVE2)
+                </a>
+                , but remains unimplemented in Apple Silicon.
+              </li>
+            </Fragment>
+          </ul>
+        </Slide>
+      </Stack>
+
+      <Stack>
+        <Slide>
+          <h3>Approach 4: Magic Bitboards</h3>
+
+          <p>Same idea as PEXT, but implemented in software.</p>
+        </Slide>
+
+        <Slide>
+          <h3>Intuition</h3>
+
+          <div className="r-stack">
+            <Fragment className="fade-out" index={0}>
+              <Board
+                title="D5 Relevant Squares"
+                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                showBits
+              >{`8: . . . . . . . .
+7: . . . X . . . .
+6: . . . X . . . .
+5: . X X . X X X .
+4: . . . X . . . .
+3: . . . X . . . .
+2: . . . X . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+              <Integer>
+                {`........ ....1... ....1... ....1... .111.11. ....1... ....1... ........`}
+              </Integer>
+            </Fragment>
+
+            <Fragment className="current-visible" index={0}>
+              <Board
+                title="D5 Relevant Squares"
+                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                showBits
+                showLabels
+              >{`8: . . . . . . . .
+7: . . . A . . . .
+6: . . . B . . . .
+5: . C D . E F G .
+4: . . . H . . . .
+3: . . . I . . . .
+2: . . . J . . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+
+              <Integer>
+                {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+              </Integer>
+            </Fragment>
+          </div>
+        </Slide>
+
+        <Slide>
+          <h3>Intuition</h3>
 
           <Integer>
             {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
@@ -1601,21 +1720,21 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Implementation</h3>
 
           <Code language="cpp" lineNumbers="|1-2|3-5|7-8|10-12|">{`
 [[nodiscard]] std::size_t CalculateIndex(
-  std::int64_t magic, Bitboard occupied, Bitboard relevant_squares) {
+  std::uint64_t magic, Bitboard occupied, Bitboard relevancy_mask) {
 
   // Clear non-relevant squares:
-  std::size_t index = occupied & relevant_squares;
+  std::size_t index = occupied & relevancy_mask;
 
   // Moves the relevant square values to the upper bits:
   index *= magic;
 
   // Moves the relevant square values to the lower bits,
   // so we're left with a small number:
-  index >>= (64 - relevant_squares.GetCount());
+  index >>= (64 - relevancy_mask.GetCount());
 
   return index;
 }
@@ -1623,10 +1742,10 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Intuition</h3>
 
           <Fragment>
-            <Code language="cpp">{`std::size_t index = occupied & relevant_squares;`}</Code>
+            <Code language="cpp">{`std::size_t index = occupied & relevancy_mask;`}</Code>
 
             <Integer>
               {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
@@ -1646,7 +1765,7 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
           <Fragment>
             <p>&rarr;</p>
 
-            <Code language="cpp">{`index >>= (64 - relevant_squares.GetCount());`}</Code>
+            <Code language="cpp">{`index >>= (64 - relevancy_mask.GetCount());`}</Code>
 
             <Integer>
               {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
@@ -1655,11 +1774,9 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Finding Magic Numbers</h3>
 
-          <p>
-            Find <code>magic</code> for each square:
-          </p>
+          <p>For each square:</p>
           <ol>
             <Fragment>
               <li>Generate a random number</li>
@@ -1679,34 +1796,56 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Iterations to Find Magic Numbers</h3>
 
           <Code
             language="plaintext"
             lineNumbers
-          >{`Found magic for a8 after 8097 attempts: 4618499800499814914
-Found magic for a8 after 14818 attempts: 36029348119068678
-Found magic for b8 after 2119 attempts: 580427833214631970
-Found magic for b8 after 22393 attempts: 18031996064260096
-Found magic for c8 after 177 attempts: 19149103103475792
-Found magic for c8 after 17526 attempts: 13871096199760580608
-Found magic for d8 after 1912 attempts: 583227147398709256
-Found magic for d8 after 245292 attempts: 72062133818904577
-Found magic for e8 after 1018 attempts: 145245632193366016
-Found magic for e8 after 29928 attempts: 2449986784802119824
-Found magic for f8 after 1481 attempts: 572916560560704
-...
+          >{`Finding magic numbers for bishops:
+  Found magic for a8 after   1,997 attempts: 9009435087472833
+  Found magic for b8 after   2,349 attempts: 40533500520334400
+  Found magic for c8 after   1,410 attempts: 2278189176520776
+  Found magic for d8 after     935 attempts: 9266191969056784896
+  Found magic for e8 after     407 attempts: 1425242014613512
+  Found magic for f8 after     336 attempts: 92763614745723906
+  ...
+Finding magic numbers for rooks:
+  Found magic for a8 after   3,866 attempts: 36029386503229472
+  Found magic for b8 after  44,705 attempts: 18014742108963904
+  Found magic for c8 after 111,638 attempts: 4683771103758262274
+  Found magic for d8 after 121,205 attempts: 36046395650080772
+  Found magic for e8 after  73,715 attempts: 648522778764382210
+  Found magic for f8 after  28,826 attempts: 144116322149606912
+  ...
 `}</Code>
         </Slide>
 
         <Slide>
-          <h3>Magic Bitboards</h3>
+          <h3>Right Shifting</h3>
 
           <p>Why right-shift instead of masking the lower bits?</p>
 
           <p>
             When multiplying, information flows from lower bits to upper bits.
           </p>
+        </Slide>
+
+        <Slide>
+          <h3>Caveat</h3>
+
+          <p>
+            The random number must be sparse. Only 1/8<sup>th</sup> of the bits
+            are set.
+          </p>
+
+          <Code
+            language="cpp"
+            lineNumbers="5"
+          >{`  static std::mt19937 kEngine(std::random_device{}());
+  std::uniform_int_distribution<std::uint64_t> dist(0);
+
+  // ...
+  std::uint64_t magic = dist(kEngine) & dist(kEngine) & dist(kEngine);`}</Code>
         </Slide>
       </Stack>
 
