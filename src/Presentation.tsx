@@ -1611,27 +1611,33 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         <Slide>
           <h3>Magic Bitboards</h3>
 
-          <Code language="cpp">{`std::size_t index = occupied & relevant_squares;`}</Code>
+          <Fragment>
+            <Code language="cpp">{`std::size_t index = occupied & relevant_squares;`}</Code>
 
-          <Integer>
-            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-          </Integer>
+            <Integer>
+              {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+            </Integer>
+          </Fragment>
 
-          <p>&rarr;</p>
+          <Fragment>
+            <p>&rarr;</p>
 
-          <Code language="cpp">{`index *= magic;`}</Code>
+            <Code language="cpp">{`index *= magic;`}</Code>
 
-          <Integer>
-            {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
-          </Integer>
+            <Integer>
+              {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
+            </Integer>
+          </Fragment>
 
-          <p>&rarr;</p>
+          <Fragment>
+            <p>&rarr;</p>
 
-          <Code language="cpp">{`index >>= (64 - relevant_squares.GetCount());`}</Code>
+            <Code language="cpp">{`index >>= (64 - relevant_squares.GetCount());`}</Code>
 
-          <Integer>
-            {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
-          </Integer>
+            <Integer>
+              {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+            </Integer>
+          </Fragment>
         </Slide>
 
         <Slide>
@@ -1795,15 +1801,7 @@ void AddTable(std::ofstream& output) {
 
       <Slide>
         <h3>Performance: Microbenchmarks</h3>
-        <Code
-          language="plaintext"
-          lineNumbers="22-24"
-        >{`Run on (10 X 24 MHz CPU s)
-CPU Caches:
- L1 Data 64 KiB
- L1 Instruction 128 KiB
- L2 Unified 4096 KiB (x10)
-Load Average: 9.88, 6.90, 5.88
+        <Code language="plaintext" lineNumbers="16-18">{`
 ---------------------------------------------------------------------------------------
 Benchmark                                                 Time         CPU   Iterations
 ---------------------------------------------------------------------------------------
