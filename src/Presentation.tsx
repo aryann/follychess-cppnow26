@@ -1633,35 +1633,12 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         <Slide>
           <h3>Intuition</h3>
 
-          <div className="r-stack">
-            <Fragment className="fade-out" index={0}>
-              <Board
-                title="D5 Relevant Squares"
-                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-                showBits
-              >{`8: . . . . . . . .
-7: . . . X . . . .
-6: . . . X . . . .
-5: . X X . X X X .
-4: . . . X . . . .
-3: . . . X . . . .
-2: . . . X . . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-
-              <Integer>
-                {`........ ....1... ....1... ....1... .111.11. ....1... ....1... ........`}
-              </Integer>
-            </Fragment>
-
-            <Fragment className="current-visible" index={0}>
-              <Board
-                title="D5 Relevant Squares"
-                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-                showBits
-                showLabels
-              >{`8: . . . . . . . .
+          <Board
+            title="D5 Relevant Squares"
+            highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+            showBits
+            showLabels
+          >{`8: . . . . . . . .
 7: . . . A . . . .
 6: . . . B . . . .
 5: . C D . E F G .
@@ -1672,11 +1649,9 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
    a b c d e f g h
 `}</Board>
 
-              <Integer>
-                {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
-              </Integer>
-            </Fragment>
-          </div>
+          <Integer>
+            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+          </Integer>
         </Slide>
 
         <Slide>
@@ -1779,7 +1754,7 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
           <p>For each square:</p>
           <ol>
             <Fragment>
-              <li>Generate a random number</li>
+              <li>Generate a "sparse" random number</li>
             </Fragment>
             <Fragment>
               <li>
@@ -1789,10 +1764,63 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
             <Fragment>
               <li>
                 If two occupancies lead to the same index, go back to step 1;
-                otherwise, you found the magic number for the square
+                otherwise, the magic number for the square is found
               </li>
             </Fragment>
           </ol>
+        </Slide>
+
+        <Slide>
+          <h3>Sparse Random Numbers</h3>
+
+          <p>
+            Random numbers with only 1/8<sup>th</sup> of their bits set
+          </p>
+
+          <Code language="cpp" lineNumbers>{`std::uint64_t GetSparseRandom() {
+  std::mt19937 engine(std::random_device{}());
+  std::uniform_int_distribution<std::uint64_t> dist(0);
+  return dist(engine) & dist(engine) & dist(engine);
+}`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Why Sparse Random Numbers?</h3>
+
+          <p>Multiplication is equivalent to:</p>
+
+          <Code language="plaintext" lineNumbers>{`
+magic = (1 << a) + (1 << b) + (1 << c) + ...
+
+occupancy * magic = (occupancy << a)
+                  + (occupancy << b)
+                  + (occupancy << c)
+                  + ...
+          `}</Code>
+
+          <Fragment>
+            <p>
+              More bits in <code>magic</code> &rarr; more terms in the sum
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>&rarr; more carry chain propagation</p>
+          </Fragment>
+
+          <Fragment>
+            <p>&rarr; more information destruction</p>
+          </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Right Shifting</h3>
+
+          <p>Why right-shift instead of masking the lower bits?</p>
+
+          <p>
+            When multiplying, information flows from lower bits to upper bits.
+          </p>
         </Slide>
 
         <Slide>
@@ -1818,34 +1846,6 @@ Finding magic numbers for rooks:
   Found magic for f8 after  28,826 attempts: 144116322149606912
   ...
 `}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Right Shifting</h3>
-
-          <p>Why right-shift instead of masking the lower bits?</p>
-
-          <p>
-            When multiplying, information flows from lower bits to upper bits.
-          </p>
-        </Slide>
-
-        <Slide>
-          <h3>Caveat</h3>
-
-          <p>
-            The random number must be sparse. Only 1/8<sup>th</sup> of the bits
-            are set.
-          </p>
-
-          <Code
-            language="cpp"
-            lineNumbers="5"
-          >{`  static std::mt19937 kEngine(std::random_device{}());
-  std::uniform_int_distribution<std::uint64_t> dist(0);
-
-  // ...
-  std::uint64_t magic = dist(kEngine) & dist(kEngine) & dist(kEngine);`}</Code>
         </Slide>
       </Stack>
 
