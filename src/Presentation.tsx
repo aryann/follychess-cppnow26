@@ -439,9 +439,10 @@ constexpr std::size_t kNumSides = 2;`}
 
         <Slide>
           <h3>Position</h3>
-          <Code language="cpp" lineNumbers="4-5|">
+          <Code language="cpp" lineNumbers="5-6|">
             {`class Position {
  // ...
+
  private:
   std::array<Bitboard, kNumPieces> pieces_;
   std::array<Bitboard, kNumSides> sides_;
@@ -837,7 +838,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
           <ol>
             <Fragment>
-              <li>Raycast until a blocker is hit. Include the blocker.</li>
+              <li>
+                Slide along the ray until a blocker is hit. Include the blocker.
+              </li>
             </Fragment>
             <Fragment>
               <li>Filter the last square:</li>
@@ -1129,7 +1132,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 
           <Code
             language="cpp"
-            lineNumbers
+            lineNumbers="|7-8|"
           >{`Bitboard GenerateBishopAttacks(Square from, Bitboard occupied) {
  return GenerateSlidingAttacks<
     kNorthEast, kNorthWest, kSouthEast, kSouthWest>(from, occupied);
@@ -1557,14 +1560,28 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
               <Integer>
                 {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
               </Integer>
+
+              <p>&rarr;</p>
+
+              <Integer>
+                {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+              </Integer>
             </Fragment>
 
             <Fragment className="current-visible" index={0}>
               <Integer>{`ABCDEFGH IJ...... ........ ........ ........ ........ ........ ........`}</Integer>
+
+              <p>&rarr;</p>
+
+              <Integer>{`........ ........ ........ ........ ........ ........ ......AB CDEFGHIJ`}</Integer>
             </Fragment>
 
             <Fragment className="fade-in" index={1}>
               <Integer>{`BHDEFGCI JA...... ........ ........ ........ ........ ........ ........`}</Integer>
+
+              <p>&rarr;</p>
+
+              <Integer>{`........ ........ ........ ........ ........ ........ ......BH DEFGCIJA`}</Integer>
             </Fragment>
           </div>
         </Slide>
@@ -1572,23 +1589,49 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         <Slide>
           <h3>Magic Bitboards</h3>
 
-          <Code language="cpp" lineNumbers>{`
+          <Code language="cpp" lineNumbers="|1-2|3-5|7-8|10-12|">{`
 [[nodiscard]] std::size_t CalculateIndex(
-  std::int64_t magic, Bitboard occupied, Bitboard relevancy_mask) {
+  std::int64_t magic, Bitboard occupied, Bitboard relevant_squares) {
 
   // Clear non-relevant squares:
-  std::size_t index = occupied & relevancy_mask;
+  std::size_t index = occupied & relevant_squares;
 
   // Moves the relevant square values to the upper bits:
-  index = index * magic;
+  index *= magic;
 
   // Moves the relevant square values to the lower bits,
   // so we're left with a small number:
-  index = index >> (64 - relevancy_mask.GetCount());
+  index >>= (64 - relevant_squares.GetCount());
 
   return index;
 }
 `}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboards</h3>
+
+          <Code language="cpp">{`std::size_t index = occupied & relevant_squares;`}</Code>
+
+          <Integer>
+            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+          </Integer>
+
+          <p>&rarr;</p>
+
+          <Code language="cpp">{`index *= magic;`}</Code>
+
+          <Integer>
+            {`JIHGFEDC BA...... ........ ........ ........ ........ ........ ........`}
+          </Integer>
+
+          <p>&rarr;</p>
+
+          <Code language="cpp">{`index >>= (64 - relevant_squares.GetCount());`}</Code>
+
+          <Integer>
+            {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+          </Integer>
         </Slide>
 
         <Slide>
