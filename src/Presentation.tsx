@@ -1207,7 +1207,9 @@ BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns
       <Stack>
         <Slide>
           <h3>Approach 1: Brute-Force Lookup</h3>
-          <p>Map every possible board state to an attack Bitboard.</p>
+          <p>
+            Map every possible board state to an attack <code>Bitboard</code>.
+          </p>
         </Slide>
 
         <Slide>
@@ -1582,6 +1584,9 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
 
         <Slide>
           <h3>Limitations</h3>
+          <p>
+            <code>PEXT</code> is not a portable solution:
+          </p>
 
           <ul>
             <Fragment>
@@ -1627,7 +1632,9 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
         <Slide>
           <h3>Approach 4: Magic Bitboards</h3>
 
-          <p>Same idea as PEXT, but implemented in software.</p>
+          <p>
+            Same idea as <code>PEXT</code>, but implemented in software.
+          </p>
         </Slide>
 
         <Slide>
