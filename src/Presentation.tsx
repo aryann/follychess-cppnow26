@@ -1175,7 +1175,7 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Benchmarks</h3>
+          <h3>Microbenchmarks</h3>
           <p>Too slow when searching millions of positions/second</p>
           <Code
             language="plaintext"
@@ -1378,7 +1378,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Benchmarks</h3>
+          <h3>Microbenchmarks</h3>
 
           <Code
             language="plaintext"
@@ -1847,11 +1847,59 @@ Finding magic numbers for rooks:
   ...
 `}</Code>
         </Slide>
-      </Stack>
 
-      <Stack>
         <Slide>
-          <h3>Magic Bitboard File</h3>
+          <h3>
+            <code>consteval</code>
+          </h3>
+
+          <p>
+            Unlike knights we can't use <code>consteval</code> to generate the
+            bishop, rook, and queen attack tables:
+          </p>
+
+          <ul>
+            <li>
+              <code>consteval</code> forbids random number generators.
+            </li>
+            <li>
+              Requires vendor-specific compiler options to allow the more
+              computationally-intensive calculations to finish.
+            </li>
+            <li>Debugging is harder.</li>
+          </ul>
+        </Slide>
+
+        <Slide>
+          <h3>
+            <code>consteval</code> Workaround
+          </h3>
+
+          <p>Generate a C++ file with the magic Bitboards and compile it in.</p>
+
+          <Code language="bazel" lineNumbers>{`cc_binary(
+   name = "magic_main",
+   srcs = ["magic_main.cc"],
+   deps = [":magic"],
+)
+
+run_binary(
+   name = "magic_main_generate",
+   outs = ["magic.generated.h",],
+   args = ["$(location magic.generated.h)"],
+   tool = ":magic_main",
+)
+
+cc_library(
+    name = "attacks",
+    hdrs = ["attacks.h", "magic.generated.h"],
+    # ...
+)
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File Generator</h3>
 
           <Code
             language="cpp"
@@ -1897,7 +1945,7 @@ void AddTable(std::ofstream& output) {
           <Code
             language="cpp"
             lineNumbers
-          >{`constexpr SlidingAttackTables kSlidingAttackTables = {
+          >{`constexpr SlidingAttackTables kSliderAttacks = {
   // ...
   .rook_magic_squares = {
     MagicEntry{ // A8
@@ -1928,7 +1976,7 @@ void AddTable(std::ofstream& output) {
           <Code
             language="cpp"
             lineNumbers
-          >{`constexpr SlidingAttackTables kSlidingAttackTables = {
+          >{`constexpr SlidingAttackTables kSliderAttacks = {
  .attacks = {
    Bitboard(9241421688590303744ULL),
    Bitboard(262656ULL),
@@ -1950,11 +1998,43 @@ void AddTable(std::ofstream& output) {
    Bitboard(262656ULL),
    // ...`}</Code>
         </Slide>
+
+        <Slide>
+          <h3>Magic Bitboard File Usage</h3>
+
+          <Code language="cpp" lineNumbers>{`
+#include "engine/magic.generated.h"
+
+// ...
+
+class MagicSliderAttacks {
+ public:
+  static Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &magic = kSliderAttacks.bishop_magic_squares[square];
+    occupied &= magic.mask;
+    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
+    return kSliderAttacks.attacks[magic.attack_table_index + index];
+  }
+
+  static Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &magic = kSliderAttacks.rook_magic_squares[square];
+    occupied &= magic.mask;
+    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
+    return kSliderAttacks.attacks[magic.attack_table_index + index];
+  }
+};
+`}</Code>
+        </Slide>
       </Stack>
 
-      <Slide>
-        <h3>Performance: Microbenchmarks</h3>
-        <Code language="plaintext" lineNumbers="22-24">{`
+      <Stack>
+        <Slide>
+          <h3>Magic Bitboard Performance</h3>
+        </Slide>
+
+        <Slide>
+          <h3>Microbenchmarks</h3>
+          <Code language="plaintext" lineNumbers="22-24">{`
 Run on (10 X 24 MHz CPU s)
 CPU Caches:
   L1 Data 64 KiB
@@ -1980,11 +2060,10 @@ BM_LookupAttacksFromMagicTables<kBishop>                 1.23 ns         1.23 ns
 BM_LookupAttacksFromMagicTables<kRook>                   1.31 ns         1.31 ns    533565053
 BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns    351764097
 `}</Code>
-      </Slide>
+        </Slide>
 
-      <Stack>
         <Slide>
-          <h3>Performance: Depth 10 Best Move Search</h3>
+          <h3>Depth 10 Best Move Search</h3>
 
           <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
             {`
@@ -2020,7 +2099,7 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
         </Slide>
 
         <Slide>
-          <h3>Performance: Depth 10 Best Move Search</h3>
+          <h3>Depth 10 Best Move Search</h3>
           <p>Million nodes per second</p>
 
           <table>
@@ -2087,63 +2166,63 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
             </tbody>
           </table>
         </Slide>
+
+        <Slide>
+          <h3>Perft</h3>
+
+          <p>Generating all positions to depth 5</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>
+                  <a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">
+                    Lazy
+                  </a>
+                </th>
+                <th>
+                  <a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">
+                    Magic
+                  </a>
+                </th>
+                <th>Speedup</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Initial</td>
+                <td>233 ms</td>
+                <td>195 ms</td>
+                <td>1.20</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_2">
+                    Perft 2
+                  </a>
+                </td>
+                <td>9,014 ms</td>
+                <td>7,074 ms</td>
+                <td>1.27</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
+                    Perft 5
+                  </a>
+                </td>
+                <td>4,536 ms</td>
+                <td>3,426 ms</td>
+                <td>1.32</td>
+              </tr>
+            </tbody>
+          </table>
+        </Slide>
       </Stack>
-
-      <Slide>
-        <h3>Performance: Perft</h3>
-
-        <p>Generating all positions to depth 5</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>
-                <a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">
-                  Lazy
-                </a>
-              </th>
-              <th>
-                <a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">
-                  Magic
-                </a>
-              </th>
-              <th>Speedup</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Initial</td>
-              <td>233 ms</td>
-              <td>195 ms</td>
-              <td>1.20</td>
-            </tr>
-
-            <tr>
-              <td>
-                <a href="https://www.chessprogramming.org/Perft_Results#Position_2">
-                  Perft 2
-                </a>
-              </td>
-              <td>9,014 ms</td>
-              <td>7,074 ms</td>
-              <td>1.27</td>
-            </tr>
-
-            <tr>
-              <td>
-                <a href="https://www.chessprogramming.org/Perft_Results#Position_5">
-                  Perft 5
-                </a>
-              </td>
-              <td>4,536 ms</td>
-              <td>3,426 ms</td>
-              <td>1.32</td>
-            </tr>
-          </tbody>
-        </table>
-      </Slide>
 
       <Slide>
         <h2>Thank You!</h2>
