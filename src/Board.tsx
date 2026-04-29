@@ -31,11 +31,13 @@ const parseHighlight = (input?: string): Set<number> => {
   return indices;
 };
 
+const emptySquare = "·";
+
 const parse = (input: string): string[] => {
   const result: string[] = [];
   for (const char of input) {
     if (char === ".") {
-      result.push("·");
+      result.push(emptySquare);
     } else if (/[A-Za-z]/.test(char)) {
       result.push(char);
     }
@@ -191,7 +193,7 @@ export const Board = (props: BoardProps) => {
               <React.Fragment key={`bit-${originalIndex}`}>
                 {renderCell(
                   originalIndex,
-                  char === "." ? 0 : props.showLabels ? char : 1,
+                  char === emptySquare ? 0 : props.showLabels ? char : 1,
                 )}
                 {originalIndex % 8 === 0 && originalIndex !== 0 && " "}
               </React.Fragment>
