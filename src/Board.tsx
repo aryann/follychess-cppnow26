@@ -72,7 +72,7 @@ export const Board = (props: BoardProps) => {
       bg = "var(--r-link-color)";
     }
     if (isActive) {
-      bg = "yellow";
+      bg = "white";
     }
 
     const fg = isActive || isHighlighted ? "black" : "inherit";
@@ -129,15 +129,14 @@ export const Board = (props: BoardProps) => {
                     onMouseOver={() => setSelectedRank(rank)}
                     onMouseLeave={() => setSelectedRank(null)}
                     style={{
-                      opacity: 0.5,
                       cursor: "pointer",
                       paddingRight: "8px",
                       textAlign: "right",
-                      backgroundColor: isActive ? "yellow" : "transparent",
+                      backgroundColor: isActive ? "white" : "transparent",
                       color: isActive ? "black" : "inherit",
                     }}
                   >
-                    {8 - rank}
+                    <span style={{ opacity: 0.5 }}>{8 - rank}</span>
                   </span>
                   {Array.from({ length: 8 }, (_, file) => {
                     const index = rank * 8 + file;
@@ -161,7 +160,7 @@ export const Board = (props: BoardProps) => {
                   style={{
                     cursor: "pointer",
                     textAlign: "center",
-                    backgroundColor: isActive ? "yellow" : "transparent",
+                    backgroundColor: isActive ? "white" : "transparent",
                     color: isActive ? "black" : "inherit",
                   }}
                   onMouseOver={() => setSelectedFile(file)}
@@ -229,7 +228,7 @@ export const Integer = (props: IntegerProps) => {
       bg = "var(--r-link-color)";
     }
     if (isActive) {
-      bg = "yellow";
+      bg = "white";
     }
 
     const fg = isActive || isHighlighted ? "black" : "inherit";
