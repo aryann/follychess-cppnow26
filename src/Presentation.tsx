@@ -2297,9 +2297,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
             <tbody>
               <tr>
                 <td>Initial</td>
-                <td>2.192</td>
-                <td>2.612</td>
-                <td>1.19</td>
+                <td style={{ textAlign: "right" }}>2.192</td>
+                <td style={{ textAlign: "right" }}>2.612</td>
+                <td style={{ textAlign: "right" }}>1.19</td>
               </tr>
 
               <tr>
@@ -2308,9 +2308,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 3
                   </a>
                 </td>
-                <td>2.948</td>
-                <td>3.833</td>
-                <td>1.30</td>
+                <td style={{ textAlign: "right" }}>2.948</td>
+                <td style={{ textAlign: "right" }}>3.833</td>
+                <td style={{ textAlign: "right" }}>1.30</td>
               </tr>
 
               <tr>
@@ -2319,9 +2319,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 4
                   </a>
                 </td>
-                <td>2.557</td>
-                <td>2.808</td>
-                <td>1.10</td>
+                <td style={{ textAlign: "right" }}>2.557</td>
+                <td style={{ textAlign: "right" }}>2.808</td>
+                <td style={{ textAlign: "right" }}>1.10</td>
               </tr>
 
               <tr>
@@ -2330,9 +2330,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 5
                   </a>
                 </td>
-                <td>2.169</td>
-                <td>2.436</td>
-                <td>1.12</td>
+                <td style={{ textAlign: "right" }}>2.169</td>
+                <td style={{ textAlign: "right" }}>2.436</td>
+                <td style={{ textAlign: "right" }}>1.12</td>
               </tr>
 
               <tr>
@@ -2341,9 +2341,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 6
                   </a>
                 </td>
-                <td>2.377</td>
-                <td>2.525</td>
-                <td>1.06</td>
+                <td style={{ textAlign: "right" }}>2.377</td>
+                <td style={{ textAlign: "right" }}>2.525</td>
+                <td style={{ textAlign: "right" }}>1.06</td>
               </tr>
             </tbody>
           </table>
@@ -2375,9 +2375,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
             <tbody>
               <tr>
                 <td>Initial</td>
-                <td>250 ms</td>
-                <td>194 ms</td>
-                <td>1.29</td>
+                <td style={{ textAlign: "right" }}>250 ms</td>
+                <td style={{ textAlign: "right" }}>194 ms</td>
+                <td style={{ textAlign: "right" }}>1.29</td>
               </tr>
 
               <tr>
@@ -2386,9 +2386,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 3
                   </a>
                 </td>
-                <td>45 ms</td>
-                <td>33 ms</td>
-                <td>1.36</td>
+                <td style={{ textAlign: "right" }}>45 ms</td>
+                <td style={{ textAlign: "right" }}>33 ms</td>
+                <td style={{ textAlign: "right" }}>1.36</td>
               </tr>
 
               <tr>
@@ -2397,9 +2397,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 4
                   </a>
                 </td>
-                <td>812 ms</td>
-                <td>632 ms</td>
-                <td>1.28</td>
+                <td style={{ textAlign: "right" }}>812 ms</td>
+                <td style={{ textAlign: "right" }}>632 ms</td>
+                <td style={{ textAlign: "right" }}>1.28</td>
               </tr>
 
               <tr>
@@ -2408,9 +2408,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 5
                   </a>
                 </td>
-                <td>4,515 ms</td>
-                <td>3,407 ms</td>
-                <td>1.33</td>
+                <td style={{ textAlign: "right" }}>4,515 ms</td>
+                <td style={{ textAlign: "right" }}>3,407 ms</td>
+                <td style={{ textAlign: "right" }}>1.33</td>
               </tr>
 
               <tr>
@@ -2419,9 +2419,9 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 6
                   </a>
                 </td>
-                <td>7,223 ms</td>
-                <td>6,270 ms</td>
-                <td>1.15</td>
+                <td style={{ textAlign: "right" }}>7,223 ms</td>
+                <td style={{ textAlign: "right" }}>6,270 ms</td>
+                <td style={{ textAlign: "right" }}>1.15</td>
               </tr>
             </tbody>
           </table>
