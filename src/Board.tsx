@@ -1,4 +1,38 @@
-import React, { type ReactNode, useState } from "react";
+import React, { type ReactNode, useState, createContext, useContext } from "react";
+
+export type BoardGroupContextType = {
+  selected: number | null;
+  setSelected: (val: number | null) => void;
+  selectedRank: number | null;
+  setSelectedRank: (val: number | null) => void;
+  selectedFile: number | null;
+  setSelectedFile: (val: number | null) => void;
+};
+
+export const BoardGroupContext = createContext<BoardGroupContextType | null>(null);
+
+export const BoardGroup = ({ children, style, className }: { children: ReactNode, style?: React.CSSProperties, className?: string }) => {
+  const [selected, setSelected] = useState<number | null>(null);
+  const [selectedRank, setSelectedRank] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<number | null>(null);
+
+  return (
+    <BoardGroupContext.Provider
+      value={{
+        selected,
+        setSelected,
+        selectedRank,
+        setSelectedRank,
+        selectedFile,
+        setSelectedFile,
+      }}
+    >
+      <div style={style} className={className}>
+        {children}
+      </div>
+    </BoardGroupContext.Provider>
+  );
+};
 
 const CodeBlock = (props: { children: ReactNode }) => (
   <code>
@@ -54,9 +88,18 @@ export const Board = (props: BoardProps) => {
   const board = parse(props.children);
   const highlighted = parseHighlight(props.highlight);
 
-  const [selected, setSelected] = useState<number | null>(null);
-  const [selectedRank, setSelectedRank] = useState<number | null>(null);
-  const [selectedFile, setSelectedFile] = useState<number | null>(null);
+  const context = useContext(BoardGroupContext);
+
+  const [localSelected, setLocalSelected] = useState<number | null>(null);
+  const [localSelectedRank, setLocalSelectedRank] = useState<number | null>(null);
+  const [localSelectedFile, setLocalSelectedFile] = useState<number | null>(null);
+
+  const selected = context ? context.selected : localSelected;
+  const setSelected = context ? context.setSelected : setLocalSelected;
+  const selectedRank = context ? context.selectedRank : localSelectedRank;
+  const setSelectedRank = context ? context.setSelectedRank : setLocalSelectedRank;
+  const selectedFile = context ? context.selectedFile : localSelectedFile;
+  const setSelectedFile = context ? context.setSelectedFile : setLocalSelectedFile;
 
   const renderCell = (
     index: number,
@@ -225,7 +268,12 @@ export const Integer = (props: IntegerProps) => {
 
   const bits = parse(props.children);
 
-  const [selected, setSelected] = useState<number | null>(null);
+  const context = useContext(BoardGroupContext);
+
+  const [localSelected, setLocalSelected] = useState<number | null>(null);
+
+  const selected = context ? context.selected : localSelected;
+  const setSelected = context ? context.setSelected : setLocalSelected;
 
   const renderCell = (index: number, content: string) => {
     const isHighlighted = content != "0" && content != "_" && content != ".";

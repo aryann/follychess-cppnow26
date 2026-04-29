@@ -4,7 +4,7 @@ import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
 import title from "./assets/title.png";
-import { Board, Integer } from "./Board";
+import { Board, BoardGroup, Integer } from "./Board";
 import { PextRow } from "./PextRow";
 import "./Presentation.css";
 
@@ -192,7 +192,7 @@ export const Presentation = () => {
 
           <p>An unsigned 64 bit integer representing piece presence</p>
 
-          <Board showBits>{`8: . . . . . . . .
+          <Board highlight="d7,b5,e5,g5,d2" showBits>{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . . . . . .
 5: . X . . X . X .
@@ -628,8 +628,9 @@ Bitboard valid_destinations = ~position.GetPieces(kWhite);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
-          <Row>
-            <Board title="position" highlight="b1,a3,c3">{`8: r n b q k b n r
+          <BoardGroup>
+            <Row>
+              <Board title="position" highlight="b1,a3,c3">{`8: r n b q k b n r
 7: p p p p p p p p
 6: . . . . . . . .
 5: . . . . . . . .
@@ -640,10 +641,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="pseudo_attacks"
-              highlight="a3,c3,d2"
-            >{`8: . . . . . . . .
+              <Board
+                title="pseudo_attacks"
+                highlight="a3,c3,d2"
+              >{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -654,10 +655,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="valid_destinations"
-              highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,a5,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3"
-            >{`8: X X X X X X X X
+              <Board
+                title="valid_destinations"
+                highlight="a8,b8,c8,d8,e8,f8,g8,h8,a7,b7,c7,d7,e7,f7,g7,h7,a6,b6,c6,d6,e6,f6,g6,h6,a5,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,a3,b3,c3,d3,e3,f3,g3,h3"
+              >{`8: X X X X X X X X
 7: X X X X X X X X
 6: X X X X X X X X
 5: X X X X X X X X
@@ -668,7 +669,7 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board title="moves" highlight="a3,c3">{`8: . . . . . . . .
+              <Board title="moves" highlight="a3,c3">{`8: . . . . . . . .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . . . . . .
@@ -678,7 +679,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </Row>
+            </Row>
+          </BoardGroup>
         </Slide>
 
         <Slide>
@@ -705,11 +707,12 @@ Bitboard valid_destinations = ~position.GetPieces(kBlack);
 Bitboard moves = pseudo_attacks & valid_destinations;`}
           </Code>
 
-          <Row>
-            <Board
-              title="position"
-              highlight="f6,d5,e4,g4,h5,g8"
-            >{`8: r . . . k . . r
+          <BoardGroup>
+            <Row>
+              <Board
+                title="position"
+                highlight="f6,d5,e4,g4,h5,g8"
+              >{`8: r . . . k . . r
 7: P p p p . p p p
 6: . b . . . n b N
 5: n P . . . . . .
@@ -720,10 +723,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="pseudo_attacks"
-              highlight="d5,d7,e8,e4,g4,h5,h7,g8"
-            >{`8: . . . . X . X .
+              <Board
+                title="pseudo_attacks"
+                highlight="d5,d7,e8,e4,g4,h5,h7,g8"
+              >{`8: . . . . X . X .
 7: . . . X . . . X
 6: . . . . . . . .
 5: . . . X . . . X
@@ -734,10 +737,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board
-              title="valid_destinations"
-              highlight="b8,c8,d8,f8,g8,a7,e7,a6,c6,d6,e6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,b3,c3,d3,e3,f3,g3,h3,a2,c2,d2,e2,f2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
-            >{`8: . X X X . X X .
+              <Board
+                title="valid_destinations"
+                highlight="b8,c8,d8,f8,g8,a7,e7,a6,c6,d6,e6,h6,b5,c5,d5,e5,f5,g5,h5,a4,b4,c4,d4,e4,f4,g4,h4,b3,c3,d3,e3,f3,g3,h3,a2,c2,d2,e2,f2,g2,h2,a1,b1,c1,d1,e1,f1,g1,h1"
+              >{`8: . X X X . X X .
 7: X . . . X . . .
 6: X . X X X . . X
 5: . X X X X X X X
@@ -748,7 +751,10 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
    a b c d e f g h
 `}</Board>
 
-            <Board title="moves" highlight="d5,e4,g4,h5,g8">{`8: . . . . . . X .
+              <Board
+                title="moves"
+                highlight="d5,e4,g4,h5,g8"
+              >{`8: . . . . . . X .
 7: . . . . . . . .
 6: . . . . . . . .
 5: . . . X . . . X
@@ -758,7 +764,8 @@ Bitboard moves = pseudo_attacks & valid_destinations;`}
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
-          </Row>
+            </Row>
+          </BoardGroup>
         </Slide>
 
         <Slide>
@@ -887,7 +894,7 @@ Bitboard friendly = position.GetPieces(kWhite);
 Bitboard moves = pseudo_moves & ~friendly;
           `}</Code>
 
-          <div className="r-stack">
+          <BoardGroup className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
               <Row>
                 <Board
@@ -980,7 +987,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 `}</Board>
               </Row>
             </Fragment>
-          </div>
+          </BoardGroup>
         </Slide>
 
         <Slide>
@@ -1010,7 +1017,7 @@ Bitboard friendly = position.GetPieces(kWhite);
 Bitboard moves = pseudo_moves & ~friendly;
           `}</Code>
 
-          <div className="r-stack">
+          <BoardGroup className="r-stack">
             <Fragment className="fade-out" index={0} style={{ width: "100%" }}>
               <Row>
                 <Board
@@ -1106,7 +1113,7 @@ Bitboard moves = pseudo_moves & ~friendly;
 `}</Board>
               </Row>
             </Fragment>
-          </div>
+          </BoardGroup>
         </Slide>
       </Stack>
 
