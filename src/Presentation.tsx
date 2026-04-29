@@ -1222,7 +1222,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
     std::array<Bitboard, kNumOccupancies>, 
     kNumSquares> kRookAttacks = GenerateRookAttacks();
   
-  return kRookAttacks[square][occupied];
+  return kRookAttacks[square][occupied.Data()];
 }`}
           </Code>
         </Slide>
@@ -1705,18 +1705,19 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
           <h3>Implementation</h3>
 
           <Code language="cpp" lineNumbers="|1-2|3-5|7-8|10-12|">{`
-[[nodiscard]] std::size_t CalculateIndex(
-  std::uint64_t magic, Bitboard occupied, Bitboard relevancy_mask) {
+[[nodiscard]] std::size_t CalculateRookIndex(
+  Square square, Bitboard occupied, std::uint64_t magic) {
 
   // Clear non-relevant squares:
-  std::size_t index = occupied & relevancy_mask;
+  Bitboard mask = GetRookRelevancyMask(square);
+  std::size_t index = occupied & mask;
 
   // Moves the relevant square values to the upper bits:
   index *= magic;
 
   // Moves the relevant square values to the lower bits,
   // so we're left with a small number:
-  index >>= (64 - relevancy_mask.GetCount());
+  index >>= (64 - mask.GetCount());
 
   return index;
 }
@@ -1727,7 +1728,9 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
           <h3>Intuition</h3>
 
           <Fragment>
-            <Code language="cpp">{`std::size_t index = occupied & relevancy_mask;`}</Code>
+            <Code language="cpp">{`
+Bitboard mask = GetRookRelevancyMask(D5);
+std::size_t index = occupied & mask;`}</Code>
 
             <Integer>
               {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
@@ -1765,7 +1768,8 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
             </Fragment>
             <Fragment>
               <li>
-                Call <code>CalculateIndex()</code> for every possible occupancy
+                Call <code>CalculateRookIndex()</code> for every possible
+                occupancy
               </li>
             </Fragment>
             <Fragment>
