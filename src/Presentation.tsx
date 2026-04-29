@@ -536,13 +536,13 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
         <Slide>
           <h3>Shifting Bitboards</h3>
 
-          <p>Northwest example</p>
+          <p>Northeast example</p>
 
           <div className="r-stack">
             <Fragment className="fade-out" index={0}>
               <Board
                 title="input"
-                highlight="d7,b5,e5,d2"
+                highlight="d7,b5,e5,d2,h5"
                 showBits
               >{`8: . . . . . . . .
 7: . . . X . . . .
@@ -558,7 +558,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
 
             <Fragment className="current-visible" index={0}>
               <Board
-                title="input.Shift<kNorthWest>()"
+                title="input.Shift<kNorthEast>()"
                 highlight="e8,c6,f6,e3"
                 showBits
               >{`8: . . . . X . . .

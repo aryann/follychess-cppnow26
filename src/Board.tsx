@@ -34,7 +34,9 @@ const parseHighlight = (input?: string): Set<number> => {
 const parse = (input: string): string[] => {
   const result: string[] = [];
   for (const char of input) {
-    if (char === "." || /[A-Za-z]/.test(char)) {
+    if (char === ".") {
+      result.push("·");
+    } else if (/[A-Za-z]/.test(char)) {
       result.push(char);
     }
 
