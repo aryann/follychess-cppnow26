@@ -14,6 +14,8 @@ const Row = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+const Mul = () => <span style={{ color: "var(--r-link-color)" }}>*</span>;
+
 export const Presentation = () => {
   return (
     <Deck
@@ -1214,7 +1216,8 @@ BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns
         <Slide>
           <h3>Approach 1: Brute-Force Lookup</h3>
           <p>
-            Map every possible board state to an attack <code>Bitboard</code>.
+            Map every possible occupancy <code>Bitboard</code> to an attack{" "}
+            <code>Bitboard</code>.
           </p>
         </Slide>
 
@@ -1234,25 +1237,28 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Memory Requirements</h3>
-
-          <Fragment>
-            <p>
-              <code>num_squares * num_occupancies * sizeof(Bitboard) ==</code>
-            </p>
-          </Fragment>
+          <h3>Rook Attack Table Size</h3>
 
           <Fragment>
             <p>
               <code>
-                64 * ~2<sup>64</sup> * 8 bytes ==
+                num_squares <Mul /> num_occupancies <Mul /> sizeof(Bitboard)
+                &rarr;
               </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~9,444,732,965,739,290,427,392 bytes ==</code>
+              <code>
+                64 <Mul /> 2<sup>64</sup> <Mul /> 8 bytes &rarr;
+              </code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~9,444,732,965,739,290,427,392 bytes &rarr;</code>
             </p>
           </Fragment>
 
@@ -1267,10 +1273,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           <h3>Approach 2: Map Lookup</h3>
 
           <Fragment>
-            <p>
-              For each sliding piece, only the occupancy of some squares
-              matters.
-            </p>
+            <p>Only the occupancy of some squares matters.</p>
           </Fragment>
 
           <Fragment>
@@ -1339,10 +1342,10 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 
           <p>Same idea as before, but with a map instead of an array.</p>
 
-          <Code language="cpp" lineNumbers>
+          <Code language="cpp" lineNumbers="|3|6-7|9|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   static const std::array<
-    absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attacks Bitboard
+    absl::flat_hash_map<Bitboard, Bitboard>, // Occupancy Bitboard -> Attack Bitboard
     kNumSquares> kRookAttacks = GenerateRookAttacks();
 
   Bitboard mask = GetRookRelevancyMask(square);
@@ -1354,12 +1357,13 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
         </Slide>
 
         <Slide>
-          <h3>Memory Requirements</h3>
+          <h3>Rook Attack Table Size</h3>
 
           <Fragment>
             <p>
               <code>
-                num_squares * num_occupancies * map_overhead * sizeof(Bitboard)
+                num_occupancies <Mul /> map_overhead <Mul /> sizeof(Bitboard)
+                &rarr;
               </code>
             </p>
           </Fragment>
@@ -1367,20 +1371,29 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           <Fragment>
             <p>
               <code>
-                64 * ~2<sup>12</sup> * ~3 * 8 bytes
+                (36 * 2<sup>10</sup> + 24 * 2<sup>11</sup> + 4 * 2<sup>12</sup>){" "}
+                <Mul /> ~3 <Mul /> 8 bytes &rarr;
               </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~6,291,456 bytes</code>
+              <code>
+                102,400 <Mul /> ~3 <Mul /> 8 bytes &rarr;
+              </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~6 MB</code>
+              <code>~2,457,600 bytes &rarr;</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~2.5 MB</code>
             </p>
           </Fragment>
         </Slide>
@@ -1490,7 +1503,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
             <p>&rarr;</p>
 
             <Integer>
-              {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+              {`00000000 00000000 00000000 00000000 00000000 00000000 000000JI HGFEDCBA`}
             </Integer>
           </Fragment>
 
@@ -1599,7 +1612,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
 
         <Slide>
           <h3>Implementation</h3>
-          <Code language="cpp" lineNumbers>
+          <Code language="cpp" lineNumbers="|7|2-4|10-11|13|">
             {`Bitboard GetRookAttacks(Square square, Bitboard occupied) {
   // This varies between 2^10 and 2^12 depending on the square.
   // For simplicity, we use the worst-case value.
@@ -1618,31 +1631,34 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
         </Slide>
 
         <Slide>
-          <h3>Memory Requirements</h3>
-
-          <Fragment>
-            <p>
-              <code>num_squares * num_occupancies * sizeof(Bitboard)</code>
-            </p>
-          </Fragment>
+          <h3>Rook Attack Table Size</h3>
 
           <Fragment>
             <p>
               <code>
-                64 * 2<sup>12</sup> * 8 bytes
+                num_squares <Mul /> num_occupancies <Mul /> sizeof(Bitboard)
+                &rarr;
               </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>2,097,152 bytes</code>
+              <code>
+                64 <Mul /> 2<sup>12</sup> <Mul /> 8 bytes &rarr;
+              </code>
             </p>
           </Fragment>
 
           <Fragment>
             <p>
-              <code>~2 MB</code>
+              <code>2,097,152 bytes &rarr;</code>
+            </p>
+          </Fragment>
+
+          <Fragment>
+            <p>
+              <code>~2.1 MB</code>
             </p>
           </Fragment>
         </Slide>
@@ -1744,7 +1760,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
               <p>&rarr;</p>
 
               <Integer>
-                {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
+                {`00000000 00000000 00000000 00000000 00000000 00000000 000000JI HGFEDCBA`}
               </Integer>
             </Fragment>
 
@@ -1753,7 +1769,7 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
 
               <p>&rarr;</p>
 
-              <Integer>{`........ ........ ........ ........ ........ ........ ......AB CDEFGHIJ`}</Integer>
+              <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 000000AB CDEFGHIJ`}</Integer>
             </Fragment>
 
             <Fragment className="fade-in" index={1}>
@@ -1761,36 +1777,17 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
 
               <p>&rarr;</p>
 
-              <Integer>{`........ ........ ........ ........ ........ ........ ......BH DEFGCIJA`}</Integer>
+              <Integer>{`00000000 00000000 00000000 00000000 00000000 00000000 000000BH DEFGCIJA`}</Integer>
             </Fragment>
           </div>
         </Slide>
 
         <Slide>
-          <h3>Implementation</h3>
-
-          <Code language="cpp" lineNumbers="|1-2|3-5|7-8|10-12|">{`
-[[nodiscard]] std::size_t CalculateRookIndex(
-  Square square, Bitboard occupied, std::uint64_t magic) {
-
-  // Clear non-relevant squares:
-  Bitboard mask = GetRookRelevancyMask(square);
-  std::size_t index = occupied & mask;
-
-  // Moves the relevant square values to the upper bits:
-  index *= magic;
-
-  // Moves the relevant square values to the lower bits,
-  // so we're left with a small number:
-  index >>= (64 - mask.GetCount());
-
-  return index;
-}
-`}</Code>
-        </Slide>
-
-        <Slide>
           <h3>Intuition</h3>
+
+          <Integer>
+            {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+          </Integer>
 
           <Fragment>
             <Code language="cpp">{`
@@ -1798,7 +1795,7 @@ Bitboard mask = GetRookRelevancyMask(D5);
 std::size_t index = occupied & mask;`}</Code>
 
             <Integer>
-              {`........ ....J... ....I... ....H... .GFE.DC. ....B... ....A... ........`}
+              {`00000000 0000J000 0000I000 0000H000 0GFE0DC0 0000B000 0000A000 00000000`}
             </Integer>
           </Fragment>
 
@@ -1815,12 +1812,35 @@ std::size_t index = occupied & mask;`}</Code>
           <Fragment>
             <p>&rarr;</p>
 
-            <Code language="cpp">{`index >>= (64 - relevancy_mask.GetCount());`}</Code>
+            <Code language="cpp">{`index >>= (64 - mask.GetCount());`}</Code>
 
             <Integer>
               {`........ ........ ........ ........ ........ ........ ......JI HGFEDCBA`}
             </Integer>
           </Fragment>
+        </Slide>
+
+        <Slide>
+          <h3>Implementation</h3>
+
+          <Code language="cpp" lineNumbers="|1-2|4-6|8-9|11-13|">{`
+[[nodiscard]] std::size_t CalculateRookIndex(
+  Square square, Bitboard occupied, std::uint64_t magic) {
+
+  // Clear non-relevant squares:
+  Bitboard mask = GetRookRelevancyMask(square);
+  std::size_t index = occupied & mask;
+
+  // Move the relevant square bits to the upper bits:
+  index *= magic;
+
+  // Move the relevant square bits to the lower bits,
+  // so we're left with a small number:
+  index >>= (64 - mask.GetCount());
+
+  return index;
+}
+`}</Code>
         </Slide>
 
         <Slide>
@@ -1863,29 +1883,31 @@ std::size_t index = occupied & mask;`}</Code>
         <Slide>
           <h3>Why Sparse Random Numbers?</h3>
 
-          <p>Multiplication is equivalent to:</p>
-
           <Code language="plaintext" lineNumbers>{`
 magic = (1 << a) + (1 << b) + (1 << c) + ...
 
-occupancy * magic = (occupancy << a)
-                  + (occupancy << b)
-                  + (occupancy << c)
-                  + ...
+occupied * magic = (occupied << a)
+                 + (occupied << b)
+                 + (occupied << c)
+                 + ...
           `}</Code>
 
           <Fragment>
             <p>
-              More bits in <code>magic</code> &rarr; more terms in the sum
+              More bits in <code>magic</code> &rarr;
             </p>
           </Fragment>
 
           <Fragment>
-            <p>&rarr; more carry chain propagation</p>
+            <p>More terms in the sum &rarr;</p>
           </Fragment>
 
           <Fragment>
-            <p>&rarr; more information destruction</p>
+            <p>More carry chain propagation &rarr;</p>
+          </Fragment>
+
+          <Fragment>
+            <p>More information loss &rarr;</p>
           </Fragment>
         </Slide>
 
@@ -1894,9 +1916,12 @@ occupancy * magic = (occupancy << a)
 
           <p>Why right-shift instead of masking the lower bits?</p>
 
-          <p>
-            When multiplying, information flows from lower bits to upper bits.
-          </p>
+          <Fragment>
+            <p>
+              In multiplication, information flows from lower bits to upper
+              bits.
+            </p>
+          </Fragment>
         </Slide>
 
         <Slide>
@@ -1931,18 +1956,26 @@ Finding magic numbers for rooks:
 
           <p>
             Unlike knights we can't use <code>consteval</code> to generate the
-            bishop, rook, and queen attack tables:
+            attack tables:
           </p>
 
           <ul>
-            <li>
-              <code>consteval</code> forbids random number generators.
-            </li>
-            <li>
-              Requires vendor-specific compiler options to allow the more
-              computationally-intensive calculations to finish.
-            </li>
-            <li>Debugging is harder.</li>
+            <Fragment>
+              <li>
+                <code>consteval</code> forbids random number generators.
+              </li>
+            </Fragment>
+
+            <Fragment>
+              <li>
+                Requires vendor-specific compiler options to allow the more
+                computationally-intensive calculations to finish.
+              </li>
+            </Fragment>
+
+            <Fragment>
+              <li>Debugging is harder.</li>
+            </Fragment>
           </ul>
         </Slide>
 
@@ -1951,9 +1984,15 @@ Finding magic numbers for rooks:
             <code>consteval</code> Workaround
           </h3>
 
-          <p>Generate a C++ file with the magic Bitboards and compile it in.</p>
+          <p>
+            Generate a C++ file with the magic Bitboards.{" "}
+            <a href="https://bazel.build/" target="_blank">
+              Bazel
+            </a>{" "}
+            changes:
+          </p>
 
-          <Code language="bazel" lineNumbers>{`cc_binary(
+          <Code language="bazel" lineNumbers="|1-5|7-12|14-18|">{`cc_binary(
    name = "magic_main",
    srcs = ["magic_main.cc"],
    deps = [":magic"],
@@ -2303,6 +2342,180 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
       <Slide>
         <h2>Thank You!</h2>
       </Slide>
+
+      <Stack>
+        <Slide>
+          <h3>Bonus: Benchmarking</h3>
+
+          <p>How do we benchmark different approaches with ease?</p>
+        </Slide>
+
+        <Slide>
+          <h3>Main Move Generation Function</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers="|1|18-29|"
+          >{`template <Piece Piece, typename SliderAttacks = MagicSliderAttacks>
+  requires SliderAttacksPolicy<SliderAttacks>
+constexpr Bitboard GenerateAttacks(Square square, Bitboard occupied) {
+  static_assert(Piece != kPawn);
+
+  if constexpr (Piece == kKnight) {
+    static constexpr std::array<Bitboard, kNumSquares> kKnightAttacks =
+        GenerateKnightAttacks();
+    return kKnightAttacks[square];
+  }
+
+  if constexpr (Piece == kKing) {
+    static constexpr std::array<Bitboard, kNumSquares> kKingAttacks =
+        GenerateKingAttacks();
+    return kKingAttacks[square];
+  }
+
+  if constexpr (Piece == kBishop) {
+    return SliderAttacks::GetBishopAttacks(square, occupied);
+  }
+
+  if constexpr (Piece == kRook) {
+    return SliderAttacks::GetRookAttacks(square, occupied);
+  }
+
+  if constexpr (Piece == kQueen) {
+    return SliderAttacks::GetBishopAttacks(square, occupied) |
+           SliderAttacks::GetRookAttacks(square, occupied);
+  }
+
+  return kEmptyBoard;
+}`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Magic Bitboards Implementation</h3>
+
+          <Code language="cpp" lineNumbers>
+            {`class MagicSliderAttacks {
+ public:
+  static constexpr Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &magic = kSliderAttacks.bishop_magic_squares[square];
+    occupied &= magic.mask;
+    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
+    return kSliderAttacks.attacks[magic.attack_table_index + index];
+  }
+
+  static constexpr Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+    const MagicEntry &magic = kSliderAttacks.rook_magic_squares[square];
+    occupied &= magic.mask;
+    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
+    return kSliderAttacks.attacks[magic.attack_table_index + index];
+  }
+};`}
+          </Code>
+        </Slide>
+
+        <Slide>
+          <h3>Concept</h3>
+
+          <Code language="cpp" lineNumbers>{`template <typename T>
+concept SliderAttacksPolicy = requires(Square square, Bitboard occupied) {
+  { T::GetBishopAttacks(square, occupied) } -> std::same_as<Bitboard>;
+  { T::GetRookAttacks(square, occupied) } -> std::same_as<Bitboard>;
+};`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Concept Requirement</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers="2"
+          >{`template <Piece Piece, typename SliderAttacks = MagicSliderAttacks>
+  requires SliderAttacksPolicy<SliderAttacks>
+constexpr Bitboard GenerateAttacks(Square square, Bitboard occupied) {
+// ...`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Other Implementations</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`template <template <typename...> typename Map>
+class MapSliderAttacks {
+ public:
+  static constexpr Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
+    static const std::array<Map<Bitboard, Bitboard>, kNumSquares>
+        kBishopAttacks = GenerateBishopAttackMap();
+
+    Bitboard mask = kSliderAttacks.bishop_magic_squares[square].mask;
+    return kBishopAttacks[square].at(occupied & mask);
+  }
+
+  static constexpr Bitboard GetRookAttacks(Square square, Bitboard occupied) {
+    static const std::array<Map<Bitboard, Bitboard>, kNumSquares> kRookAttacks =
+        GenerateRookAttackMap();
+
+    Bitboard mask = kSliderAttacks.rook_magic_squares[square].mask;
+    return kRookAttacks[square].at(occupied & mask);
+  }
+
+ private:
+  [[nodiscard]] static auto GenerateBishopAttackMap() {
+    std::array<Map<Bitboard, Bitboard>, kNumSquares> result;
+    for (int square = kFirstSquare; square < kNumSquares; ++square) {
+      const Square from = static_cast<Square>(square);
+      Bitboard mask = kSliderAttacks.bishop_magic_squares[square].mask;
+
+      std::vector<Bitboard> occupancies = MakePowerSet(mask);
+      for (Bitboard occupied : occupancies) {
+        result[from][occupied] =
+            MagicSliderAttacks::GetBishopAttacks(from, occupied);
+      }
+    }
+
+    return result;
+  }
+
+  // ...
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Benchmark Implementation</h3>
+
+          <Code
+            language="cpp"
+            lineNumbers
+          >{`template <template <typename...> class Map, Piece Piece>
+void BM_LookupAttacksFrom(benchmark::State& state) {
+  int square = 0;
+  std::vector<Bitboard> occupancies = GetRandomOccupancies();
+  int occupancy_index = 0;
+
+  for (auto _ : state) {
+    Bitboard occupied = occupancies[occupancy_index % occupancies.size()];
+    benchmark::DoNotOptimize(GenerateAttacks<Piece, MapSliderAttacks<Map>>(
+        static_cast<Square>(square % kNumSquares), occupied));
+
+    ++square;
+    ++occupancy_index;
+  }
+}
+
+// ...
+
+// Use absl::flat_hash_map to lookup precomputed attacks:
+BENCHMARK(BM_LookupAttacksFrom<absl::flat_hash_map, kBishop>);
+BENCHMARK(BM_LookupAttacksFrom<absl::flat_hash_map, kRook>);
+BENCHMARK(BM_LookupAttacksFrom<absl::flat_hash_map, kQueen>);
+
+// Use std::map to lookup precomputed attacks:
+BENCHMARK(BM_LookupAttacksFrom<std::map, kBishop>);
+BENCHMARK(BM_LookupAttacksFrom<std::map, kRook>);
+BENCHMARK(BM_LookupAttacksFrom<std::map, kQueen>);`}</Code>
+        </Slide>
+      </Stack>
     </Deck>
   );
 };
