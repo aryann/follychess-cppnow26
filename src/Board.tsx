@@ -85,6 +85,8 @@ export const Board = (props: BoardProps) => {
           backgroundColor: bg,
           color: fg,
           width: width ? `${width}px` : undefined,
+          height: width ? `${width}px` : undefined,
+          lineHeight: width ? `${width}px` : undefined,
           textAlign: "center",
         }}
         onMouseOver={() => setSelected(index)}
@@ -117,7 +119,7 @@ export const Board = (props: BoardProps) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "min-content repeat(8, 24px)",
+              gridTemplateColumns: "min-content repeat(8, 32px)",
             }}
           >
             {Array.from({ length: 8 }, (_, rank) => {
@@ -132,6 +134,8 @@ export const Board = (props: BoardProps) => {
                       cursor: "pointer",
                       paddingRight: "8px",
                       textAlign: "right",
+                      height: "32px",
+                      lineHeight: "32px",
                       backgroundColor: isActive ? "white" : "transparent",
                       color: isActive ? "black" : "inherit",
                     }}
@@ -142,7 +146,7 @@ export const Board = (props: BoardProps) => {
                     const index = rank * 8 + file;
                     return (
                       <React.Fragment key={index}>
-                        {renderCell(index, board[index], 24)}
+                        {renderCell(index, board[index], 32)}
                       </React.Fragment>
                     );
                   })}
@@ -160,6 +164,8 @@ export const Board = (props: BoardProps) => {
                   style={{
                     cursor: "pointer",
                     textAlign: "center",
+                    height: "32px",
+                    lineHeight: "32px",
                     backgroundColor: isActive ? "white" : "transparent",
                     color: isActive ? "black" : "inherit",
                   }}
