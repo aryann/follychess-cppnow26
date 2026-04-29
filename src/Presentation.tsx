@@ -38,6 +38,10 @@ export const Presentation = () => {
           Move Generation in a Chess Engine
         </p>
         <p>♗♖♕ &middot; ♝♜♛</p>
+
+        <p>
+          <a href="https://cppnow26.follychess.com">cppnow26.follychess.com</a>
+        </p>
         <p>
           <a href="https://aryan.app">Aryan Naraghi</a>
         </p>
@@ -94,8 +98,7 @@ export const Presentation = () => {
           <Fragment>
             <dt>Performance</dt>
             <dd>
-              Benchmarking, avoiding branches, and zero-cost abstractions via{" "}
-              <code>consteval</code> and templates.
+              Benchmarking, avoiding branches, and zero-cost abstractions.
             </dd>
           </Fragment>
           <Fragment>
@@ -305,6 +308,116 @@ constexpr std::size_t kNumSides = 2;`}
 
       <Stack>
         <Slide>
+          <h3>Piece Arrangement</h3>
+
+          <p>Convention for displaying pieces using text</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Piece</th>
+                <th>White</th>
+                <th>Black</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Pawn</td>
+                <td>
+                  <code>P</code>
+                </td>
+                <td>
+                  <code>p</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Knight</td>
+                <td>
+                  <code>N</code>
+                </td>
+                <td>
+                  <code>n</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Bishop</td>
+                <td>
+                  <code>B</code>
+                </td>
+                <td>
+                  <code>b</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Rook</td>
+                <td>
+                  <code>R</code>
+                </td>
+                <td>
+                  <code>r</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Queen</td>
+                <td>
+                  <code>Q</code>
+                </td>
+                <td>
+                  <code>q</code>
+                </td>
+              </tr>
+              <tr>
+                <td>King</td>
+                <td>
+                  <code>K</code>
+                </td>
+                <td>
+                  <code>k</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Slide>
+        <Slide>
+          <h3>Piece Arrangment Examples</h3>
+
+          <Row>
+            <Board title="Starting">{`8: r n b q k b n r
+7: p p p p p p p p
+6: . . . . . . . .
+5: . . . . . . . .
+4: . . . . . . . .
+3: . . . . . . . .
+2: P P P P P P P P
+1: R N B Q K B N R
+   a b c d e f g h
+`}</Board>
+
+            <Board title="Midgame example">{`8: . . k r . b n r
+7: p . p . p p p p
+6: p . P . . q . .
+5: . . . P . . . .
+4: . . . P . . . .
+3: P Q N . . . . .
+2: . P . . . P P P
+1: R . B . K . . R
+   a b c d e f g h
+`}</Board>
+
+            <Board title="Endgame example">{`8: . . . . . . . .
+7: . . p . . . . .
+6: . . . p . . . .
+5: K P . . . . . r
+4: . R . . . p P k
+3: . . . . . . . .
+2: . . . . P . . .
+1: . . . . . . . .
+   a b c d e f g h
+`}</Board>
+          </Row>
+        </Slide>
+
+        <Slide>
           <h3>Position</h3>
           <p>The state of the game at a specific moment:</p>
           <ul>
@@ -328,59 +441,10 @@ constexpr std::size_t kNumSides = 2;`}
 
         <Slide>
           <h3>Position</h3>
-          <p>Text representations</p>
+          <p>Getting pieces</p>
 
-          <Row>
-            <Board title="Starting" footer="w KQkq - 0 1">{`8: r n b q k b n r
-7: p p p p p p p p
-6: . . . . . . . .
-5: . . . . . . . .
-4: . . . . . . . .
-3: . . . . . . . .
-2: P P P P P P P P
-1: R N B Q K B N R
-   a b c d e f g h
-`}</Board>
-
-            <Board
-              title="Midgame example"
-              footer="b KQ - 1 15"
-            >{`8: . . k r . b n r
-7: p . p . p p p p
-6: p . P . . q . .
-5: . . . P . . . .
-4: . . . P . . . .
-3: P Q N . . . . .
-2: . P . . . P P P
-1: R . B . K . . R
-   a b c d e f g h
-`}</Board>
-
-            <Board
-              title="Endgame example"
-              footer="b - g3 3 25"
-            >{`8: . . . . . . . .
-7: . . p . . . . .
-6: . . . p . . . .
-5: K P . . . . . r
-4: . R . . . p P k
-3: . . . . . . . .
-2: . . . . P . . .
-1: . . . . . . . .
-   a b c d e f g h
-`}</Board>
-          </Row>
-        </Slide>
-
-        <Slide>
-          <h3>Position</h3>
-          <p>
-            <code>GetPieces(Piece)</code>
-          </p>
-
-          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+          <Code language="cpp" lineNumbers="|1-12|14-25|27-38">{`EXPECT_THAT(
   starting_position.GetPieces(kPawn),
-
   EqualsBitboard(
     "8: . . . . . . . ."
     "7: X X X X X X X X"
@@ -391,18 +455,9 @@ constexpr std::size_t kNumSides = 2;`}
     "2: X X X X X X X X"
     "1: . . . . . . . ."
     "   a b c d e f g h"));
-    `}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Position</h3>
-          <p>
-            <code>GetPieces(Side)</code>
-          </p>
-
-          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
+    
+EXPECT_THAT(
   starting_position.GetPieces(kWhite),
-
   EqualsBitboard(
     "8: . . . . . . . ."
     "7: . . . . . . . ."
@@ -413,18 +468,9 @@ constexpr std::size_t kNumSides = 2;`}
     "2: X X X X X X X X"
     "1: X X X X X X X X"
     "   a b c d e f g h"));
-    `}</Code>
-        </Slide>
-
-        <Slide>
-          <h3>Position</h3>
-          <p>
-            <code>GetPieces(Side, Piece)</code>
-          </p>
-
-          <Code language="cpp" lineNumbers>{`EXPECT_THAT(
-  starting_position.GetPieces(kWhite, kPawn),
-  
+    
+EXPECT_THAT(
+  starting_position.GetPieces(kWhite, kPawn), 
   EqualsBitboard(
     "8: . . . . . . . ."
     "7: . . . . . . . ."
@@ -440,8 +486,9 @@ constexpr std::size_t kNumSides = 2;`}
 
         <Slide>
           <h3>Position</h3>
-          <Code language="cpp" lineNumbers="5-6|">
-            {`class Position {
+          <Row>
+            <Code language="cpp" lineNumbers="5-6|">
+              {`class Position {
  // ...
 
  private:
@@ -457,14 +504,34 @@ constexpr std::size_t kNumSides = 2;`}
   int full_moves_;
 };
           `}
-          </Code>
+            </Code>
+
+            <Code language="cpp" lineNumbers>
+              {`enum Piece : std::uint8_t {
+  kPawn,
+  kKnight,
+  kBishop,
+  kRook,
+  kQueen,
+  kKing,
+  kEmptyPiece,
+};
+
+constexpr std::size_t kNumPieces = 6;
+
+enum Side : std::uint8_t {
+  kWhite,
+  kBlack,
+  kEmptySide,
+};
+
+constexpr std::size_t kNumSides = 2;`}
+            </Code>
+          </Row>
         </Slide>
 
         <Slide>
           <h3>Position</h3>
-          <p>
-            <code>GetPieces()</code>
-          </p>
 
           <Code language="cpp" lineNumbers="1-3|5-8|9-11|13-16|">
             {`Bitboard Position::GetPieces(Side side) const {
