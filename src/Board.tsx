@@ -114,63 +114,66 @@ export const Board = (props: BoardProps) => {
         {props.title && <CodeBlock>{props.title}</CodeBlock>}
 
         <CodeBlock>
-          {Array.from({ length: 8 }, (_, rank) => {
-            const isActive = selectedRank == rank;
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "min-content repeat(8, 24px)",
+            }}
+          >
+            {Array.from({ length: 8 }, (_, rank) => {
+              const isActive = selectedRank == rank;
 
-            return (
-              <span
-                key={rank}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: isActive ? "yellow" : "transparent",
-                  color: isActive ? "black" : "inherit",
-                }}
-              >
+              return (
+                <React.Fragment key={rank}>
+                  <span
+                    onMouseOver={() => setSelectedRank(rank)}
+                    onMouseLeave={() => setSelectedRank(null)}
+                    style={{
+                      opacity: 0.5,
+                      cursor: "pointer",
+                      paddingRight: "8px",
+                      textAlign: "right",
+                      backgroundColor: isActive ? "yellow" : "transparent",
+                      color: isActive ? "black" : "inherit",
+                    }}
+                  >
+                    {8 - rank}
+                  </span>
+                  {Array.from({ length: 8 }, (_, file) => {
+                    const index = rank * 8 + file;
+                    return (
+                      <React.Fragment key={index}>
+                        {renderCell(index, board[index], 24)}
+                      </React.Fragment>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
+
+            <span />
+            {Array.from({ length: 8 }, (_, file) => {
+              const isActive = selectedFile == file;
+
+              return (
                 <span
-                  onMouseOver={() => setSelectedRank(rank)}
-                  onMouseLeave={() => setSelectedRank(null)}
-                  style={{ opacity: 0.5 }}
+                  key={file}
+                  style={{
+                    cursor: "pointer",
+                    textAlign: "center",
+                    backgroundColor: isActive ? "yellow" : "transparent",
+                    color: isActive ? "black" : "inherit",
+                  }}
+                  onMouseOver={() => setSelectedFile(file)}
+                  onMouseLeave={() => setSelectedFile(null)}
                 >
-                  {8 - rank}{" "}
+                  <span style={{ opacity: 0.5 }}>
+                    {String.fromCharCode("a".charCodeAt(0) + file)}
+                  </span>
                 </span>
-                {Array.from({ length: 8 }, (_, file) => {
-                  const index = rank * 8 + file;
-
-                  return (
-                    <span key={index}>
-                      {renderCell(index, board[index], 24)}
-                    </span>
-                  );
-                })}
-                {"\n"}
-              </span>
-            );
-          })}
-
-          {"  "}
-          {Array.from({ length: 8 }, (_, file) => {
-            const isActive = selectedFile == file;
-
-            return (
-              <span
-                key={file}
-                style={{
-                  cursor: "pointer",
-                  display: "inline-block",
-                  width: "24px",
-                  textAlign: "center",
-                  backgroundColor: isActive ? "yellow" : "transparent",
-                  color: isActive ? "black" : "inherit",
-                }}
-                onMouseOver={() => setSelectedFile(file)}
-                onMouseLeave={() => setSelectedFile(null)}
-              >
-                <span style={{ opacity: 0.5 }}>
-                  {String.fromCharCode("a".charCodeAt(0) + file)}
-                </span>
-              </span>
-            );
-          })}
+              );
+            })}
+          </div>
         </CodeBlock>
       </div>
 
