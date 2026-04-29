@@ -3,9 +3,10 @@ import RevealHighlight from "reveal.js/plugin/highlight";
 import "reveal.js/plugin/highlight/monokai.css";
 import "reveal.js/reveal.css";
 import "reveal.js/theme/night.css";
-import { Board, Integer } from "./Board";
-import "./Presentation.css";
 import title from "./assets/title.png";
+import { Board, Integer } from "./Board";
+import { PextRow } from "./PextRow";
+import "./Presentation.css";
 
 const Row = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: "flex", justifyContent: "space-evenly" }}>
@@ -1509,27 +1510,86 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
         <Slide>
           <h3>PEXT 8-bit Examples</h3>
 
-          <Code
-            language="cpp"
-            lineNumbers="|1-2|4-5|7-8|10-11|13-14|16-17|"
-          >{`// Extract none:
-EXPECT_THAT(Pext({ .in = 0b11111111, .mask = 0b00000000 }), Eq(0b00000000));
+          <table>
+            <thead>
+              <tr>
+                <th rowSpan={2} style={{ verticalAlign: "bottom" }}>
+                  Example
+                </th>
+                <th
+                  colSpan={2}
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  Inputs
+                </th>
+                <th
+                  style={{
+                    textAlign: "center",
+                  }}
+                  rowSpan={2}
+                >
+                  Result
+                </th>
+              </tr>
+              <tr>
+                <th
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  Source
+                </th>
+                <th
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  Mask
+                </th>
+              </tr>
+            </thead>
 
-// Extract all bits:
-EXPECT_THAT(Pext({ .in = 0b11110111, .mask = 0b11111111 }), Eq(0b11110111));
-
-// Extract upper four bits:
-EXPECT_THAT(Pext({ .in = 0b11001010, .mask = 0b11110000 }), Eq(0b00001100));
-
-// Extract first and last bits:
-EXPECT_THAT(Pext({ .in = 0b10000001, .mask = 0b10000001 }), Eq(0b00000011));
-
-// Extract every other bit:
-EXPECT_THAT(Pext({ .in = 0b10110100, .mask = 0b10101010 }), Eq(0b00001100));
-
-// Extract bits at indices 1, 4, and 7:
-EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
-        `}</Code>
+            <tbody>
+              <PextRow
+                description="Select none"
+                input="11111111"
+                mask="00000000"
+                result="00000000"
+              />
+              <PextRow
+                description="Select all"
+                input="11110111"
+                mask="11111111"
+                result="11110111"
+              />
+              <PextRow
+                description="Select upper 4 bits"
+                input="11001010"
+                mask="11110000"
+                result="00001100"
+              />
+              <PextRow
+                description="Select lower 3 bits"
+                input="11010100"
+                mask="00000111"
+                result="00000100"
+              />
+              <PextRow
+                description="Select bits 1 and 8"
+                input="10011001"
+                mask="10000001"
+                result="00000011"
+              />
+              <PextRow
+                description="Select bits 2, 4, 6, and 8"
+                input="10110100"
+                mask="10101010"
+                result="00001100"
+              />
+            </tbody>
+          </table>
         </Slide>
 
         <Slide>
@@ -1545,7 +1605,7 @@ EXPECT_THAT(Pext({ .in = 0b11010100, .mask = 0b10010010 }), Eq(0b00000110));
     kNumSquares> kRookAttacks = GenerateRookAttacks();
 
   Bitboard mask = GetRookRelevancyMask(square);
-  std::size_t occupied_index = Pext(occupied, mask);
+  std::size_t occupied_index = _pext_u64(occupied, mask);
 
   return kRookAttacks[square][occupied_index];
 }`}
