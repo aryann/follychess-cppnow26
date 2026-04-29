@@ -69,7 +69,7 @@ export const Board = (props: BoardProps) => {
 
     let bg = "transparent";
     if (isHighlighted) {
-      bg = "white";
+      bg = "var(--r-link-color)";
     }
     if (isActive) {
       bg = "yellow";
@@ -129,8 +129,9 @@ export const Board = (props: BoardProps) => {
                 <span
                   onMouseOver={() => setSelectedRank(rank)}
                   onMouseLeave={() => setSelectedRank(null)}
+                  style={{ opacity: 0.5 }}
                 >
-                  {8 - rank}:
+                  {8 - rank}{" "}
                 </span>
                 {Array.from({ length: 8 }, (_, file) => {
                   const index = rank * 8 + file;
@@ -164,7 +165,9 @@ export const Board = (props: BoardProps) => {
                 onMouseOver={() => setSelectedFile(file)}
                 onMouseLeave={() => setSelectedFile(null)}
               >
-                {String.fromCharCode("a".charCodeAt(0) + file)}
+                <span style={{ opacity: 0.5 }}>
+                  {String.fromCharCode("a".charCodeAt(0) + file)}
+                </span>
               </span>
             );
           })}
@@ -220,7 +223,7 @@ export const Integer = (props: IntegerProps) => {
 
     let bg = "transparent";
     if (isHighlighted) {
-      bg = "white";
+      bg = "var(--r-link-color)";
     }
     if (isActive) {
       bg = "yellow";
