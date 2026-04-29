@@ -2359,12 +2359,12 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
               <tr>
                 <th>Position</th>
                 <th>
-                  <a href="https://github.com/aryann/follychess/blob/d1b20cb78c2e8c9dfe3f706af40c1a7870b596c9/benchmarks/moves_benchmark_latest.txt">
+                  <a href="https://github.com/aryann/follychess/blob/bf6711bc82c68bd74a64248da6cabd1b65736ade/benchmarks/moves_benchmark_latest.txt">
                     Lazy
                   </a>
                 </th>
                 <th>
-                  <a href="https://github.com/aryann/follychess/blob/47d82da09b75acadbf7ee716d09abccba18be096/benchmarks/moves_benchmark_latest.txt">
+                  <a href="https://github.com/aryann/follychess/blob/2d1730031c751fead020318fd620d1467e97abd9/benchmarks/moves_benchmark_latest.txt">
                     Magic
                   </a>
                 </th>
@@ -2375,20 +2375,31 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
             <tbody>
               <tr>
                 <td>Initial</td>
-                <td>233 ms</td>
-                <td>195 ms</td>
-                <td>1.20</td>
+                <td>250 ms</td>
+                <td>194 ms</td>
+                <td>1.29</td>
               </tr>
 
               <tr>
                 <td>
-                  <a href="https://www.chessprogramming.org/Perft_Results#Position_2">
-                    Perft 2
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_3">
+                    Perft 3
                   </a>
                 </td>
-                <td>9,014 ms</td>
-                <td>7,074 ms</td>
-                <td>1.27</td>
+                <td>45 ms</td>
+                <td>33 ms</td>
+                <td>1.36</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_4">
+                    Perft 4
+                  </a>
+                </td>
+                <td>812 ms</td>
+                <td>632 ms</td>
+                <td>1.28</td>
               </tr>
 
               <tr>
@@ -2397,9 +2408,20 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
                     Perft 5
                   </a>
                 </td>
-                <td>4,536 ms</td>
-                <td>3,426 ms</td>
-                <td>1.32</td>
+                <td>4,515 ms</td>
+                <td>3,407 ms</td>
+                <td>1.33</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <a href="https://www.chessprogramming.org/Perft_Results#Position_6">
+                    Perft 6
+                  </a>
+                </td>
+                <td>7,223 ms</td>
+                <td>6,270 ms</td>
+                <td>1.15</td>
               </tr>
             </tbody>
           </table>
