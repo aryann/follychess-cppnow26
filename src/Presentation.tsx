@@ -416,7 +416,9 @@ constexpr std::size_t kNumSides = 2;`}
 `}</Board>
           </Row>
         </Slide>
+      </Stack>
 
+      <Stack>
         <Slide>
           <h3>Position</h3>
           <p>The state of the game at a specific moment:</p>
@@ -487,7 +489,7 @@ EXPECT_THAT(
         <Slide>
           <h3>Position</h3>
           <Row>
-            <Code language="cpp" lineNumbers="5-6|">
+            <Code language="cpp" lineNumbers="|5-6|">
               {`class Position {
  // ...
 
@@ -610,7 +612,7 @@ Bitboard Position::GetPieces(Side side, Piece type) const {
             <Fragment className="fade-out" index={0}>
               <Board
                 title="input"
-                highlight="d7,b5,e5,d2,h5"
+                highlight="d7,b5,e5,d2"
                 showBits
               >{`8: . . . . . . . .
 7: . . . X . . . .
@@ -875,7 +877,9 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
 
         <p>Some moves place the king in check.</p>
 
-        <p>These moves are filtered later.</p>
+        <Fragment>
+          <p>These moves are filtered later.</p>
+        </Fragment>
       </Slide>
 
       <Stack>
@@ -902,13 +906,16 @@ consteval std::array<Bitboard, kNumSquares> GenerateKnightAttacks() {
         </Slide>
 
         <Slide>
-          <h3>Sliding Piece Moves</h3>
-          <p>Sliding piece paths can be blocked by other pieces.</p>
-          <p>This makes their move generation more complex.</p>
+          <h3>Challenge</h3>
+          <p>Sliding pieces can be blocked by other pieces.</p>
+
+          <Fragment>
+            <p>This makes their move generation more complex.</p>
+          </Fragment>
         </Slide>
 
         <Slide>
-          <h3>Sliding Piece Moves</h3>
+          <h3>Algorithm</h3>
           <p>For each ray:</p>
 
           <ol>
@@ -1197,39 +1204,41 @@ Bitboard moves = pseudo_moves & ~friendly;
 
         <p>A queen is just a bishop and rook combined.</p>
 
-        <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
+        <Fragment>
+          <Code language="cpp">{`Bitboard moves = GetBishopMoves(square) | GetRookMoves(square);
         `}</Code>
+        </Fragment>
       </Slide>
 
       <Stack>
         <Slide>
-          <h3>Sliding Piece Moves</h3>
+          <h3>Implementation</h3>
 
           <Code
             language="cpp"
-            lineNumbers="|7-8|"
-          >{`Bitboard GenerateBishopAttacks(Square from, Bitboard occupied) {
+            lineNumbers="|6-9|"
+          >{`Bitboard GetBishopAttacks(Square from, Bitboard occupied) {
  return GenerateSlidingAttacks<
     kNorthEast, kNorthWest, kSouthEast, kSouthWest>(from, occupied);
 } 
             
-Bitboard GenerateRookAttacks(Square from, Bitboard occupied) {
+Bitboard GetRookAttacks(Square from, Bitboard occupied) {
  return GenerateSlidingAttacks<
     kNorth, kEast, kSouth, kWest>(from, occupied);
 }
 
-Bitboard GenerateQueenAttacks(Square from, Bitboard occupied) {
+Bitboard GetQueenAttacks(Square from, Bitboard occupied) {
  return GenerateRookAttacks(from, occupied) | GenerateBishopAttacks(from, occupied);
 }
 `}</Code>
         </Slide>
 
         <Slide>
-          <h3>Sliding Piece Moves</h3>
+          <h3>Implementation</h3>
 
           <Code
             language="cpp"
-            lineNumbers="1-4|6-16|8|9|10|11|12|13|"
+            lineNumbers="1-4|6-16|8|9|11|12|13|14-16|19|"
           >{`template <Direction... Directions>
 Bitboard GenerateSlidingAttacks(Square from, Bitboard occupied) {
   return (GenerateRayAttacks<Directions>(from, occupied) | ...);
@@ -1239,11 +1248,15 @@ template <Direction Direction>
 Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
   Bitboard attacks;
   Bitboard curr(from);
+
   while (curr) {
     curr = curr.Shift<Direction>();
     attacks |= curr;
-    if (curr & occupied) { break; }
+    if (curr & occupied) { 
+      break;
+    }
   }
+
   return attacks;
 }
 `}</Code>
@@ -1273,10 +1286,7 @@ BM_GenerateAttacksLazily<kQueen>                         40.9 ns         40.8 ns
 
       <Slide>
         <h2>Part 4</h2>
-        <h3>
-          Fast Bishop, Rook, and Queen
-          <br /> Move Generation
-        </h3>
+        <h3>Fast Sliding Piece Move Generation</h3>
       </Slide>
 
       <Stack>
@@ -1357,11 +1367,12 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
           </p>
 
           <Row>
-            <Board
-              title="D5 Example"
-              highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
-              footer="10 Relevant Squares"
-            >{`8: . . . . . . . .
+            <Fragment>
+              <Board
+                title="D5 Example"
+                highlight="d7,d6,d4,d3,d2,b5,c5,e5,f5,g5"
+                footer="10 Relevant Squares"
+              >{`8: . . . . . . . .
 7: . . . X . . . .
 6: . . . X . . . .
 5: . X X . X X X .
@@ -1371,12 +1382,14 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
+            </Fragment>
 
-            <Board
-              title="E8 Example"
-              highlight="b8,c8,d8,f8,g8,e7,e6,e5,e4,e3,e2"
-              footer="11 Relevant Squares"
-            >{`8: . X X X . X X .
+            <Fragment>
+              <Board
+                title="E8 Example"
+                highlight="b8,c8,d8,f8,g8,e7,e6,e5,e4,e3,e2"
+                footer="11 Relevant Squares"
+              >{`8: . X X X . X X .
 7: . . . . X . . .
 6: . . . . X . . .
 5: . . . . X . . .
@@ -1386,12 +1399,14 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 1: . . . . . . . .
    a b c d e f g h
 `}</Board>
+            </Fragment>
 
-            <Board
-              title="H1 Example"
-              highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
-              footer="12 Relevant Squares"
-            >{`8: . . . . . . . .
+            <Fragment>
+              <Board
+                title="H1 Example"
+                highlight="h7,h6,h5,h4,h3,h2,b1,c1,d1,e1,f1,g1"
+                footer="12 Relevant Squares"
+              >{`8: . . . . . . . .
 7: . . . . . . . X
 6: . . . . . . . X
 5: . . . . . . . X
@@ -1401,6 +1416,7 @@ Bitboard GetRookAttacks(Square square, Bitboard occupied) {
 1: . X X X X X X .
    a b c d e f g h
 `}</Board>
+            </Fragment>
           </Row>
         </Slide>
 
@@ -1505,9 +1521,12 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
             contiguous indices.
           </p>
 
-          <p>
-            What if we could map the occupancy Bitboards to contiguous indices?
-          </p>
+          <Fragment>
+            <p>
+              What if we could map the occupancy Bitboards to contiguous
+              indices?
+            </p>
+          </Fragment>
         </Slide>
 
         <Slide>
@@ -1580,12 +1599,9 @@ BM_LookupAttacksFrom<std::unordered_map, kQueen>         18.9 ns         18.9 ns
         </Slide>
 
         <Slide>
-          <h3>PEXT Instruction</h3>
+          <h3>Parallel Bits Extract (PEXT) Instruction</h3>
 
-          <p>
-            Parallel Bits Extract (PEXT) extracts bits from an integer based on
-            a mask.
-          </p>
+          <p>Extracts bits from an integer based on a mask.</p>
 
           <p>
             Results are packed into the contiguous low-order bits of the result.
@@ -1940,10 +1956,15 @@ std::size_t index = occupied & mask;`}</Code>
             Random numbers with only 1/8<sup>th</sup> of their bits set
           </p>
 
-          <Code language="cpp" lineNumbers>{`std::uint64_t GetSparseRandom() {
-  std::mt19937 engine(std::random_device{}());
+          <Code
+            language="cpp"
+            lineNumbers="|6|"
+          >{`std::uint64_t GetSparseRandom() {
+  std::random_device rd;
+  std::mt19937 gen(rd()); 
   std::uniform_int_distribution<std::uint64_t> dist(0);
-  return dist(engine) & dist(engine) & dist(engine);
+
+  return dist(gen) & dist(gen) & dist(gen);
 }`}</Code>
         </Slide>
 
@@ -1974,7 +1995,7 @@ occupied * magic = (occupied << a)
           </Fragment>
 
           <Fragment>
-            <p>More information loss &rarr;</p>
+            <p>More information loss</p>
           </Fragment>
         </Slide>
 
@@ -1996,8 +2017,11 @@ occupied * magic = (occupied << a)
 
           <Code
             language="plaintext"
-            lineNumbers
-          >{`Finding magic numbers for bishops:
+            lineNumbers="4-18"
+          >{`$ bazel build ...                                                                                                                                                                          ─╯
+INFO: Analyzed 59 targets (0 packages loaded, 4436 targets configured).
+INFO: From RunBinary engine/magic.generated.h:
+Finding magic numbers for bishops:
   Found magic for a8 after   1,997 attempts: 9009435087472833
   Found magic for b8 after   2,349 attempts: 40533500520334400
   Found magic for c8 after   1,410 attempts: 2278189176520776
@@ -2184,7 +2208,7 @@ void AddTable(std::ofstream& output) {
         <Slide>
           <h3>Magic Bitboard File Usage</h3>
 
-          <Code language="cpp" lineNumbers>{`
+          <Code language="cpp" lineNumbers="|14-19|15|16|17|18|">{`
 #include "engine/magic.generated.h"
 
 // ...
@@ -2192,17 +2216,17 @@ void AddTable(std::ofstream& output) {
 class MagicSliderAttacks {
  public:
   static Bitboard GetBishopAttacks(Square square, Bitboard occupied) {
-    const MagicEntry &magic = kSliderAttacks.bishop_magic_squares[square];
-    occupied &= magic.mask;
-    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
-    return kSliderAttacks.attacks[magic.attack_table_index + index];
+    const MagicEntry &entry = kSliderAttacks.bishop_magic_squares[square];
+    occupied &= entry.mask;
+    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
+    return kSliderAttacks.attacks[entry.attack_table_index + index];
   }
 
   static Bitboard GetRookAttacks(Square square, Bitboard occupied) {
-    const MagicEntry &magic = kSliderAttacks.rook_magic_squares[square];
-    occupied &= magic.mask;
-    std::size_t index = (magic.magic * occupied.Data()) >> magic.shift;
-    return kSliderAttacks.attacks[magic.attack_table_index + index];
+    const MagicEntry &entry = kSliderAttacks.rook_magic_squares[square];
+    occupied &= entry.mask;
+    std::size_t index = (entry.magic * occupied.Data()) >> entry.shift;
+    return kSliderAttacks.attacks[entry.attack_table_index + index];
   }
 };
 `}</Code>
@@ -2246,6 +2270,8 @@ BM_LookupAttacksFromMagicTables<kQueen>                  1.96 ns         1.96 ns
 
         <Slide>
           <h3>Depth 10 Best Move Search</h3>
+
+          <p>Universal Chess Interface (UCI)</p>
 
           <Code language="plaintext" lineNumbers="1|2|3|4-14|16|17-27">
             {`
@@ -2529,7 +2555,7 @@ constexpr Bitboard GenerateAttacks(Square square, Bitboard occupied) {
 
           <Code
             language="cpp"
-            lineNumbers
+            lineNumbers="|1|37-51|12-18|"
           >{`template <template <typename...> typename Map>
 class MapSliderAttacks {
  public:
@@ -2566,7 +2592,22 @@ class MapSliderAttacks {
     return result;
   }
 
-  // ...
+  [[nodiscard]] static auto GenerateRookAttackMap() {
+    std::array<Map<Bitboard, Bitboard>, kNumSquares> result;
+    for (int square = kFirstSquare; square < kNumSquares; ++square) {
+      const Square from = static_cast<Square>(square);
+      Bitboard mask = kSliderAttacks.rook_magic_squares[square].mask;
+
+      std::vector<Bitboard> occupancies = MakePowerSet(mask);
+      for (Bitboard occupied : occupancies) {
+        result[from][occupied] =
+            MagicSliderAttacks::GetRookAttacks(from, occupied);
+      }
+    }
+
+    return result;
+  }
+};
 `}</Code>
         </Slide>
 
@@ -2575,7 +2616,7 @@ class MapSliderAttacks {
 
           <Code
             language="cpp"
-            lineNumbers
+            lineNumbers="|1|9-10|19-22|"
           >{`template <template <typename...> class Map, Piece Piece>
 void BM_LookupAttacksFrom(benchmark::State& state) {
   int square = 0;
