@@ -98,7 +98,8 @@ export const Presentation = () => {
           <Fragment>
             <dt>Performance</dt>
             <dd>
-              Benchmarking, avoiding branches, and zero-cost abstractions.
+              Benchmarking, avoiding branches, templates, <code>consteval</code>
+              /<code>constexpr</code>, and zero-cost abstractions.
             </dd>
           </Fragment>
           <Fragment>
