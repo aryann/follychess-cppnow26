@@ -35,7 +35,7 @@ export const Presentation = () => {
         <p>
           Optimizing Bishop, Rook, and Queen
           <br />
-          Move Generation in a Chess Engine
+          Move Generation in a <a href="https://follychess.com">Chess Engine</a>
         </p>
         <p>♗♖♕ &middot; ♝♜♛</p>
 
@@ -1260,6 +1260,48 @@ Bitboard GenerateRayAttacks(Square from, Bitboard occupied) {
 
   return attacks;
 }
+`}</Code>
+        </Slide>
+
+        <Slide>
+          <h3>Microbenchmarks</h3>
+          <Code
+            language="cpp"
+            lineNumbers="|3-5|8-10|12-13|17-30|31-34"
+          >{`template <Piece Piece>
+void BM_GenerateAttacksLazily(benchmark::State& state) {
+  int square = 0;
+  std::vector<Bitboard> occupancies = GetRandomOccupancies();
+  int occupancy_index = 0;
+
+  for (auto _ : state) {
+    Bitboard occupied = occupancies[occupancy_index % occupancies.size()];
+    benchmark::DoNotOptimize(GenerateAttacks<Piece, LazySliderAttacks>(
+        static_cast<Square>(square % kNumSquares), occupied));
+
+    ++square;
+    ++occupancy_index;
+  }
+}
+
+std::vector<Bitboard> GetRandomOccupancies() {
+  constexpr std::size_t kSampleSize = 10'000'000;
+
+  std::mt19937 engine(std::random_device{}());
+  std::uniform_int_distribution<std::uint64_t> dist(
+      0, std::numeric_limits<std::uint64_t>::max());
+
+  std::vector<Bitboard> result;
+  result.reserve(kSampleSize);
+  for (int i = 0; i < kSampleSize; ++i) {
+    result.emplace_back(dist(engine));
+  }
+  return result;
+}
+
+BENCHMARK(BM_GenerateAttacksLazily<kBishop>);
+BENCHMARK(BM_GenerateAttacksLazily<kRook>);
+BENCHMARK(BM_GenerateAttacksLazily<kQueen>);
 `}</Code>
         </Slide>
 
