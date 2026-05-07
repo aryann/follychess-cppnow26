@@ -26,6 +26,7 @@ export const Presentation = () => {
         height: 800,
         hash: true,
         slideNumber: true,
+        pdfSeparateFragments: false,
       }}
     >
       <Slide backgroundImage={title} backgroundSize="contain"></Slide>
